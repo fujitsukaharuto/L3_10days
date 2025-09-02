@@ -873,6 +873,12 @@
     <Filter Include="Engine\GraphicPipeline\CSPipe">
       <UniqueIdentifier>{d918235d-47db-4aad-82b9-b5ab9d7beab9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObj\Climber">
+      <UniqueIdentifier>{e1e2f8ce-5a88-4efe-ae4f-68065f005e52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObj\Block">
+      <UniqueIdentifier>{f308f21c-2107-4039-9d60-7db5fb7dccd7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="resource\Shaders\GaussianBlur.PS.hlsl">
