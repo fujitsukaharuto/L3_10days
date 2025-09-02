@@ -1,14 +1,14 @@
-#include "TopCollider.h"
+#include "FrontTopCollider.h"
 
 #include "GameObj/Climber/Climber.h"
 #include "Game/Collider/CollisionManager.h"
 
-ClimberTopCollider::ClimberTopCollider(Climber* climber, CollisionManager* cMana) {
+ClimberFrontTopCollider::ClimberFrontTopCollider(Climber* climber, CollisionManager* cMana) {
 	climber_ = climber;
 	cMana_ = cMana;
 }
 
-void ClimberTopCollider::Initialize() {
+void ClimberFrontTopCollider::Initialize() {
 	OriginGameObject::Initialize();
 
 	// 親子関係セット
@@ -30,30 +30,34 @@ void ClimberTopCollider::Initialize() {
 	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });
 }
 
-void ClimberTopCollider::Update() {
+void ClimberFrontTopCollider::Update() {
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
 	cMana_->AddCollider(collider_.get());
 }
 
-void ClimberTopCollider::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
+void ClimberFrontTopCollider::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 #ifdef _DEBUG
 	collider_->DrawCollider();
 #endif // _DEBUG
 }
 
-void ClimberTopCollider::DebugGUI() {
+void ClimberFrontTopCollider::DebugGUI() {
 
 }
 
-void ClimberTopCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
-
+void ClimberFrontTopCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
+	if (other.tag == "block") {
+		climber_->ThereFrontUpBlock();
+	}
 }
 
-void ClimberTopCollider::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
-
+void ClimberFrontTopCollider::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
+	if (other.tag == "block") {
+		climber_->ThereFrontUpBlock();
+	}
 }
 
-void ClimberTopCollider::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
+void ClimberFrontTopCollider::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
 
 }
