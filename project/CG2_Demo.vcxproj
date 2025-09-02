@@ -191,6 +191,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameObj\Block\BaseBlock.cpp" />
     <ClCompile Include="Game\GameObj\Block\Mino.cpp" />
     <ClCompile Include="Game\GameObj\Climber\Climber.cpp" />
+    <ClCompile Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.cpp" />
+    <ClCompile Include="Game\GameObj\Climber\TopCollider\TopCollider.cpp" />
     <ClCompile Include="Game\GameObj\Enemy\Behavior\BossAreaAttack.cpp" />
     <ClCompile Include="Game\GameObj\Enemy\Behavior\BossArrowAttack.cpp" />
     <ClCompile Include="Game\GameObj\Enemy\Behavior\BossAttack.cpp" />
@@ -326,6 +328,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameObj\Block\BaseBlock.h" />
     <ClInclude Include="Game\GameObj\Block\Mino.h" />
     <ClInclude Include="Game\GameObj\Climber\Climber.h" />
+    <ClInclude Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.h" />
+    <ClInclude Include="Game\GameObj\Climber\TopCollider\TopCollider.h" />
     <ClInclude Include="Game\GameObj\Enemy\Behavior\BaseBossBehavior.h" />
     <ClInclude Include="Game\GameObj\Enemy\Behavior\BossAreaAttack.h" />
     <ClInclude Include="Game\GameObj\Enemy\Behavior\BossArrowAttack.h" />

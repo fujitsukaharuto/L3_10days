@@ -13,8 +13,7 @@
 
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() {
-}
+TitleScene::~TitleScene() {}
 
 void TitleScene::Initialize() {
 
@@ -164,6 +163,7 @@ void TitleScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 	map_->DebugGUI();
+	climber_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }
