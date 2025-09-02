@@ -1,10 +1,8 @@
 #include "MapField.h"
 
-MapField::MapField() {
-}
+MapField::MapField() {}
 
-MapField::~MapField() {
-}
+MapField::~MapField() {}
 
 void MapField::Initialize() {
 
@@ -14,6 +12,11 @@ void MapField::Initialize() {
 
 void MapField::Update() {
 	UpdateControlMino();
+
+	for (auto& mino : minos_) {
+		mino->Update();
+	}
+
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -97,7 +100,9 @@ void MapField::AddMino(BlockType type) {
 	std::unique_ptr<Mino> mino;
 	mino = std::make_unique<Mino>();
 	mino->Initialize();
+	mino->SetCollisionMana(cMana_);
 	mino->InitBlock(type);
+
 	controlMino_ = std::move(mino);
 	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
 
@@ -106,6 +111,7 @@ void MapField::AddMino(BlockType type) {
 	futureMino_->InitBlock(type);
 	futureMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
 	FutureMinoUpdate();
+
 
 	//minos_.push_back(std::move(mino));
 }
@@ -212,6 +218,7 @@ void MapField::MoveControlMino() {
 		break;
 	default:
 		break;
+
 	}
 
 	if (!isMove) return;
@@ -222,7 +229,8 @@ void MapField::MoveControlMino() {
 
 void MapField::CellCheck() {
 	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
+		case BlockType::L:
+
 
 		if (int(cellNum_.y + 1.0f) == 20) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
@@ -237,8 +245,8 @@ void MapField::CellCheck() {
 			return;
 		}
 
-		break;
-	case BlockType::T:
+			break;
+		case BlockType::T:
 
 		if (int(cellNum_.y + 1.0f) == 20) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
@@ -329,9 +337,9 @@ void MapField::CellCheck() {
 			return;
 		}
 
-		break;
-	default:
-		break;
+			break;
+		default:
+			break;
 	}
 
 	cellNum_.y++;
@@ -346,6 +354,10 @@ void MapField::QuickDrop() {
 		controlMino_->Update();
 		RemoveControlMino();
 	}
+}
+
+void MapField::SetColliderManager(CollisionManager* cMana) {
+	cMana_ = cMana;
 }
 
 void MapField::RemoveControlMino() {
@@ -389,6 +401,7 @@ void MapField::RemoveControlMino() {
 			break;
 		default:
 			break;
+
 		}
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;

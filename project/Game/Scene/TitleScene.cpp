@@ -13,8 +13,7 @@
 
 TitleScene::TitleScene() {}
 
-TitleScene::~TitleScene() {
-}
+TitleScene::~TitleScene() {}
 
 void TitleScene::Initialize() {
 
@@ -26,6 +25,8 @@ void TitleScene::Initialize() {
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
 	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
+
+	cMane_ = std::make_unique<CollisionManager>();
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
@@ -47,17 +48,23 @@ void TitleScene::Initialize() {
 	terrain_->transform.scale = { 1.0f,1.0f,1.0f };
 	terrain_->SetUVScale({ 20.0f,20.0f }, { 0.0f,0.0f });
 
-	b1_ = std::make_unique<Mino>();
+	/*b1_ = std::make_unique<Mino>();
 	b1_->Initialize();
 	b1_->InitBlock(BlockType::L);
 	b1_->GetModel()->transform.translate.x = -3.0f;
 	b2_ = std::make_unique<Mino>();
 	b2_->Initialize();
 	b2_->InitBlock(BlockType::T);
-	b2_->GetModel()->transform.translate.x = 3.0f;
+	b2_->GetModel()->transform.translate.x = 3.0f;*/
 
 	map_ = std::make_unique<MapField>();
 	map_->Initialize();
+	map_->SetColliderManager(cMane_.get());
+
+
+	climber_ = std::make_unique<Climber>(cMane_.get());
+	climber_->Initialize();
+
 
 	terrainCollider_ = std::make_unique<AABBCollider>();
 	terrainCollider_->SetTag("terrain");
@@ -76,7 +83,7 @@ void TitleScene::Initialize() {
 	animParentObj_->SetNoneScaleParent(true);
 	animParentObj_->LoadTransformFromJson("AnimParent_transform.json");*/
 
-	cMane_ = std::make_unique<CollisionManager>();
+
 
 	ParticleManager::Load(emit, "lightning");
 }
@@ -94,10 +101,12 @@ void TitleScene::Update() {
 	BlackFade();
 	skybox_->Update();
 
-	b1_->Update();
-	b2_->Update();
+	/*b1_->Update();
+	b2_->Update();*/
 
 	map_->Update();
+
+	climber_->Update();
 
 	cMane_->CheckAllCollision();
 
@@ -119,10 +128,12 @@ void TitleScene::Draw() {
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 
-	b1_->Draw();
-	b2_->Draw();
+	//b1_->Draw();
+	//b2_->Draw();
 
 	map_->Draw();
+
+	climber_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();
@@ -155,6 +166,7 @@ void TitleScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 	map_->DebugGUI();
+	climber_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }

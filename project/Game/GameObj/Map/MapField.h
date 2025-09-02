@@ -7,6 +7,7 @@
 #include "Model/Line3dDrawer.h"
 #include "Game/GameObj/Block/Mino.h"
 
+class CollisionManager;
 
 class MapField {
 public:
@@ -25,6 +26,8 @@ public:
 	void CellCheck();
 	void QuickDrop();
 
+	void SetColliderManager(CollisionManager* cMana);
+
 private:
 
 	void RemoveControlMino();
@@ -41,4 +44,5 @@ private:
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
 
+	CollisionManager* cMana_;
 };

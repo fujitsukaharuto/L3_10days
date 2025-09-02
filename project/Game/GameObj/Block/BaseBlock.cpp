@@ -4,11 +4,11 @@
 #include "Engine/Editor/JsonSerializer.h"
 #include "Engine/Math/Random/Random.h"
 
-BaseBlock::BaseBlock() {
-}
+#include "Game/Collider/CollisionManager.h"
 
-BaseBlock::~BaseBlock() {
-}
+BaseBlock::BaseBlock() {}
+
+BaseBlock::~BaseBlock() {}
 
 void BaseBlock::Initialize() {
 	OriginGameObject::Initialize();
@@ -25,10 +25,11 @@ void BaseBlock::Initialize() {
 }
 
 void BaseBlock::Update() {
-
-
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
+	if (cMana_) {
+		cMana_->AddCollider(collider_.get());
+	}
 }
 
 void BaseBlock::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -45,6 +46,7 @@ void BaseBlock::DebugGUI() {
 #endif // _DEBUG
 }
 
+
 void BaseBlock::DrawLine() {
 #ifdef _DEBUG
 	collider_->DrawCollider();
@@ -54,8 +56,10 @@ void BaseBlock::DrawLine() {
 void BaseBlock::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
 }
 
-void BaseBlock::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
-}
+void BaseBlock::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {}
 
-void BaseBlock::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
+void BaseBlock::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {}
+
+void BaseBlock::SetCollisionManager(CollisionManager* cMana) {
+	cMana_ = cMana;
 }
