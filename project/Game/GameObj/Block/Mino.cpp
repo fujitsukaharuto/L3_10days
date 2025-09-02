@@ -64,9 +64,10 @@ void Mino::InitBlock(BlockType type) {
 	collider_->SetCollisionStayCallback([this](const ColliderInfo& other) {OnCollisionStay(other); });
 	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });
 
-
+	Vector4 color = { 1.0f,0.65f,0.0f,1.0f };
 	switch (blockType_) {
 	case BlockType::L:
+		color = { 1.0f,0.65f,0.0f,1.0f };
 		for (int i = 0; i < 3; i++) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
@@ -75,10 +76,13 @@ void Mino::InitBlock(BlockType type) {
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
 			if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+			block->GetModel()->SetColor(color);
 			blocks_.push_back(std::move(block));
 		}
+		model_->SetColor(color);
 		break;
 	case BlockType::T:
+		color = { 0.55f,0.0f,0.55f,1.0f };
 		for (int i = 0; i < 3; i++) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
@@ -87,8 +91,70 @@ void Mino::InitBlock(BlockType type) {
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
 			if (i == 2) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			block->GetModel()->SetColor(color);
 			blocks_.push_back(std::move(block));
 		}
+		model_->SetColor(color);
+		break;
+	case BlockType::S:
+		color = { 0.0f,0.5f,0.0f,1.0f };
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 2.0f,2.0f,0.0f };
+			block->GetModel()->SetColor(color);
+			blocks_.push_back(std::move(block));
+		}
+		model_->SetColor(color);
+		break;
+	case BlockType::Z:
+		color = { 1.0f,0.0f,0.0f,1.0f };
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { -2.0f,2.0f,0.0f };
+			block->GetModel()->SetColor(color);
+			blocks_.push_back(std::move(block));
+		}
+		model_->SetColor(color);
+		break;
+	case BlockType::O:
+		color = { 1.0f,1.0f,0.0f,1.0f };
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 2.0f,2.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			block->GetModel()->SetColor(color);
+			blocks_.push_back(std::move(block));
+		}
+		model_->SetColor(color);
+		break;
+	case BlockType::J:
+		color = { 0.0f,0.0f,1.0f,1.0f };
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+			block->GetModel()->SetColor(color);
+			blocks_.push_back(std::move(block));
+		}
+		model_->SetColor(color);
 		break;
 	default:
 		break;

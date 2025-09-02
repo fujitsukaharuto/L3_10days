@@ -10,6 +10,10 @@
 enum class BlockType {
 	L,
 	T,
+	S,
+	Z,
+	O,
+	J,
 };
 
 enum class BlockMode {
