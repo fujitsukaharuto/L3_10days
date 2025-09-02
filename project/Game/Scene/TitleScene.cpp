@@ -59,6 +59,11 @@ void TitleScene::Initialize() {
 	map_ = std::make_unique<MapField>();
 	map_->Initialize();
 
+
+	climber_ = std::make_unique<Climber>();
+	climber_->Initialize();
+
+
 	terrainCollider_ = std::make_unique<AABBCollider>();
 	terrainCollider_->SetTag("terrain");
 	terrainCollider_->SetWidth(20.0f);
@@ -99,6 +104,8 @@ void TitleScene::Update() {
 
 	map_->Update();
 
+	climber_->Update();
+
 	cMane_->CheckAllCollision();
 
 	ParticleManager::GetInstance()->Update();
@@ -119,10 +126,12 @@ void TitleScene::Draw() {
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 
-	b1_->Draw();
-	b2_->Draw();
+	//b1_->Draw();
+	//b2_->Draw();
 
 	map_->Draw();
+
+	climber_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();

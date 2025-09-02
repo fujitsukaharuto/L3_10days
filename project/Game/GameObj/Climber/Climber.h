@@ -6,15 +6,23 @@
 /// <summary>
 /// 人間
 /// </summary>
-class Climber {
+class Climber: public OriginGameObject {
 public:
 	Climber();
-	~Climber() = default;
+	~Climber()override = default;
 
-	void Update();
+	void Initialize()override;
+	void Update()override;
+	void Draw(Material* mate = nullptr, bool is = false)override;
+	void DebugGUI()override;
 
-	void Draw();
-
-
-
+private:
+	const float kBlockSize_ = 2.0f;
+	const Vector3 kStartPos_ = { 0.0f,kBlockSize_,0.0f };
 };
+
+// 実装メモ
+// ブロック1マス分は2.0f
+// マップチップフィールドの番号を使った方がスマートな実装になりそうだがひとまずコライダーでごり押し実装する
+// 前方と斜め上、斜め下にコライダーを持つ
+// 
