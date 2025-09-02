@@ -15,14 +15,14 @@ void ClimberBottomCollider::Initialize() {
 	model_->transform.parent = &climber_->GetTrans();
 
 	// 座標をセット
-	model_->transform.translate.y = -kBlockSize_;
+	model_->transform.translate.y = -1.15f;
 
 	// コライダー用のオブジェクトを実装
 	collider_ = std::make_unique<AABBCollider>();
 	collider_->SetTag("climber");
-	collider_->SetWidth(0.5f);
-	collider_->SetDepth(0.5f);
-	collider_->SetHeight(0.5f);
+	collider_->SetWidth(0.1f);
+	collider_->SetDepth(0.1f);
+	collider_->SetHeight(0.1f);
 
 	collider_->SetCollisionEnterCallback([this](const ColliderInfo& other) {OnCollisionEnter(other); });
 	collider_->SetCollisionStayCallback([this](const ColliderInfo& other) {OnCollisionStay(other); });
