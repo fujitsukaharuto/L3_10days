@@ -17,6 +17,8 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false)override;
 	void DebugGUI()override;
 
+	void DrawLine();
+
 	//========================================================================*/
 	//* Collision
 

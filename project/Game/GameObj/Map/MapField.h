@@ -28,6 +28,7 @@ public:
 private:
 
 	void RemoveControlMino();
+	void FutureMinoUpdate();
 
 private:
 
@@ -37,6 +38,7 @@ private:
 
 	Vector2 cellNum;
 	std::unique_ptr<Mino> controlMino_;
+	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
 
 };

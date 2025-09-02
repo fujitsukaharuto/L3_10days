@@ -19,6 +19,9 @@ void MapField::Update() {
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	if (controlMino_) {
 		controlMino_->Draw();
+		if (futureMino_) {
+			futureMino_->DrawLine();
+		}
 	}
 	for (auto& mino : minos_) {
 		mino->Draw();
@@ -66,6 +69,12 @@ void MapField::AddMino(BlockType type) {
 	controlMino_ = std::move(mino);
 	controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
 
+	futureMino_ = std::make_unique<Mino>();
+	futureMino_->Initialize();
+	futureMino_->InitBlock(type);
+	futureMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+	FutureMinoUpdate();
+
 	//minos_.push_back(std::move(mino));
 }
 
@@ -81,6 +90,9 @@ void MapField::UpdateControlMino() {
 	MoveControlMino();
 
 	controlMino_->Update();
+	if (futureMino_) {
+		futureMino_->Update();
+	}
 	RemoveControlMino();
 }
 
@@ -121,13 +133,14 @@ void MapField::MoveControlMino() {
 	if (!isMove) return;
 	cellNum = nextCell;
 	controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+	FutureMinoUpdate();
 }
 
 void MapField::CellCheck() {
 	switch (controlMino_->GetBlockType()) {
 	case BlockType::L:
 
-		if (int(cellNum.y + 1.0f) == 20){
+		if (int(cellNum.y + 1.0f) == 20) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
@@ -200,4 +213,58 @@ void MapField::RemoveControlMino() {
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
 	}
+}
+
+void MapField::FutureMinoUpdate() {
+	if (!futureMino_) return;
+	Vector2 cell = cellNum;
+	futureMino_->SetBlockMode(BlockMode::Fall);
+	while (futureMino_->GetBlockMode() == BlockMode::Fall) {
+		switch (futureMino_->GetBlockType()) {
+		case BlockType::L:
+
+			if (int(cell.y + 1.0f) == 20) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+
+			break;
+		case BlockType::T:
+
+			if (int(cell.y + 1.0f) == 20) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+
+			break;
+		default:
+			break;
+		}
+
+		if (futureMino_->GetBlockMode() != BlockMode::Stay) {
+			cell.y++;
+		}
+	}
+	futureMino_->GetModel()->transform.translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f,0.0f };
+	futureMino_->Update();
 }

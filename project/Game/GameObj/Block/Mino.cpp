@@ -42,6 +42,15 @@ void Mino::DebugGUI() {
 #endif // _DEBUG
 }
 
+void Mino::DrawLine() {
+#ifdef _DEBUG
+	for (auto& block : blocks_) {
+		block->DrawLine();
+	}
+	collider_->DrawCollider();
+#endif // _DEBUG
+}
+
 void Mino::InitBlock(BlockType type) {
 	blockType_ = type;
 	blockMode_ = BlockMode::Fall;
