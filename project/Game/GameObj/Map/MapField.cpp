@@ -1,10 +1,8 @@
 #include "MapField.h"
 
-MapField::MapField() {
-}
+MapField::MapField() {}
 
-MapField::~MapField() {
-}
+MapField::~MapField() {}
 
 void MapField::Initialize() {
 
@@ -14,6 +12,11 @@ void MapField::Initialize() {
 
 void MapField::Update() {
 	UpdateControlMino();
+
+	for (auto& mino : minos_) {
+		mino->Update();
+	}
+
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -49,22 +52,25 @@ void MapField::DebugGUI() {
 void MapField::AddMino(BlockType type) {
 	if (controlMino_) return;
 	switch (type) {
-	case BlockType::L:
-		cellNum = { 4.0f, 2.0f };
-		break;
-	case BlockType::T:
-		cellNum = { 4.0f, 1.0f };
-		break;
-	default:
-		break;
+		case BlockType::L:
+			cellNum = { 4.0f, 2.0f };
+			break;
+		case BlockType::T:
+			cellNum = { 4.0f, 1.0f };
+			break;
+		default:
+			break;
 	}
 	if (map_[int(cellNum.y)][int(cellNum.x)] == 1) return;
 	std::unique_ptr<Mino> mino;
 	mino = std::make_unique<Mino>();
 	mino->Initialize();
+	mino->SetCollisionMana(cMana_);
 	mino->InitBlock(type);
+
 	controlMino_ = std::move(mino);
 	controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+
 
 	//minos_.push_back(std::move(mino));
 }
@@ -100,22 +106,22 @@ void MapField::MoveControlMino() {
 	if (!isMove) return;
 
 	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
+		case BlockType::L:
 
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
-			isMove = false;
-		}
+			if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
+				isMove = false;
+			}
 
-		break;
-	case BlockType::T:
+			break;
+		case BlockType::T:
 
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
-			isMove = false;
-		}
+			if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
+				isMove = false;
+			}
 
-		break;
-	default:
-		break;
+			break;
+		default:
+			break;
 	}
 
 	if (!isMove) return;
@@ -125,44 +131,44 @@ void MapField::MoveControlMino() {
 
 void MapField::CellCheck() {
 	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
+		case BlockType::L:
 
-		if (int(cellNum.y + 1.0f) == 20){
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum.y + 1.0f)][int(cellNum.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum.y + 1.0f)][int(cellNum.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
+			if (int(cellNum.y + 1.0f) == 20) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
+			if (map_[int(cellNum.y + 1.0f)][int(cellNum.x)] == 1) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
+			if (map_[int(cellNum.y + 1.0f)][int(cellNum.x + 1.0f)] == 1) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
 
-		break;
-	case BlockType::T:
+			break;
+		case BlockType::T:
 
-		if (int(cellNum.y + 1.0f) == 20) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum.y + 1.0f)][int(cellNum.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum.y + 1.0f)][int(cellNum.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum.y + 1.0f)][int(cellNum.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
+			if (int(cellNum.y + 1.0f) == 20) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
+			if (map_[int(cellNum.y + 1.0f)][int(cellNum.x)] == 1) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
+			if (map_[int(cellNum.y + 1.0f)][int(cellNum.x + 1.0f)] == 1) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
+			if (map_[int(cellNum.y + 1.0f)][int(cellNum.x - 1.0f)] == 1) {
+				controlMino_->SetBlockMode(BlockMode::Stay);
+				return;
+			}
 
-		break;
-	default:
-		break;
+			break;
+		default:
+			break;
 	}
 
 	cellNum.y++;
@@ -179,23 +185,27 @@ void MapField::QuickDrop() {
 	}
 }
 
+void MapField::SetColliderManager(CollisionManager* cMana) {
+	cMana_ = cMana;
+}
+
 void MapField::RemoveControlMino() {
 	if (controlMino_->GetBlockMode() == BlockMode::Stay) {
 		switch (controlMino_->GetBlockType()) {
-		case BlockType::L:
-			map_[int(cellNum.y)][int(cellNum.x)] = 1;
-			map_[int(cellNum.y - 1.0f)][int(cellNum.x)] = 1;
-			map_[int(cellNum.y - 2.0f)][int(cellNum.x)] = 1;
-			map_[int(cellNum.y)][int(cellNum.x + 1.0f)] = 1;
-			break;
-		case BlockType::T:
-			map_[int(cellNum.y)][int(cellNum.x)] = 1;
-			map_[int(cellNum.y - 1.0f)][int(cellNum.x)] = 1;
-			map_[int(cellNum.y)][int(cellNum.x - 1.0f)] = 1;
-			map_[int(cellNum.y)][int(cellNum.x + 1.0f)] = 1;
-			break;
-		default:
-			break;
+			case BlockType::L:
+				map_[int(cellNum.y)][int(cellNum.x)] = 1;
+				map_[int(cellNum.y - 1.0f)][int(cellNum.x)] = 1;
+				map_[int(cellNum.y - 2.0f)][int(cellNum.x)] = 1;
+				map_[int(cellNum.y)][int(cellNum.x + 1.0f)] = 1;
+				break;
+			case BlockType::T:
+				map_[int(cellNum.y)][int(cellNum.x)] = 1;
+				map_[int(cellNum.y - 1.0f)][int(cellNum.x)] = 1;
+				map_[int(cellNum.y)][int(cellNum.x - 1.0f)] = 1;
+				map_[int(cellNum.y)][int(cellNum.x + 1.0f)] = 1;
+				break;
+			default:
+				break;
 		}
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;

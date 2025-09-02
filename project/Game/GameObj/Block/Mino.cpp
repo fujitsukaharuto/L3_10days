@@ -4,11 +4,11 @@
 #include "Engine/Editor/JsonSerializer.h"
 #include "Engine/Math/Random/Random.h"
 
-Mino::Mino() {
-}
+#include "Game/Collider/CollisionManager.h"
 
-Mino::~Mino() {
-}
+Mino::Mino() {}
+
+Mino::~Mino() {}
 
 void Mino::Initialize() {
 	OriginGameObject::Initialize();
@@ -23,6 +23,9 @@ void Mino::Update() {
 
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
+	if (cMana_) {
+		cMana_->AddCollider(collider_.get());
+	}
 }
 
 void Mino::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -57,40 +60,43 @@ void Mino::InitBlock(BlockType type) {
 
 
 	switch (blockType_) {
-	case BlockType::L:
-		for (int i = 0; i < 3; i++) {
-			std::unique_ptr<BaseBlock> block;
-			block = std::make_unique<BaseBlock>();
-			block->Initialize();
-			block->GetModel()->SetParent(&model_->transform);
-			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
-			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
-			if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
-			blocks_.push_back(std::move(block));
-		}
-		break;
-	case BlockType::T:
-		for (int i = 0; i < 3; i++) {
-			std::unique_ptr<BaseBlock> block;
-			block = std::make_unique<BaseBlock>();
-			block->Initialize();
-			block->GetModel()->SetParent(&model_->transform);
-			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
-			if (i == 1) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
-			if (i == 2) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
-			blocks_.push_back(std::move(block));
-		}
-		break;
-	default:
-		break;
+		case BlockType::L:
+			for (int i = 0; i < 3; i++) {
+				std::unique_ptr<BaseBlock> block;
+				block = std::make_unique<BaseBlock>();
+				block->Initialize();
+				block->SetCollisionManager(cMana_);
+				block->GetModel()->SetParent(&model_->transform);
+				if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+				if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+				if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+				blocks_.push_back(std::move(block));
+			}
+			break;
+		case BlockType::T:
+			for (int i = 0; i < 3; i++) {
+				std::unique_ptr<BaseBlock> block;
+				block = std::make_unique<BaseBlock>();
+				block->Initialize();
+				block->SetCollisionManager(cMana_);
+				block->GetModel()->SetParent(&model_->transform);
+				if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+				if (i == 1) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
+				if (i == 2) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+				blocks_.push_back(std::move(block));
+			}
+			break;
+		default:
+			break;
 	}
 }
 
-void Mino::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
-}
+void Mino::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {}
 
-void Mino::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
-}
+void Mino::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {}
 
-void Mino::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
+void Mino::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {}
+
+void Mino::SetCollisionMana(CollisionManager* cMana) {
+	cMana_ = cMana;
 }

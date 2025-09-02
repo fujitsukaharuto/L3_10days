@@ -1,7 +1,8 @@
 #include "Climber.h"
 
-Climber::Climber() {
 
+Climber::Climber(CollisionManager* cMana) {
+	cMana_ = cMana;
 }
 
 void Climber::Initialize() {
@@ -17,10 +18,10 @@ void Climber::Initialize() {
 	state_ = ClimberState::IDLE;
 
 	// コライダー生成
-	frontCollider_ = std::make_unique<ClimberFrontCollider>(this);
+	frontCollider_ = std::make_unique<ClimberFrontCollider>(this, cMana_);
 	frontCollider_->Initialize();
 
-	upCollider_ = std::make_unique<ClimberTopCollider>(this);
+	upCollider_ = std::make_unique<ClimberTopCollider>(this, cMana_);
 	upCollider_->Initialize();
 
 }
@@ -45,7 +46,6 @@ void Climber::Update() {
 	// コライダー更新
 	frontCollider_->Update();
 	upCollider_->Update();
-
 }
 
 void Climber::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {

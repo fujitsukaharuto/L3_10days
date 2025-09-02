@@ -17,7 +17,9 @@ enum class BlockMode {
 	Stay,
 };
 
-class Mino : public OriginGameObject {
+class CollisionManager;
+
+class Mino: public OriginGameObject {
 public:
 	Mino();
 	~Mino()override;
@@ -38,14 +40,26 @@ public:
 
 	//========================================================================*/
 	//* Getter
-	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() { return blocks_; }
-	AABBCollider* GetCollider() { return collider_.get(); }
-	BlockType GetBlockType() { return blockType_; }
-	BlockMode GetBlockMode() { return blockMode_; }
+	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() {
+		return blocks_;
+	}
+	AABBCollider* GetCollider() {
+		return collider_.get();
+	}
+	BlockType GetBlockType() {
+		return blockType_;
+	}
+	BlockMode GetBlockMode() {
+		return blockMode_;
+	}
 
 	//========================================================================*/
 	//* Setter
-	void SetBlockMode(BlockMode mode) { blockMode_ = mode; }
+	void SetBlockMode(BlockMode mode) {
+		blockMode_ = mode;
+	}
+
+	void SetCollisionMana(CollisionManager* cMana);
 
 private:
 
@@ -55,4 +69,5 @@ private:
 	std::vector<std::unique_ptr<BaseBlock>> blocks_;
 	std::unique_ptr<AABBCollider> collider_;
 
+	CollisionManager* cMana_;
 };

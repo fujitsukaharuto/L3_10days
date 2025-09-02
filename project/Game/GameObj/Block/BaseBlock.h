@@ -6,6 +6,7 @@
 #include "Game/Collider/AABBCollider.h"
 #include "Model/Line3dDrawer.h"
 
+class CollisionManager;
 
 class BaseBlock : public OriginGameObject {
 public:
@@ -28,8 +29,12 @@ public:
 	//* Getter
 	AABBCollider* GetCollider() { return collider_.get(); }
 
+	void SetCollisionManager(CollisionManager* cMana);
+
 private:
 
 	std::unique_ptr<AABBCollider> collider_;
 
+
+	CollisionManager* cMana_;
 };

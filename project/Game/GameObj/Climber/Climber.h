@@ -16,12 +16,14 @@ enum class ClimberState {
 	MOVE,
 };
 
+class CollisionManager;
+
 /// <summary>
 /// 人間
 /// </summary>
 class Climber: public OriginGameObject {
 public:
-	Climber();
+	Climber(CollisionManager* cMana);
 	~Climber()override = default;
 
 	void Initialize()override;
@@ -51,6 +53,8 @@ private:
 	// コライダー用オブジェクト
 	std::unique_ptr<ClimberFrontCollider> frontCollider_;
 	std::unique_ptr<ClimberTopCollider> upCollider_;
+
+	CollisionManager* cMana_;
 };
 
 // 実装メモ

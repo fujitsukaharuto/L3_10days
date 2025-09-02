@@ -1,9 +1,11 @@
 #include "ClimberFrontCollider.h"
 
 #include "GameObj/Climber/Climber.h"
+#include "Game/Collider/CollisionManager.h"
 
-ClimberFrontCollider::ClimberFrontCollider(Climber* climber) {
+ClimberFrontCollider::ClimberFrontCollider(Climber* climber, CollisionManager* cMana) {
 	climber_ = climber;
+	cMana_ = cMana;
 }
 
 void ClimberFrontCollider::Initialize() {
@@ -30,6 +32,7 @@ void ClimberFrontCollider::Initialize() {
 void ClimberFrontCollider::Update() {
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
+	cMana_->AddCollider(collider_.get());
 }
 
 void ClimberFrontCollider::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {

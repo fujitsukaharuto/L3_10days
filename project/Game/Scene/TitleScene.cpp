@@ -26,6 +26,8 @@ void TitleScene::Initialize() {
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
 	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
 
+	cMane_ = std::make_unique<CollisionManager>();
+
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
 	black_->Load("white2x2.png");
@@ -46,20 +48,21 @@ void TitleScene::Initialize() {
 	terrain_->transform.scale = { 1.0f,1.0f,1.0f };
 	terrain_->SetUVScale({ 20.0f,20.0f }, { 0.0f,0.0f });
 
-	b1_ = std::make_unique<Mino>();
+	/*b1_ = std::make_unique<Mino>();
 	b1_->Initialize();
 	b1_->InitBlock(BlockType::L);
 	b1_->GetModel()->transform.translate.x = -3.0f;
 	b2_ = std::make_unique<Mino>();
 	b2_->Initialize();
 	b2_->InitBlock(BlockType::T);
-	b2_->GetModel()->transform.translate.x = 3.0f;
+	b2_->GetModel()->transform.translate.x = 3.0f;*/
 
 	map_ = std::make_unique<MapField>();
 	map_->Initialize();
+	map_->SetColliderManager(cMane_.get());
 
 
-	climber_ = std::make_unique<Climber>();
+	climber_ = std::make_unique<Climber>(cMane_.get());
 	climber_->Initialize();
 
 
@@ -80,7 +83,7 @@ void TitleScene::Initialize() {
 	animParentObj_->SetNoneScaleParent(true);
 	animParentObj_->LoadTransformFromJson("AnimParent_transform.json");*/
 
-	cMane_ = std::make_unique<CollisionManager>();
+
 
 	ParticleManager::Load(emit, "lightning");
 }
@@ -98,8 +101,8 @@ void TitleScene::Update() {
 	BlackFade();
 	skybox_->Update();
 
-	b1_->Update();
-	b2_->Update();
+	/*b1_->Update();
+	b2_->Update();*/
 
 	map_->Update();
 

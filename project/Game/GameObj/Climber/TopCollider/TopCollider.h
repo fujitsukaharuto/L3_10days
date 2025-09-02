@@ -4,13 +4,14 @@
 #include "Game/Collider/AABBCollider.h"
 
 class Climber;
+class CollisionManager;
 
 /// <summary>
 /// 人間のコライダー用のオブジェクト
 /// </summary>
 class ClimberTopCollider: public OriginGameObject {
 public:
-	ClimberTopCollider(Climber* climber);
+	ClimberTopCollider(Climber* climber, CollisionManager* cMana);
 	~ClimberTopCollider()override = default;
 
 	void Initialize()override;
@@ -34,4 +35,5 @@ private:
 	// コライダー
 	std::unique_ptr<AABBCollider> collider_;
 
+	CollisionManager* cMana_;
 };
