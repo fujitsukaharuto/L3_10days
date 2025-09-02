@@ -22,7 +22,7 @@ void TitleScene::Initialize() {
 	obj3dCommon->Initialize();
 
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 5.0f, -30.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 5.0f, -120.0f };
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
 	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
@@ -55,6 +55,9 @@ void TitleScene::Initialize() {
 	b2_->Initialize();
 	b2_->InitBlock(BlockType::T);
 	b2_->GetModel()->transform.translate.x = 3.0f;
+
+	map_ = std::make_unique<MapField>();
+	map_->Initialize();
 
 	terrainCollider_ = std::make_unique<AABBCollider>();
 	terrainCollider_->SetTag("terrain");
@@ -94,6 +97,8 @@ void TitleScene::Update() {
 	b1_->Update();
 	b2_->Update();
 
+	map_->Update();
+
 	cMane_->CheckAllCollision();
 
 	ParticleManager::GetInstance()->Update();
@@ -117,6 +122,7 @@ void TitleScene::Draw() {
 	b1_->Draw();
 	b2_->Draw();
 
+	map_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();
@@ -148,6 +154,7 @@ void TitleScene::Draw() {
 void TitleScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
+	map_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }

@@ -5,6 +5,7 @@
 #include "Game/Collider/CollisionManager.h"
 
 #include "Game/GameObj/Block/Mino.h"
+#include "Game/GameObj/Map/MapField.h"
 
 class TitleScene:public BaseScene {
 public:
@@ -29,6 +30,8 @@ private:
 
 	std::unique_ptr<Mino> b1_;
 	std::unique_ptr<Mino> b2_;
+
+	std::unique_ptr<MapField> map_;
 
 	ParticleEmitter emit;
 

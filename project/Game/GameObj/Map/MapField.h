@@ -22,6 +22,11 @@ public:
 	void UpdateControlMino();
 
 	void CellCheck();
+	void QuickDrop();
+
+private:
+
+	void RemoveControlMino();
 
 private:
 

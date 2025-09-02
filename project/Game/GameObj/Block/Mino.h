@@ -38,8 +38,14 @@ public:
 
 	//========================================================================*/
 	//* Getter
+	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() { return blocks_; }
 	AABBCollider* GetCollider() { return collider_.get(); }
 	BlockType GetBlockType() { return blockType_; }
+	BlockMode GetBlockMode() { return blockMode_; }
+
+	//========================================================================*/
+	//* Setter
+	void SetBlockMode(BlockMode mode) { blockMode_ = mode; }
 
 private:
 
