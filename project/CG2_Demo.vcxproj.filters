@@ -355,7 +355,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameObj\Climber\Climber.cpp" />
     <ClCompile Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\TopCollider\TopCollider.cpp" />
+    <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
+    <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
+    <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -768,7 +770,9 @@
     </ClInclude>
     <ClInclude Include="Game\GameObj\Climber\Climber.h" />
     <ClInclude Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\TopCollider\TopCollider.h" />
+    <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
+    <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
+    <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

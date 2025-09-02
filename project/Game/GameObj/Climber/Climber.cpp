@@ -21,12 +21,22 @@ void Climber::Initialize() {
 	frontCollider_ = std::make_unique<ClimberFrontCollider>(this, cMana_);
 	frontCollider_->Initialize();
 
-	upCollider_ = std::make_unique<ClimberTopCollider>(this, cMana_);
+	upCollider_ = std::make_unique<ClimberFrontTopCollider>(this, cMana_);
 	upCollider_->Initialize();
 
+	bottomCollider_ = std::make_unique<ClimberBottomCollider>(this, cMana_);
+	bottomCollider_->Initialize();
+
+	frontBottomCollider_ = std::make_unique<ClimberFrontBottomCollider>(this, cMana_);
+	frontBottomCollider_->Initialize();
 }
 
 void Climber::Update() {
+	isColFront_ = false;
+	isThereFrontUpBlock_ = false;
+	isThereBottomBlock_ = false;
+	isThereFrontBottomBlock_ = false;
+
 	// 移動処理
 	if (state_ == ClimberState::MOVE) {
 		if (dir_ == ClimberDir::LEFT) {
@@ -46,6 +56,9 @@ void Climber::Update() {
 	// コライダー更新
 	frontCollider_->Update();
 	upCollider_->Update();
+	bottomCollider_->Update();
+	frontBottomCollider_->Update();
+
 }
 
 void Climber::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -54,6 +67,9 @@ void Climber::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 #ifdef _DEBUG
 	frontCollider_->Draw();
 	upCollider_->Draw();
+	bottomCollider_->Draw();
+	frontBottomCollider_->Draw();
+
 #endif // _DEBUG
 }
 
@@ -77,5 +93,40 @@ void Climber::Turn() {
 }
 
 void Climber::Up() {
+	if (isColFront_) {
+		if (!isThereFrontUpBlock_) {
+			if (dir_ == ClimberDir::LEFT) {
+				model_->transform.translate.x -= kBlockSize_;
+			} else {
+				model_->transform.translate.x += kBlockSize_;
+			}
+			model_->transform.translate.y += kBlockSize_;
+		} else {
+			Turn();
+		}
+	} else {
+		if (isThereBottomBlock_) {
+			if (!isThereFrontBottomBlock_) {
+				Turn();
+			}
+		}
+	}
 
 }
+
+void Climber::ColFront() {
+	isColFront_ = true;
+}
+
+void Climber::ThereFrontUpBlock() {
+	isThereFrontUpBlock_ = true;
+}
+
+void Climber::ThereBottomBlock() {
+	isThereBottomBlock_ = true;
+}
+
+void Climber::ThereFrontBottomBlock() {
+	isThereFrontBottomBlock_ = true;
+}
+

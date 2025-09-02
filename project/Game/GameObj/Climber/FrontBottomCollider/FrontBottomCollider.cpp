@@ -1,21 +1,22 @@
-#include "ClimberFrontCollider.h"
+#include "FrontBottomCollider.h"
 
 #include "GameObj/Climber/Climber.h"
 #include "Game/Collider/CollisionManager.h"
 
-ClimberFrontCollider::ClimberFrontCollider(Climber* climber, CollisionManager* cMana) {
+ClimberFrontBottomCollider::ClimberFrontBottomCollider(Climber* climber, CollisionManager* cMana) {
 	climber_ = climber;
 	cMana_ = cMana;
 }
 
-void ClimberFrontCollider::Initialize() {
+void ClimberFrontBottomCollider::Initialize() {
 	OriginGameObject::Initialize();
 
 	// 親子関係セット
 	model_->transform.parent = &climber_->GetTrans();
 
 	// 座標をセット
-	model_->transform.translate.x = 1.0f;
+	model_->transform.translate.x = kBlockSize_;
+	model_->transform.translate.y = -kBlockSize_;
 
 	// コライダー用のオブジェクトを実装
 	collider_ = std::make_unique<AABBCollider>();
@@ -29,33 +30,34 @@ void ClimberFrontCollider::Initialize() {
 	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });
 }
 
-void ClimberFrontCollider::Update() {
+void ClimberFrontBottomCollider::Update() {
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
 	cMana_->AddCollider(collider_.get());
 }
 
-void ClimberFrontCollider::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
+void ClimberFrontBottomCollider::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 #ifdef _DEBUG
 	collider_->DrawCollider();
 #endif // _DEBUG
 }
 
-void ClimberFrontCollider::DebugGUI() {
+void ClimberFrontBottomCollider::DebugGUI() {
 
 }
 
-void ClimberFrontCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
-	// ブロックに衝突した場合
+void ClimberFrontBottomCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
 	if (other.tag == "block") {
-		climber_->ColFront();
+		climber_->ThereFrontBottomBlock();
 	}
 }
 
-void ClimberFrontCollider::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
-
+void ClimberFrontBottomCollider::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
+	if (other.tag == "block") {
+		climber_->ThereFrontBottomBlock();
+	}
 }
 
-void ClimberFrontCollider::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
+void ClimberFrontBottomCollider::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
 
 }

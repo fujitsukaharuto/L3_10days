@@ -6,13 +6,10 @@
 class Climber;
 class CollisionManager;
 
-/// <summary>
-/// 人間のコライダー用のオブジェクト
-/// </summary>
-class ClimberTopCollider: public OriginGameObject {
+class ClimberBottomCollider: public OriginGameObject {
 public:
-	ClimberTopCollider(Climber* climber, CollisionManager* cMana);
-	~ClimberTopCollider()override = default;
+	ClimberBottomCollider(Climber* climber, CollisionManager* cMana);
+	~ClimberBottomCollider()override = default;
 
 	void Initialize()override;
 	void Update()override;

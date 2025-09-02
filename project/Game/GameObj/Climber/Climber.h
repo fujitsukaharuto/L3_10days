@@ -4,7 +4,9 @@
 #include "Game/Collider/AABBCollider.h"
 
 #include "GameObj/Climber/FrontCollider/ClimberFrontCollider.h"
-#include "GameObj/Climber/TopCollider/TopCollider.h"
+#include "GameObj/Climber/FrontTopCollider/FrontTopCollider.h"
+#include "GameObj/Climber/BottomCollider/ClimberBottomCollider.h"
+#include "GameObj/Climber/FrontBottomCollider/FrontBottomCollider.h"
 
 enum class ClimberDir {
 	LEFT,
@@ -38,6 +40,12 @@ public:
 	// 上る処理
 	void Up();
 
+	// 上るリクエスト
+	void ColFront();
+	void ThereFrontUpBlock();
+	void ThereBottomBlock();
+	void ThereFrontBottomBlock();
+
 private:
 	const uint32_t kBlockWidth_ = 9;
 	const float kBlockSize_ = 2.0f;
@@ -50,9 +58,16 @@ private:
 	ClimberDir dir_ = ClimberDir::RIGHT;
 	ClimberState state_ = ClimberState::IDLE;
 
+	bool isColFront_ = false;
+	bool isThereFrontUpBlock_ = false;
+	bool isThereBottomBlock_ = false;
+	bool isThereFrontBottomBlock_ = false;
+
 	// コライダー用オブジェクト
 	std::unique_ptr<ClimberFrontCollider> frontCollider_;
-	std::unique_ptr<ClimberTopCollider> upCollider_;
+	std::unique_ptr<ClimberFrontTopCollider> upCollider_;
+	std::unique_ptr<ClimberBottomCollider> bottomCollider_;
+	std::unique_ptr<ClimberFrontBottomCollider> frontBottomCollider_;
 
 	CollisionManager* cMana_;
 };
