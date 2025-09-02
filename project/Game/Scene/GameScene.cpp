@@ -3,7 +3,6 @@
 #include "GlobalVariables.h"
 #include "FPSKeeper.h"
 #include "Game/GameObj/FollowCamera.h"
-#include "Game/GameObj/Player/PlayerBullet.h"
 #include "Engine/Model/ModelManager.h"
 
 #include "Particle/ParticleManager.h"
@@ -54,51 +53,9 @@ void GameScene::Initialize() {
 	skybox_->SetCommonResources(dxcommon_, SRVManager::GetInstance(), CameraManager::GetInstance()->GetCamera());
 	skybox_->Initialize();
 
-	player_ = std::make_unique<Player>();
-	boss_ = std::make_unique<Boss>();
-
-	LoadSceneLevelData("resource/Json/GameScene_position.json");
-
-	player_->Initialize();
-	player_->SetDXCom(dxcommon_);
-
-	boss_->Initialize();
-	boss_->SetDXCom(dxcommon_);
-	boss_->SetPlayer(player_.get());
-
-
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Initialize();
-	followCamera_->SetTarget(&player_->GetTrans());
-
-	key_ = std::make_unique<Sprite>();
-	key_->Load("key_beta.png");
-	key_->SetAnchor({ 1.0f,1.0f });
-	key_->SetPos({ 1280.0f, 730.0f, 0.0f });
-	key_->SetSize({ 400.0f, 300.0f });
-
-	gameover_ = std::make_unique<Sprite>();
-	gameover_->Load("gameover_beta.png");
-	gameover_->SetAnchor({ 0.0f,0.0f });
-	gameover_->SetSize({ 1280.0f, 720.0f });
-
-	gameoverSelector_ = std::make_unique<Sprite>();
-	gameoverSelector_->Load("boal16x16.png");
-	gameoverSelector_->SetPos({ 240.0f, 500.0f, 0.0f });
-	gameoverSelector_->SetColor({ 0.7f, 0.7f, 0.1f, 1.0f });
-	gameoverSelector_->SetSize({ 40.0f, 40.0f });
-
 	ApplyGlobalVariables();
 
 	cMane_ = std::make_unique<CollisionManager>();
-
-	emit.count_ = 3;
-	emit.frequencyTime_ = 20.0f;
-	emit.name_ = "animetest";
-	emit.pos_ = { 0.0f,2.0f,0.0f };
-	emit.animeData_.lifeTime = 40.0f;
-	emit.RandomSpeed({ -0.1f,0.1f }, { -0.1f,0.1f }, { -0.1f,0.1f });
-	emit.RandomTranslate({ -0.1f,0.1f }, { -0.1f,0.1f }, { -0.1f,0.1f });
 }
 
 void GameScene::Update() {
@@ -106,49 +63,10 @@ void GameScene::Update() {
 	cMane_->Reset();
 
 #ifdef _DEBUG
-
 	ApplyGlobalVariables();
-
 #endif // _DEBUG
 
-	if (!player_->GetIsGameOver()) {
-		player_->SetTargetPos(boss_->GetBossCore()->GetCollider()->GetWorldPos());
-		player_->Update();
 
-		if (boss_->GetIsStart()) {
-			followCamera_->Update(boss_->GetDefoultPos());
-		} else {
-			followCamera_->Update(boss_->GetBossCore()->GetWorldPos());
-		}
-
-		boss_->Update();
-		if (!boss_->GetIsStart() && player_->GetIsStart()) {
-			player_->SetIsStart(false);
-		}
-	} else {
-		if (selectPoint_ == 0) {
-			if (input_->TriggerKey(DIK_SPACE)) {
-				player_->ReStart();
-				boss_->ReStart();
-				followCamera_->ReStart(boss_->GetBossCore()->GetWorldPos());
-			}
-			if (input_->TriggerKey(DIK_D)) {
-				selectPoint_ = 1;
-				gameoverSelector_->SetPos({ 800.0f,500.0f,0.0f });
-			}
-		} else {
-			if (input_->TriggerKey(DIK_SPACE)) {
-				if (blackTime == 0.0f) {
-					isChangeFase = true;
-					isBackTitle_ = true;
-				}
-			}
-			if (input_->TriggerKey(DIK_A)) {
-				selectPoint_ = 0;
-				gameoverSelector_->SetPos({ 240.0f,500.0f,0.0f });
-			}
-		}
-	}
 
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_8)) {
@@ -160,34 +78,6 @@ void GameScene::Update() {
 	skybox_->Update();
 	BlackFade();
 
-	if (!player_->GetIsGameOver()) {
-		cMane_->AddCollider(player_->GetCollider());
-		for (auto& bullet : player_->GetPlayerBullet()) {
-			if (bullet->GetIsLive() && !bullet->GetIsCharge()) {
-				cMane_->AddCollider(bullet->GetCollider());
-			}
-		}
-		cMane_->AddCollider(boss_->GetCoreCollider());
-		for (auto& wall : boss_->GetWalls()) {
-			if (wall->GetIsLive()) {
-				cMane_->AddCollider(wall->GetCollider());
-			}
-		}
-		for (auto& arrow : boss_->GetArrows()) {
-			if (arrow->GetIsLive()) {
-				cMane_->AddCollider(arrow->GetCollider());
-			}
-		}
-		for (auto& ring : boss_->GetUnderRings()) {
-			if (ring->GetIsLive()) {
-				cMane_->AddCollider(ring->GetCollider());
-			}
-		}
-		if (boss_->GetBeam()->GetIsLive()) {
-			cMane_->AddCollider(boss_->GetBeam()->GetCollider());
-		}
-		cMane_->CheckAllCollision();
-	}
 
 	ParticleManager::GetInstance()->Update();
 }
@@ -195,7 +85,7 @@ void GameScene::Update() {
 void GameScene::Draw() {
 #pragma region 背景描画
 
-	boss_->CSDispatch();
+	//boss_->CSDispatch();
 
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
@@ -209,9 +99,6 @@ void GameScene::Draw() {
 
 
 	terrain->Draw();
-	player_->Draw();
-
-	boss_->Draw();
 
 	ParticleManager::GetInstance()->Draw();
 
@@ -225,11 +112,6 @@ void GameScene::Draw() {
 #pragma region 前景スプライト
 
 	dxcommon_->PreSpriteDraw();
-	key_->Draw();
-	if (player_->GetIsGameOver()) {
-		gameover_->Draw();
-		gameoverSelector_->Draw();
-	}
 	//test->Draw();
 	if (blackTime != 0.0f) {
 		black_->Draw();
@@ -243,12 +125,6 @@ void GameScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 
-	followCamera_->DebugGUI();
-
-	player_->DebugGUI();
-
-	boss_->DebugGUI();
-
 	if (ImGui::CollapsingHeader("terrain")) {
 		terrain->DebugGUI();
 	}
@@ -260,8 +136,6 @@ void GameScene::DebugGUI() {
 void GameScene::ParticleDebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
-	
-	emit.DebugGUI();
 
 	ImGui::Unindent();
 #endif // _DEBUG
@@ -297,11 +171,6 @@ void GameScene::BlackFade() {
 		}
 	}
 #endif // _DEBUG
-	if (boss_->GetIsClear()) {
-		if (blackTime == 0.0f) {
-			isChangeFase = true;
-		}
-	}
 }
 
 void GameScene::LoadSceneLevelData(const std::string& name) {
@@ -311,7 +180,7 @@ void GameScene::LoadSceneLevelData(const std::string& name) {
 			if (objJson["objectType"] == "Normal") {
 				
 			} else if (objJson["objectType"] == "Player") {
-				player_->SetModelDataJson(objJson);
+				
 			} else if (objJson["objectType"] == "Boss") {
 				
 			}

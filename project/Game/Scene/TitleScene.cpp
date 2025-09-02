@@ -21,7 +21,7 @@ void TitleScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { cameraStartRotateX_,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 5.0f, -30.0f };
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
@@ -47,30 +47,6 @@ void TitleScene::Initialize() {
 	terrain_->transform.scale = { 1.0f,1.0f,1.0f };
 	terrain_->SetUVScale({ 20.0f,20.0f }, { 0.0f,0.0f });
 
-	space_ = std::make_unique<Sprite>();
-	space_->Load("spaceKey.png");
-	space_->SetPos({ 640.0f,500.0f,0.0f });
-	space_->SetSize({ 256.0f,128.0f });
-
-	title_ = std::make_unique<Sprite>();
-	title_->Load("Title.png");
-	title_->SetPos({ titleStartX_,250.0f,0.0f });
-	title_->SetSize({ 968.0f,159.0f });
-
-	player_ = std::make_unique<Player>();
-	json playerData = JsonSerializer::DeserializeJsonData("resource/Json/Game_Player.json");
-	player_->SetModelDataJson(playerData);
-	player_->Initialize();
-	playerStart_ = { -3.5f,10.0f,-26.0f };
-	playerCenter_ = { -3.9f,3.0f,-25.0f };
-	playerEnd_ = { 14.2f,6.0f,-14.0f };
-	player_->SettingTitleStartPosition(playerStart_, playerCenter_, playerEnd_);
-
-
-	particleTest_ = std::make_unique<Object3d>();
-	particleTest_->CreateSphere();
-	particleTest_->SetColor({ 0.0f,0.0f,0.0f,0.0f });
-
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -85,7 +61,6 @@ void TitleScene::Initialize() {
 	cMane_ = std::make_unique<CollisionManager>();
 
 	ParticleManager::Load(emit, "lightning");
-
 }
 
 void TitleScene::Update() {
@@ -100,44 +75,6 @@ void TitleScene::Update() {
 
 	BlackFade();
 	skybox_->Update();
-
-
-	if (FPSKeeper::DeltaTime() < 2.2f) {
-		startTime_ -= FPSKeeper::DeltaTime();
-	}
-	if (startTime_ <= titleCanMoveTime_) {
-		float titlemoveT = (std::max)(startTime_ / titleCanMoveTime_, 0.0f);
-		float titlePosX = std::lerp(titleEmdX_, titleStartX_, powf(titlemoveT, 4.0f));
-		title_->SetPos({ titlePosX,250.0f,0.0f });
-	}
-	float cameraT = (std::max)(startTime_ / startMaxTime_, 0.0f);
-	float rotateX = std::lerp(cameraEndRotateX_, cameraStartRotateX_, cameraT);
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { rotateX,0.0f,0.0f };
-	player_->TitleUpdate(startTime_);
-
-
-	csEmitterMoveTime_ += FPSKeeper::DeltaTime();
-	int csSize = int(ParticleManager::GetParticleCSEmitterSize());
-	for (int i = 0; i < csSize; i++) {
-		if (i == 1) {
-			float speed = 0.05f;       // 周期（回転スピード）
-			float radius = 20.0f;      // 半径
-			float angle = csEmitterMoveTime_ * speed + i * (std::numbers::pi_v<float>*2.0f) / float(csSize);
-
-			ParticleManager::GetParticleCSEmitter(i).emitter->translate.x = std::cos(angle) * radius;
-			ParticleManager::GetParticleCSEmitter(i).emitter->translate.y = 5.0f;
-			ParticleManager::GetParticleCSEmitter(i).emitter->translate.z = std::sin(angle) * radius;
-		} else {
-			ParticleManager::GetParticleCSEmitter(i).emitter->prevTranslate = ParticleManager::GetParticleCSEmitter(i).emitter->translate;
-			ParticleManager::GetParticleCSEmitter(i).emitter->translate = particleTest_->GetWorldPos();
-
-			//ParticleManager::GetParticleCSEmitter(i).emitter->count = 11000;
-			//ParticleManager::GetParticleCSEmitter(i).emitter->frequency = 1.0f;
-			//ParticleManager::GetParticleCSEmitter(i).emitter->radius = 18.0f;
-		}
-	}
-
-	//emit.Emit();
 
 	cMane_->CheckAllCollision();
 
@@ -159,13 +96,7 @@ void TitleScene::Draw() {
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 
-	player_->TitleDraw();
 
-	//cube_->Draw();
-	//animParentObj_->Draw();
-
-	space_->Draw();
-	title_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();
@@ -197,9 +128,6 @@ void TitleScene::Draw() {
 void TitleScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
-	if (ImGui::CollapsingHeader("particleTest")) {
-		particleTest_->DebugGUI();
-	}
 	ImGui::Unindent();
 #endif // _DEBUG
 }

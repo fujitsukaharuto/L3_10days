@@ -3,8 +3,6 @@
 #include "Engine/Model/AnimationData/AnimationModel.h"
 #include "Game/GameObj/SkyDome/SkyBox.h"
 #include "Game/GameObj/FollowCamera.h"
-#include "Game/GameObj/Player/Player.h"
-#include "Game/GameObj/Enemy/Boss.h"
 #include "Game/TestBaseObj.h"
 #include "Game/Collider/CollisionManager.h"
 
@@ -32,18 +30,8 @@ private:
 
 	std::unique_ptr<AnimationModel> terrain = nullptr;
 	std::unique_ptr<SkyBox> skybox_;
-	std::unique_ptr<Player> player_ = nullptr;
-	std::unique_ptr<Boss> boss_ = nullptr;
-	std::unique_ptr<FollowCamera> followCamera_;
 
-	std::unique_ptr<Sprite> key_ = nullptr;
-
-	std::unique_ptr<Sprite> gameover_ = nullptr;
 	bool isBackTitle_ = false;
-	std::unique_ptr<Sprite> gameoverSelector_ = nullptr;
-	int selectPoint_ = 0;
-	Vector4 color_ = { 1.0f,1.0f,1.0f,1.0f };
-	Vector3 rightDir = { 1.0f,0.0f,0.0f };
 
 	float spherePara = 10;
 	Vector3 spherevec = { 0.0f,1.0f,0.0f };

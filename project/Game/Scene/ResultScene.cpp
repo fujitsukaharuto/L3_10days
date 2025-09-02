@@ -32,11 +32,6 @@ void ResultScene::Initialize() {
 	black_->SetAnchor({ 0.0f,0.0f });
 #pragma endregion
 
-	clear_ = std::make_unique<Sprite>();
-	clear_->Load("clear_beta.png");
-	clear_->SetAnchor({ 0.0f,0.0f });
-	clear_->SetSize({ 1280.0f,720.0f });
-
 	sphere = std::make_unique<Object3d>();
 	sphere->CreateSphere();
 	sphere->SetColor({ 1.0f,0.0f,0.0f,1.0f });
@@ -72,7 +67,6 @@ void ResultScene::Draw() {
 	obj3dCommon->PreDraw();
 	sphere->Draw();
 
-	clear_->Draw();
 
 	ParticleManager::GetInstance()->Draw();
 
