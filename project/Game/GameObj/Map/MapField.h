@@ -21,6 +21,7 @@ public:
 	void AddMino(BlockType type);
 	void UpdateControlMino();
 
+	void MoveControlMino();
 	void CellCheck();
 	void QuickDrop();
 

@@ -64,7 +64,7 @@ void MapField::AddMino(BlockType type) {
 	mino->Initialize();
 	mino->InitBlock(type);
 	controlMino_ = std::move(mino);
-	controlMino_->GetModel()->transform.translate = { (10.0f - cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+	controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
 
 	//minos_.push_back(std::move(mino));
 }
@@ -76,11 +76,51 @@ void MapField::UpdateControlMino() {
 	if (downTime_ <= 0.0f) {
 		downTime_ = 60.0f;
 		CellCheck();
-		controlMino_->GetModel()->transform.translate = { (10.0f - cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+		controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
 	}
+	MoveControlMino();
 
 	controlMino_->Update();
 	RemoveControlMino();
+}
+
+void MapField::MoveControlMino() {
+	if (!controlMino_) return;
+
+	Vector2 nextCell = cellNum;
+	bool isMove = false;
+	if (Input::GetInstance()->TriggerKey(DIK_LEFT)) {
+		nextCell.x--;
+		isMove = true;
+	} else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
+		nextCell.x++;
+		isMove = true;
+	}
+
+	if (!isMove) return;
+
+	switch (controlMino_->GetBlockType()) {
+	case BlockType::L:
+
+		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
+			isMove = false;
+		}
+
+		break;
+	case BlockType::T:
+
+		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
+			isMove = false;
+		}
+
+		break;
+	default:
+		break;
+	}
+
+	if (!isMove) return;
+	cellNum = nextCell;
+	controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
 }
 
 void MapField::CellCheck() {
@@ -133,7 +173,7 @@ void MapField::QuickDrop() {
 		while (controlMino_->GetBlockMode() == BlockMode::Fall) {
 			CellCheck();
 		}
-		controlMino_->GetModel()->transform.translate = { (10.0f - cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
+		controlMino_->GetModel()->transform.translate = { (cellNum.x) * 2.0f,(20.0f - cellNum.y) * 2.0f,0.0f };
 		controlMino_->Update();
 		RemoveControlMino();
 	}
