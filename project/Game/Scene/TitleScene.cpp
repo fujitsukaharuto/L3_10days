@@ -47,6 +47,21 @@ void TitleScene::Initialize() {
 	terrain_->transform.scale = { 1.0f,1.0f,1.0f };
 	terrain_->SetUVScale({ 20.0f,20.0f }, { 0.0f,0.0f });
 
+	b1_ = std::make_unique<Mino>();
+	b1_->Initialize();
+	b1_->InitBlock(BlockType::L);
+	b1_->GetModel()->transform.translate.x = -3.0f;
+	b2_ = std::make_unique<Mino>();
+	b2_->Initialize();
+	b2_->InitBlock(BlockType::T);
+	b2_->GetModel()->transform.translate.x = 3.0f;
+
+	terrainCollider_ = std::make_unique<AABBCollider>();
+	terrainCollider_->SetTag("terrain");
+	terrainCollider_->SetWidth(20.0f);
+	terrainCollider_->SetDepth(20.0f);
+	terrainCollider_->SetHeight(4.0f);
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -76,6 +91,9 @@ void TitleScene::Update() {
 	BlackFade();
 	skybox_->Update();
 
+	b1_->Update();
+	b2_->Update();
+
 	cMane_->CheckAllCollision();
 
 	ParticleManager::GetInstance()->Update();
@@ -96,6 +114,8 @@ void TitleScene::Draw() {
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 
+	b1_->Draw();
+	b2_->Draw();
 
 
 #ifdef _DEBUG

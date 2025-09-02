@@ -5,17 +5,29 @@
 #include "Game/Collider/BaseCollider.h"
 #include "Game/Collider/AABBCollider.h"
 #include "Model/Line3dDrawer.h"
+#include "Game/GameObj/Block/BaseBlock.h"
 
+enum class BlockType {
+	L,
+	T,
+};
 
-class BaseBlock : public OriginGameObject {
+enum class BlockMode {
+	Fall,
+	Stay,
+};
+
+class Mino : public OriginGameObject {
 public:
-	BaseBlock();
-	~BaseBlock()override;
+	Mino();
+	~Mino()override;
 
 	void Initialize()override;
 	void Update()override;
 	void Draw(Material* mate = nullptr, bool is = false)override;
 	void DebugGUI()override;
+
+	void InitBlock(BlockType type);
 
 	//========================================================================*/
 	//* Collision
@@ -27,9 +39,14 @@ public:
 	//========================================================================*/
 	//* Getter
 	AABBCollider* GetCollider() { return collider_.get(); }
+	BlockType GetBlockType() { return blockType_; }
 
 private:
 
+	BlockType blockType_;
+	BlockMode blockMode_;
+
+	std::vector<std::unique_ptr<BaseBlock>> blocks_;
 	std::unique_ptr<AABBCollider> collider_;
 
 };

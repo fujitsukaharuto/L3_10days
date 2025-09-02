@@ -1,0 +1,96 @@
+#include "Mino.h"
+
+#include "Engine/Particle/ParticleManager.h"
+#include "Engine/Editor/JsonSerializer.h"
+#include "Engine/Math/Random/Random.h"
+
+Mino::Mino() {
+}
+
+Mino::~Mino() {
+}
+
+void Mino::Initialize() {
+	OriginGameObject::Initialize();
+	OriginGameObject::CreateModel("cube.obj");
+}
+
+void Mino::Update() {
+
+	for (auto& block : blocks_) {
+		block->Update();
+	}
+
+	collider_->SetPos(model_->GetWorldPos());
+	collider_->InfoUpdate();
+}
+
+void Mino::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
+	OriginGameObject::Draw(mate, is);
+	for (auto& block : blocks_) {
+		block->Draw();
+	}
+
+#ifdef _DEBUG
+	collider_->DrawCollider();
+#endif // _DEBUG
+}
+
+void Mino::DebugGUI() {
+#ifdef _DEBUG
+
+#endif // _DEBUG
+}
+
+void Mino::InitBlock(BlockType type) {
+	blockType_ = type;
+	blockMode_ = BlockMode::Fall;
+
+	collider_ = std::make_unique<AABBCollider>();
+	collider_->SetTag("block");
+	collider_->SetWidth(2.0f);
+	collider_->SetDepth(2.0f);
+	collider_->SetHeight(2.0f);
+	collider_->SetCollisionEnterCallback([this](const ColliderInfo& other) {OnCollisionEnter(other); });
+	collider_->SetCollisionStayCallback([this](const ColliderInfo& other) {OnCollisionStay(other); });
+	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });
+
+
+	switch (blockType_) {
+	case BlockType::L:
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+			blocks_.push_back(std::move(block));
+		}
+		break;
+	case BlockType::T:
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			blocks_.push_back(std::move(block));
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Mino::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
+}
+
+void Mino::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
+}
+
+void Mino::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {
+}

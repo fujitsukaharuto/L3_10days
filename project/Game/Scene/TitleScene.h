@@ -4,6 +4,8 @@
 #include "Game/GameObj/SkyDome/SkyBox.h"
 #include "Game/Collider/CollisionManager.h"
 
+#include "Game/GameObj/Block/Mino.h"
+
 class TitleScene:public BaseScene {
 public:
 	TitleScene();
@@ -25,9 +27,13 @@ private:
 	std::unique_ptr<SkyBox> skybox_;
 	std::unique_ptr<AnimationModel> terrain_ = nullptr;
 
+	std::unique_ptr<Mino> b1_;
+	std::unique_ptr<Mino> b2_;
+
 	ParticleEmitter emit;
 
 	std::unique_ptr<CollisionManager> cMane_;
+	std::unique_ptr<AABBCollider> terrainCollider_;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;

@@ -347,6 +347,12 @@
     <ClCompile Include="Game\GameObj\Block\BaseBlock.cpp">
       <Filter>Game\GameObj\Block</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameObj\Map\MapField.cpp">
+      <Filter>Game\GameObj\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObj\Block\Mino.cpp">
+      <Filter>Game\GameObj\Block</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -751,6 +757,12 @@
     <ClInclude Include="Game\GameObj\Block\BaseBlock.h">
       <Filter>Game\GameObj\Block</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameObj\Map\MapField.h">
+      <Filter>Game\GameObj\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObj\Block\Mino.h">
+      <Filter>Game\GameObj\Block</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
@@ -884,6 +896,9 @@
     </Filter>
     <Filter Include="Game\GameObj\Block">
       <UniqueIdentifier>{f308f21c-2107-4039-9d60-7db5fb7dccd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObj\Map">
+      <UniqueIdentifier>{e75d25dc-16ce-4d31-9f14-9a846aa35de3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
