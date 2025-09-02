@@ -147,31 +147,67 @@ void MapField::MoveControlMino() {
 	case BlockType::L:
 		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	case BlockType::T:
 		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y)][int(nextCell.x - 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	case BlockType::S:
 		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + -1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	case BlockType::Z:
 		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - .0f)][int(nextCell.x - 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	case BlockType::O:
 		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	case BlockType::J:
 		if (int(nextCell.x) == 0 || int(nextCell.x) == 10) {
 			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y)][int(nextCell.x - 1.0f)] == 1) {
+			isMove = false;
+			break;
 		}
 		break;
 	default:
