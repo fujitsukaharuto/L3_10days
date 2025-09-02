@@ -10,6 +10,10 @@
 enum class BlockType {
 	L,
 	T,
+	S,
+	Z,
+	O,
+	J,
 };
 
 enum class BlockMode {
@@ -29,6 +33,7 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false)override;
 	void DebugGUI()override;
 
+	void DrawLine();
 	void InitBlock(BlockType type);
 
 	//========================================================================*/

@@ -46,7 +46,15 @@ void BaseBlock::DebugGUI() {
 #endif // _DEBUG
 }
 
-void BaseBlock::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {}
+
+void BaseBlock::DrawLine() {
+#ifdef _DEBUG
+	collider_->DrawCollider();
+#endif // _DEBUG
+}
+
+void BaseBlock::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
+}
 
 void BaseBlock::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {}
 

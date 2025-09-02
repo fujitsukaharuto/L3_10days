@@ -31,6 +31,7 @@ public:
 private:
 
 	void RemoveControlMino();
+	void FutureMinoUpdate();
 
 private:
 
@@ -38,8 +39,9 @@ private:
 
 	float downTime_ = 60.0f;
 
-	Vector2 cellNum;
+	Vector2 cellNum_;
 	std::unique_ptr<Mino> controlMino_;
+	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
 
 	CollisionManager* cMana_;
