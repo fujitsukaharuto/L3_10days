@@ -48,13 +48,13 @@ void ClimberFrontTopCollider::DebugGUI() {
 
 void ClimberFrontTopCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
 	if (other.tag == "block") {
-		climber_->ThereFrontUpBlock();
+		//climber_->ThereFrontUpBlock();
 	}
 }
 
 void ClimberFrontTopCollider::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {
 	if (other.tag == "block") {
-		climber_->ThereFrontUpBlock();
+		//climber_->ThereFrontUpBlock();
 	}
 }
 

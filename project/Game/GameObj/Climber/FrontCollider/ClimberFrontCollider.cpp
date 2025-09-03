@@ -48,7 +48,7 @@ void ClimberFrontCollider::DebugGUI() {
 void ClimberFrontCollider::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {
 	// ブロックに衝突した場合
 	if (other.tag == "block") {
-		climber_->ColFront();
+		//climber_->ColFront();
 	}
 }
 

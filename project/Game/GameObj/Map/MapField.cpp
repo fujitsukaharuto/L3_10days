@@ -360,6 +360,14 @@ void MapField::SetColliderManager(CollisionManager* cMana) {
 	cMana_ = cMana;
 }
 
+const std::vector<int>& MapField::GetMapRow(size_t row) const {
+	return map_[row];
+}
+
+const Mino* MapField::GetFeatureMino() const {
+	return futureMino_.get();
+}
+
 void MapField::RemoveControlMino() {
 	if (controlMino_->GetBlockMode() == BlockMode::Stay) {
 		switch (controlMino_->GetBlockType()) {

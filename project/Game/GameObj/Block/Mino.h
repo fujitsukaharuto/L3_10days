@@ -45,6 +45,9 @@ public:
 
 	//========================================================================*/
 	//* Getter
+	const std::vector<std::unique_ptr<BaseBlock>>& GetBlocks() const {
+		return blocks_;
+	}
 	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() {
 		return blocks_;
 	}

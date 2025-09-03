@@ -28,6 +28,10 @@ public:
 
 	void SetColliderManager(CollisionManager* cMana);
 
+public:
+	const std::vector<int>& GetMapRow(size_t row) const;
+	const Mino* GetFeatureMino() const;
+
 private:
 
 	void RemoveControlMino();

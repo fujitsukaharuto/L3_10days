@@ -1,8 +1,9 @@
 #include "Climber.h"
 
+#include "Game/GameObj/Map/MapField.h"
 
-Climber::Climber(CollisionManager* cMana) {
-	cMana_ = cMana;
+Climber::Climber(MapField* mapField) {
+	mapField_ = mapField;
 }
 
 void Climber::Initialize() {
@@ -11,122 +12,121 @@ void Climber::Initialize() {
 
 	// 初期位置を設定
 	model_->transform.translate = kStartPos_;
-
-	// 向きを設定
-	dir_ = ClimberDir::RIGHT;
-	// 待機状態
-	state_ = ClimberState::IDLE;
-
-	// コライダー生成
-	frontCollider_ = std::make_unique<ClimberFrontCollider>(this, cMana_);
-	frontCollider_->Initialize();
-
-	upCollider_ = std::make_unique<ClimberFrontTopCollider>(this, cMana_);
-	upCollider_->Initialize();
-
-	bottomCollider_ = std::make_unique<ClimberBottomCollider>(this, cMana_);
-	bottomCollider_->Initialize();
-
-	frontBottomCollider_ = std::make_unique<ClimberFrontBottomCollider>(this, cMana_);
-	frontBottomCollider_->Initialize();
 }
 
 void Climber::Update() {
-	isColFront_ = false;
-	isThereFrontUpBlock_ = false;
-	isThereBottomBlock_ = false;
-	isThereFrontBottomBlock_ = false;
-
-	// 移動処理
-	if (state_ == ClimberState::MOVE) {
-		if (dir_ == ClimberDir::LEFT) {
-			model_->transform.translate.x -= speed_ * FPSKeeper::DeltaTime();
-			model_->transform.rotate.y = std::numbers::pi_v<float>;
-		} else {
-			model_->transform.translate.x += speed_ * FPSKeeper::DeltaTime();
-			model_->transform.rotate.y = 0.0f;
-		}
-	}
-
-	// 壁による反転処理
-	if (model_->transform.translate.x < leftWall_ || model_->transform.translate.x > rightWall_) {
-		Turn();
-	}
-
-	// コライダー更新
-	frontCollider_->Update();
-	upCollider_->Update();
-	bottomCollider_->Update();
-	frontBottomCollider_->Update();
-
 }
 
 void Climber::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	OriginGameObject::Draw(mate, is);
-
-#ifdef _DEBUG
-	frontCollider_->Draw();
-	upCollider_->Draw();
-	bottomCollider_->Draw();
-	frontBottomCollider_->Draw();
-
-#endif // _DEBUG
 }
 
 void Climber::DebugGUI() {
 #ifdef _DEBUG
-	if (ImGui::CollapsingHeader("Climber")) {
-		if (ImGui::Button("MOVE")) {
-			state_ = ClimberState::MOVE;
-		}
-	}
 #endif // _DEBUG
 }
 
+bool Climber::CanAvoidBlock() {
+	auto mapRow = CalcAvoidBlocks();
 
-void Climber::Turn() {
-	if (dir_ == ClimberDir::LEFT) {
-		dir_ = ClimberDir::RIGHT;
-	} else {
-		dir_ = ClimberDir::LEFT;
-	}
-}
+	int row = static_cast<int>(model_->GetWorldPos().y / 2);
 
-void Climber::Up() {
-	if (isColFront_) {
-		if (!isThereFrontUpBlock_) {
-			if (dir_ == ClimberDir::LEFT) {
-				model_->transform.translate.x -= kBlockSize_;
-			} else {
-				model_->transform.translate.x += kBlockSize_;
-			}
-			model_->transform.translate.y += kBlockSize_;
-		} else {
-			Turn();
+	const auto& featureMino = mapField_->GetFeatureMino();
+	const auto& featureMinoBlocks = featureMino->GetBlocks();
+
+	for (const auto& block : featureMinoBlocks) {
+		int blockRow = static_cast<int>(block->GetWorldPos().y / 2);
+		int blockColumn = static_cast<int>(block->GetWorldPos().x / 2);
+		// 同じ高さなら無視
+		if (blockRow == row) {
+			continue;
 		}
-	} else {
-		if (isThereBottomBlock_) {
-			if (!isThereFrontBottomBlock_) {
-				Turn();
-			}
+		// 1マス上なら地面判定を消す
+		else if (blockRow == row + 1) {
+			mapRow[blockColumn] = 0;
 		}
 	}
 
+	return std::find(mapRow.begin(), mapRow.end(), 1) != mapRow.end();
 }
 
-void Climber::ColFront() {
-	isColFront_ = true;
+void Climber::AvoidBlock() {
 }
 
-void Climber::ThereFrontUpBlock() {
-	isThereFrontUpBlock_ = true;
-}
+std::vector<int> Climber::CalcAvoidBlocks() {
+	const size_t row = static_cast<size_t>(model_->GetWorldPos().y / 2);
+	std::vector<int> mapRow(1, (int32_t)mapField_->GetMapRow(0).size());
+	// 地面にいる場合は計算しない
+	if (row != 0) {
+		mapRow = mapField_->GetMapRow(row - 1);
+	}
 
-void Climber::ThereBottomBlock() {
-	isThereBottomBlock_ = true;
-}
+	// 壁になるミノ
+	const std::vector<int> wallBlockRow = mapField_->GetMapRow(row);
 
-void Climber::ThereFrontBottomBlock() {
-	isThereFrontBottomBlock_ = true;
-}
+	// 行動できない範囲の地面を0にする
+	{	// 左
+		int32_t left = static_cast<int32_t>(model_->GetWorldPos().x / 2);
+		bool isMoveable = false;
+		for (; left >= 0; --left) {
+			if (!isMoveable) {
+				mapRow[left] = 0;
+			}
+			else {
+				if (mapRow[left] == 0) {
+					isMoveable = true;
+					mapRow[left] = 0;
+				}
+			}
+		}
+	}
+	{	// 右
+		int32_t right = static_cast<int32_t>(model_->GetWorldPos().x / 2);
+		bool isMoveable = false;
+		for (; right < static_cast<int32_t>(mapRow.size()); ++right) {
+			if (!isMoveable) {
+				mapRow[right] = 0;
+			}
+			else {
+				if (mapRow[right] == 0) {
+					isMoveable = true;
+					mapRow[right] = 0;
+				}
+			}
+		}
+	}
 
+	// 壁以降の範囲を地面なしにする
+	{	// 左
+		int32_t left = static_cast<int32_t>(model_->GetWorldPos().x / 2);
+		bool isWall = false;
+		for (; left >= 0; --left) {
+			if (!isWall) {
+				if (wallBlockRow[left] == 1) {
+					isWall = true;
+					mapRow[left] = 0;
+				}
+			}
+			else {
+				mapRow[left] = 0;
+			}
+		}
+	}
+	{	// 右
+		int32_t right = static_cast<int32_t>(model_->GetWorldPos().x / 2);
+		bool isWall = false;
+		for (; right < static_cast<int32_t>(wallBlockRow.size()); ++right) {
+			if (!isWall) {
+				if (wallBlockRow[right] == 1) {
+					isWall = true;
+					mapRow[right] = 0;
+				}
+			}
+			else {
+				mapRow[right] = 0;
+			}
+		}
+	}
+
+	return mapRow;
+}

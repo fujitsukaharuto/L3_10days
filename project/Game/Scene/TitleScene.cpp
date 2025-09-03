@@ -110,7 +110,7 @@ void TitleScene::Update() {
 
 	cMane_->CheckAllCollision();
 
-	climber_->Up();
+	//climber_->Up();
 
 	ParticleManager::GetInstance()->Update();
 }
