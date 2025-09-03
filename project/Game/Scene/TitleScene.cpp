@@ -21,7 +21,7 @@ void TitleScene::Initialize() {
 	obj3dCommon->Initialize();
 
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 5.0f, -120.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
 	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);

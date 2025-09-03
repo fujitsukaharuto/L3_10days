@@ -40,6 +40,7 @@ private:
 private:
 
 	std::vector<std::vector<int>> map_;
+	const uint32_t kMapWidth_ = 20;
 
 	float downTime_ = 60.0f;
 

@@ -6,7 +6,7 @@ MapField::~MapField() {}
 
 void MapField::Initialize() {
 
-	map_ = std::vector(20, std::vector<int>(10));
+	map_ = std::vector(20, std::vector<int>(kMapWidth_));
 
 	panelTex_ = std::make_unique<Sprite>();
 	panelTex_->Load("white2x2.png");
@@ -145,7 +145,7 @@ void MapField::SelectMino() {
 
 			float space = 570.0f / float(selectTypes_.size());
 			float startX = 640.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
-			
+
 			for (int i = 0; i < selectTypes_.size(); i++) {
 				Vector2 sSize = { (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f };
 				buttonTex_[int(selectTypes_[i])]->SetSize(sSize);
@@ -321,7 +321,7 @@ void MapField::MoveControlMino() {
 
 	switch (controlMino_->GetBlockType()) {
 	case BlockType::L:
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
+		if (int(nextCell.x) == -1 || int(nextCell.x) == 19) {
 			isMove = false;
 			break;
 		}
@@ -332,7 +332,7 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::T:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
+		if (int(nextCell.x) == 0 || int(nextCell.x) == 19) {
 			isMove = false;
 			break;
 		}
@@ -343,7 +343,7 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::S:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
+		if (int(nextCell.x) == 0 || int(nextCell.x) == 19) {
 			isMove = false;
 			break;
 		}
@@ -354,7 +354,7 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::Z:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 9) {
+		if (int(nextCell.x) == 0 || int(nextCell.x) == 19) {
 			isMove = false;
 			break;
 		}
@@ -365,7 +365,7 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::O:
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 9) {
+		if (int(nextCell.x) == -1 || int(nextCell.x) == 19) {
 			isMove = false;
 			break;
 		}
@@ -376,7 +376,7 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::J:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 10) {
+		if (int(nextCell.x) == 0 || int(nextCell.x) == 20) {
 			isMove = false;
 			break;
 		}

@@ -47,7 +47,7 @@ public:
 	void ThereFrontBottomBlock();
 
 private:
-	const uint32_t kBlockWidth_ = 9;
+	const uint32_t kBlockWidth_ = 20;
 	const float kBlockSize_ = 2.0f;
 	const Vector3 kStartPos_ = { 0.0f, kBlockSize_, 0.0f };
 
