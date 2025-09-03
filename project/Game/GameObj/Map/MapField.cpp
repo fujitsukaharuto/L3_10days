@@ -283,12 +283,13 @@ void MapField::AddMino(BlockType type) {
 void MapField::UpdateControlMino() {
 	if (!controlMino_) return;
 
-	downTime_ -= FPSKeeper::DeltaTime();
+	/*downTime_ -= FPSKeeper::DeltaTime();
 	if (downTime_ <= 0.0f) {
 		downTime_ = 60.0f;
 		CellCheck();
 		controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
-	}
+	}*/
+
 	MoveControlMino();
 
 	controlMino_->Update();
@@ -300,6 +301,7 @@ void MapField::UpdateControlMino() {
 		futureMino_->Update();
 	}
 	RemoveControlMino();
+
 }
 
 void MapField::MoveControlMino() {
@@ -397,7 +399,7 @@ void MapField::MoveControlMino() {
 
 void MapField::CellCheck() {
 	switch (controlMino_->GetBlockType()) {
-		case BlockType::L:
+	case BlockType::L:
 
 
 		if (int(cellNum_.y + 1.0f) == 20) {
@@ -413,8 +415,8 @@ void MapField::CellCheck() {
 			return;
 		}
 
-			break;
-		case BlockType::T:
+		break;
+	case BlockType::T:
 
 		if (int(cellNum_.y + 1.0f) == 20) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
@@ -505,9 +507,9 @@ void MapField::CellCheck() {
 			return;
 		}
 
-			break;
-		default:
-			break;
+		break;
+	default:
+		break;
 	}
 
 	cellNum_.y++;
