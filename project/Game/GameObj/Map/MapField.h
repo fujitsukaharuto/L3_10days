@@ -5,6 +5,7 @@
 #include "Game/Collider/BaseCollider.h"
 #include "Game/Collider/AABBCollider.h"
 #include "Model/Line3dDrawer.h"
+#include "Engine/Model/Sprite.h"
 #include "Game/GameObj/Block/Mino.h"
 
 class CollisionManager;
@@ -19,6 +20,9 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false);
 	void DebugGUI();
 
+	void UpdateSelectPanel();
+	void SelectMino();
+	void ReturenSelectMino();
 	void AddMino(BlockType type);
 	void UpdateControlMino();
 
@@ -43,6 +47,20 @@ private:
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
+
+	int minoButtonNum_ = 0;
+	Vector2 panelSize_ = { 640.0f,100.0f };
+	float selectPanelTime_ = 0.0f;
+	float defaultSelectPanelTime_ = 30.0f;
+	float panelTexturePosY_;
+	float selectorSizeTime_;
+	Vector2 selectorMaxSize_;
+	Vector2 selectorMinSize_;
+	Vector2 selectorDeleteSize_;
+	std::vector<BlockType> selectTypes_;
+	std::unique_ptr<Sprite> panelTex_;
+	std::vector<std::unique_ptr<Sprite>> buttonTex_;
+	std::unique_ptr<Sprite> selectorTex_;
 
 	CollisionManager* cMana_;
 };
