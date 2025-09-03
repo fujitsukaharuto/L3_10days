@@ -7,7 +7,7 @@ class MapField;
 /// <summary>
 /// 人間
 /// </summary>
-class Climber: public OriginGameObject {
+class Climber : public OriginGameObject {
 public:
 	Climber(MapField* mapField);
 	~Climber()override = default;
@@ -19,11 +19,12 @@ public:
 
 public:
 	bool CanAvoidBlock();
-	
-	void AvoidBlock();
+
+	void OnPreDrop();
+	void OnDropped();
 
 private:
-	std::vector<int> CalcAvoidBlocks();
+	std::vector<int> CalcGroundBlocks();
 
 private:
 	const float kBlockSize_ = 2.0f;

@@ -62,8 +62,10 @@ void TitleScene::Initialize() {
 	map_->SetColliderManager(cMane_.get());
 
 
-	climber_ = std::make_unique<Climber>(cMane_.get());
+	climber_ = std::make_unique<Climber>(map_.get());
 	climber_->Initialize();
+
+	map_->SetClimber(climber_.get());
 
 
 	terrainCollider_ = std::make_unique<AABBCollider>();
