@@ -134,9 +134,6 @@ void MapField::UpdateControlMino() {
 	}
 	RemoveControlMino();
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP)) {
-		QuickDrop();
-	}
 }
 
 void MapField::MoveControlMino() {
