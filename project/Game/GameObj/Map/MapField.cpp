@@ -287,12 +287,12 @@ void MapField::AddMino(BlockType type) {
 
 	controlMino_ = std::move(mino);
 	float oldDistance = GetOldDistance();
-	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance ,0.0f };
+	controlMino_->GetTransform().translate = {(cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f};
 
 	futureMino_ = std::make_unique<Mino>();
 	futureMino_->Initialize();
 	futureMino_->InitBlock(type);
-	futureMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance ,0.0f };
+	futureMino_->GetTransform().translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 	FutureMinoUpdate();
 
 	selectPanelTime_ = defaultSelectPanelTime_;
@@ -426,7 +426,7 @@ void MapField::MoveControlMino() {
 	if (!isMove) return;
 	cellNum_ = nextCell;
 	float oldDistance = GetOldDistance();
-	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
+	controlMino_->GetTransform().translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 	FutureMinoUpdate();
 
 	if (climber_) {
@@ -579,7 +579,7 @@ void MapField::QuickDrop() {
 			CellCheck();
 		}
 		float oldDistance = GetOldDistance();
-		controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
+		controlMino_->GetTransform().translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 		controlMino_->Update();
 		RemoveControlMino();
 	}
@@ -615,6 +615,13 @@ const std::vector<int>& MapField::GetMapRows(size_t row) const {
 
 const Mino* MapField::GetFeatureMino() const {
 	return futureMino_.get();
+}
+
+std::pair<int, int> MapField::CalcFieldGrid(const Vector3& pos) const {
+	return {
+		static_cast<int>(GetMapHeight() - (pos.y - GetOldDistance()) / 2.0f),
+		static_cast<int>(pos.x / 2.0f)
+	};
 }
 
 const float MapField::GetOldDistance() const {
@@ -820,6 +827,6 @@ void MapField::FutureMinoUpdate() {
 		}
 	}
 	float oldDistance = GetOldDistance();
-	futureMino_->GetModel()->transform.translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f + oldDistance,0.0f };
+	futureMino_->GetTransform().translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f + oldDistance,0.0f };
 	futureMino_->Update();
 }

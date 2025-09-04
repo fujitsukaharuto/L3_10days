@@ -33,6 +33,8 @@ private:
 	const float kBlockSize_ = 2.0f;
 	const Vector3 kStartPos_ = { 0.0f, kBlockSize_, 0.0f };
 
+	std::vector<Vector3> movePositions;
+
 	const MapField* mapField_;
 };
 
