@@ -20,7 +20,7 @@ public:
 public:
 	bool CanAvoidBlock();
 
-	void OnPreDrop();
+	void AvoidFeatureBlock();
 	void OnDropped();
 
 private:

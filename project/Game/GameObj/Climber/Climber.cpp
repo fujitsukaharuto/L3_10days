@@ -50,7 +50,7 @@ bool Climber::CanAvoidBlock() {
 	return std::find(mapRow.begin(), mapRow.end(), 1) != mapRow.end();
 }
 
-void Climber::OnPreDrop() {
+void Climber::AvoidFeatureBlock() {
 	// 落下前に地面に埋まらないよう移動
 	auto mapRow = CalcGroundBlocks();
 
@@ -150,11 +150,11 @@ void Climber::OnDropped() {
 }
 
 std::vector<int> Climber::CalcGroundBlocks() {
-	const size_t row = static_cast<size_t>(model_->GetWorldPos().y / 2);
-	std::vector<int> mapRow(1, (int32_t)mapField_->GetMapRows(0).size());
-	// 地面にいる場合は計算しない
-	if (row != 0) {
-		mapRow = mapField_->GetMapRows(row - 1);
+	const size_t row = mapField_->GetMapHeight() - static_cast<int32_t>(model_->transform.translate.y / 2);
+	std::vector<int> mapRow((int32_t)mapField_->GetMapRows(0).size(), 1);
+	// 一つ下の行
+	if (row + 1 != mapField_->GetMapHeight()) {
+		mapRow = mapField_->GetMapRows(row + 1);
 	}
 
 	// 壁になるミノ
@@ -163,14 +163,14 @@ std::vector<int> Climber::CalcGroundBlocks() {
 	// 行動できない範囲の地面を0にする
 	{	// 左
 		int32_t left = static_cast<int32_t>(model_->transform.translate.x / 2);
-		bool isMoveable = false;
+		bool isMoveable = true;
 		for (; left >= 0; --left) {
 			if (!isMoveable) {
 				mapRow[left] = 0;
 			}
 			else {
 				if (mapRow[left] == 0) {
-					isMoveable = true;
+					isMoveable = false;
 					mapRow[left] = 0;
 				}
 			}
@@ -178,14 +178,14 @@ std::vector<int> Climber::CalcGroundBlocks() {
 	}
 	{	// 右
 		int32_t right = static_cast<int32_t>(model_->transform.translate.x / 2);
-		bool isMoveable = false;
+		bool isMoveable = true;
 		for (; right < static_cast<int32_t>(mapRow.size()); ++right) {
 			if (!isMoveable) {
 				mapRow[right] = 0;
 			}
 			else {
 				if (mapRow[right] == 0) {
-					isMoveable = true;
+					isMoveable = false;
 					mapRow[right] = 0;
 				}
 			}

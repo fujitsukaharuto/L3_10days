@@ -57,7 +57,7 @@ void MapField::Update() {
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	if (controlMino_) {
 		controlMino_->Draw();
-		if (futureMino_) {
+		if (futureMino_ && canQuickDrop_) {
 			futureMino_->DrawLine();
 		}
 	}
@@ -397,6 +397,16 @@ void MapField::MoveControlMino() {
 	cellNum_ = nextCell;
 	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
 	FutureMinoUpdate();
+
+	if (climber_) {
+		if (climber_->CanAvoidBlock()) {
+			climber_->AvoidFeatureBlock();
+			canQuickDrop_ = true;
+		}
+		else {
+			canQuickDrop_ = false;
+		}
+	}
 }
 
 void MapField::CellCheck() {
@@ -518,6 +528,8 @@ void MapField::CellCheck() {
 }
 
 void MapField::QuickDrop() {
+	if (!controlMino_) return;
+
 	if (controlMino_) {
 		while (controlMino_->GetBlockMode() == BlockMode::Fall) {
 			CellCheck();

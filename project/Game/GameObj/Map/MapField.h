@@ -43,11 +43,11 @@ public:
 	size_t GetMapWidth() const { return map_[0].size(); }
 
 private:
-
 	void RemoveControlMino();
 	void FutureMinoUpdate();
 
 private:
+	bool canQuickDrop_ = true;
 
 	std::vector<std::vector<int>> map_;
 	const uint32_t kMapWidth_ = 20;
