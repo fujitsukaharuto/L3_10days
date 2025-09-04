@@ -1,5 +1,7 @@
 #include "MapField.h"
 
+#include "Game/GameObj/Climber/Climber.h"
+
 MapField::MapField() {}
 
 MapField::~MapField() {}
@@ -530,6 +532,18 @@ void MapField::SetColliderManager(CollisionManager* cMana) {
 	cMana_ = cMana;
 }
 
+void MapField::SetClimber(Climber* climber) {
+	climber_ = climber;
+}
+
+const std::vector<int>& MapField::GetMapRows(size_t row) const {
+	return map_[row];
+}
+
+const Mino* MapField::GetFeatureMino() const {
+	return futureMino_.get();
+}
+
 void MapField::RemoveControlMino() {
 	if (controlMino_->GetBlockMode() == BlockMode::Stay) {
 		switch (controlMino_->GetBlockType()) {
@@ -573,6 +587,11 @@ void MapField::RemoveControlMino() {
 			break;
 
 		}
+
+		if (climber_) {
+			climber_->OnDropped();
+		}
+
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
 		selectPanelTime_ = defaultSelectPanelTime_;

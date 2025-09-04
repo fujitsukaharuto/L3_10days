@@ -1,31 +1,15 @@
 #pragma once
 
 #include "Game/OriginGameObject.h"
-#include "Game/Collider/AABBCollider.h"
 
-#include "GameObj/Climber/FrontCollider/ClimberFrontCollider.h"
-#include "GameObj/Climber/FrontTopCollider/FrontTopCollider.h"
-#include "GameObj/Climber/BottomCollider/ClimberBottomCollider.h"
-#include "GameObj/Climber/FrontBottomCollider/FrontBottomCollider.h"
-
-enum class ClimberDir {
-	LEFT,
-	RIGHT
-};
-
-enum class ClimberState {
-	IDLE,
-	MOVE,
-};
-
-class CollisionManager;
+class MapField;
 
 /// <summary>
 /// 人間
 /// </summary>
-class Climber: public OriginGameObject {
+class Climber : public OriginGameObject {
 public:
-	Climber(CollisionManager* cMana);
+	Climber(MapField* mapField);
 	~Climber()override = default;
 
 	void Initialize()override;
@@ -33,43 +17,21 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false)override;
 	void DebugGUI()override;
 
+public:
+	bool CanAvoidBlock();
 
-	// 折り返し処理
-	void Turn();
+	void OnPreDrop();
+	void OnDropped();
 
-	// 上る処理
-	void Up();
-
-	// 上るリクエスト
-	void ColFront();
-	void ThereFrontUpBlock();
-	void ThereBottomBlock();
-	void ThereFrontBottomBlock();
+private:
+	std::vector<int> CalcGroundBlocks();
 
 private:
 	const uint32_t kBlockWidth_ = 20;
 	const float kBlockSize_ = 2.0f;
 	const Vector3 kStartPos_ = { 0.0f, kBlockSize_, 0.0f };
 
-	const float leftWall_ = 0.0f;
-	const float rightWall_ = kBlockSize_ * float(kBlockWidth_);
-
-	const float speed_ = 0.1f;
-	ClimberDir dir_ = ClimberDir::RIGHT;
-	ClimberState state_ = ClimberState::IDLE;
-
-	bool isColFront_ = false;
-	bool isThereFrontUpBlock_ = false;
-	bool isThereBottomBlock_ = false;
-	bool isThereFrontBottomBlock_ = false;
-
-	// コライダー用オブジェクト
-	std::unique_ptr<ClimberFrontCollider> frontCollider_;
-	std::unique_ptr<ClimberFrontTopCollider> upCollider_;
-	std::unique_ptr<ClimberBottomCollider> bottomCollider_;
-	std::unique_ptr<ClimberFrontBottomCollider> frontBottomCollider_;
-
-	CollisionManager* cMana_;
+	const MapField* mapField_;
 };
 
 // 実装メモ

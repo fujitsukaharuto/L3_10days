@@ -9,6 +9,7 @@
 #include "Game/GameObj/Block/Mino.h"
 
 class CollisionManager;
+class Climber;
 
 class MapField {
 public:
@@ -31,6 +32,15 @@ public:
 	void QuickDrop();
 
 	void SetColliderManager(CollisionManager* cMana);
+	void SetClimber(Climber* climber);
+
+public:
+	const std::vector<int>& GetMapRows(size_t row) const;
+	const Mino* GetFeatureMino() const;
+
+	// TODO : 定数にする
+	size_t GetMapHeight() const { return map_.size(); }
+	size_t GetMapWidth() const { return map_[0].size(); }
 
 private:
 
@@ -64,4 +74,6 @@ private:
 	std::unique_ptr<Sprite> selectorTex_;
 
 	CollisionManager* cMana_;
+
+	Climber* climber_{ nullptr };
 };
