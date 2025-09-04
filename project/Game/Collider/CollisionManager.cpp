@@ -104,6 +104,10 @@ void CollisionManager::CheckAllCollision() {
 
 		for (; itrB != colliders_.end(); ++itrB) {
 			BaseCollider* colliderB = *itrB;
+			if (!(static_cast<uint32_t>(colliderA->GetTargetType()) & static_cast<uint32_t>(colliderB->GetType())) &&
+				!(static_cast<uint32_t>(colliderB->GetTargetType()) & static_cast<uint32_t>(colliderA->GetType()))) {
+				continue;
+			}
 
 			CheckCollisionPair(colliderA, colliderB);
 		}

@@ -21,6 +21,32 @@ enum class CollisionState {
 	None,
 };
 
+enum class ColliderType {
+	Type_None = 0,      // ビットが立っていない状態
+	Type_Block = 1 << 0, // block
+	Type_Player = 1 << 1, // プレイヤー
+	//Type_Frame = 1 << 2, // フレーム
+};
+
+// operator
+inline ColliderType operator|(ColliderType lhs, ColliderType rhs) {
+	using T = std::underlying_type_t<ColliderType>;
+	return static_cast<ColliderType>(static_cast<T>(lhs) | static_cast<T>(rhs));
+}
+inline ColliderType& operator|=(ColliderType& lhs, ColliderType rhs) {
+	lhs = lhs | rhs;
+	return lhs;
+}
+inline ColliderType operator&(ColliderType lhs, ColliderType rhs) {
+	using T = std::underlying_type_t<ColliderType>;
+	return static_cast<ColliderType>(static_cast<T>(lhs) & static_cast<T>(rhs));
+}
+inline ColliderType& operator&=(ColliderType& lhs, ColliderType rhs) {
+	lhs = lhs & rhs;
+	return lhs;
+}
+
+
 
 class BaseCollider {
 public:
@@ -48,6 +74,9 @@ public:
 	OriginGameObject* GetOwner();
 	bool GetIsCollisonCheck() { return isCollisionCheck_; }
 
+	ColliderType GetType() const { return type_; }
+	ColliderType GetTargetType() const { return targetType_; }
+
 	std::list<BaseCollider*> hitList_;
 
 protected:
@@ -55,6 +84,9 @@ protected:
 	Trans* parent_ = nullptr;
 	bool isCollisionCheck_ = true;
 	Vector3 offset_ = { 0.0f,0.0f,0.0f };
+
+	ColliderType type_;       //* 自身のタイプ
+	ColliderType targetType_; //* 衝突相手のタイプ
 
 	const std::string kDirectoryPath_ = "resource/Json/Collider/";
 };
