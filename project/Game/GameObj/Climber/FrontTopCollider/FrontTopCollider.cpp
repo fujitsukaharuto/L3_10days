@@ -24,7 +24,8 @@ void ClimberFrontTopCollider::Initialize() {
 	collider_->SetWidth(0.1f);
 	collider_->SetDepth(0.1f);
 	collider_->SetHeight(0.1f);
-
+	collider_->SetColliderType(ColliderType::Type_Player);
+	collider_->SetTargetType(ColliderType::Type_Block);
 	collider_->SetCollisionEnterCallback([this](const ColliderInfo& other) {OnCollisionEnter(other); });
 	collider_->SetCollisionStayCallback([this](const ColliderInfo& other) {OnCollisionStay(other); });
 	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });

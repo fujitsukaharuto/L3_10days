@@ -19,6 +19,8 @@ void BaseBlock::Initialize() {
 	collider_->SetWidth(2.0f);
 	collider_->SetDepth(2.0f);
 	collider_->SetHeight(2.0f);
+	collider_->SetColliderType(ColliderType::Type_Block);
+	collider_->SetTargetType(ColliderType::Type_Player);
 	collider_->SetCollisionEnterCallback([this](const ColliderInfo& other) {OnCollisionEnter(other); });
 	collider_->SetCollisionStayCallback([this](const ColliderInfo& other) {OnCollisionStay(other); });
 	collider_->SetCollisionExitCallback([this](const ColliderInfo& other) {OnCollisionExit(other); });

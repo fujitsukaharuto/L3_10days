@@ -39,6 +39,9 @@ public:
 	void SetHeight(float h) { height = h; }
 	void SetDepth(float d) { depth = d; }
 
+	void SetColliderType(ColliderType type) { type_ = type; }
+	void SetTargetType(ColliderType type) { targetType_ = type; }
+
 	ColliderInfo GetInfo() const { return info; }
 	Vector3 GetParentRotate() const { return parent_ ? parent_->GetRotation() : Vector3(0.0f, 0.0f, 0.0f); } // obb用に試し
 	CollisionState GetState()const { return state; }
