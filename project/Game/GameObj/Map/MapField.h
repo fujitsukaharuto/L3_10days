@@ -42,6 +42,13 @@ public:
 	size_t GetMapHeight() const { return map_.size(); }
 	size_t GetMapWidth() const { return map_[0].size(); }
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <returns>[row, column]</returns>
+	std::pair<int, int> CalcFieldGrid(const Vector3& pos) const;
+
 private:
 	void RemoveControlMino();
 	void FutureMinoUpdate();

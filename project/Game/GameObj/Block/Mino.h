@@ -1,4 +1,7 @@
 #pragma once
+
+#include <Engine/Math/Matrix/MatrixCalculation.h>
+
 #include "Game/OriginGameObject.h"
 #include "ImGuiManager/ImGuiManager.h"
 #include <numbers>
@@ -24,15 +27,15 @@ enum class BlockMode {
 
 class CollisionManager;
 
-class Mino: public OriginGameObject {
+class Mino {
 public:
 	Mino();
-	~Mino()override;
+	~Mino();
 
-	void Initialize()override;
-	void Update()override;
-	void Draw(Material* mate = nullptr, bool is = false)override;
-	void DebugGUI()override;
+	void Initialize();
+	void Update();
+	void Draw();
+	void DebugGUI();
 
 	void DrawLine();
 	void InitBlock(BlockType type);
@@ -52,15 +55,15 @@ public:
 	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() {
 		return blocks_;
 	}
-	AABBCollider* GetCollider() {
-		return collider_.get();
-	}
 	BlockType GetBlockType() {
 		return blockType_;
 	}
 	BlockMode GetBlockMode() {
 		return blockMode_;
 	}
+
+	Trans& GetTransform();
+	const Trans& GetTransform() const;
 
 	//========================================================================*/
 	//* Setter
@@ -71,12 +74,12 @@ public:
 	void SetCollisionMana(CollisionManager* cMana);
 
 private:
+	Trans transform;
 
 	BlockType blockType_;
 	BlockMode blockMode_;
 
 	std::vector<std::unique_ptr<BaseBlock>> blocks_;
-	std::unique_ptr<AABBCollider> collider_;
 
 	CollisionManager* cMana_;
 };

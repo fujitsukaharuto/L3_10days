@@ -29,20 +29,15 @@ void Climber::DebugGUI() {
 bool Climber::CanAvoidBlock() {
 	auto mapRow = CalcGroundBlocks();
 
-	int row = static_cast<int>(model_->GetWorldPos().y / 2);
+	auto [row, _] = mapField_->CalcFieldGrid(model_->GetWorldPos());
 
 	const auto& featureMino = mapField_->GetFeatureMino();
 	const auto& featureMinoBlocks = featureMino->GetBlocks();
 
 	for (const auto& block : featureMinoBlocks) {
-		int blockRow = static_cast<int>(block->GetWorldPos().y / 2);
-		int blockColumn = static_cast<int>(block->GetWorldPos().x / 2);
-		// 同じ高さなら無視
-		if (blockRow == row) {
-			continue;
-		}
-		// 1マス上なら地面判定を消す
-		else if (blockRow == row + 1) {
+		auto [blockRow, blockColumn] = mapField_->CalcFieldGrid(block->GetWorldPos());
+		// 同じ高さなら地面判定を消す
+		if (row == blockRow) {
 			mapRow[blockColumn] = 0;
 		}
 	}
@@ -51,23 +46,19 @@ bool Climber::CanAvoidBlock() {
 }
 
 void Climber::AvoidFeatureBlock() {
-	// 落下前に地面に埋まらないよう移動
+	// 地面情報
 	auto mapRow = CalcGroundBlocks();
 
-	int row = static_cast<int>(model_->transform.translate.y / 2);
+	auto [row, _] = mapField_->CalcFieldGrid(model_->GetWorldPos());
 
+	// 設置予定ミノ
 	const auto& featureMino = mapField_->GetFeatureMino();
 	const auto& featureMinoBlocks = featureMino->GetBlocks();
 
 	for (const auto& block : featureMinoBlocks) {
-		int blockRow = static_cast<int>(block->GetWorldPos().y / 2);
-		int blockColumn = static_cast<int>(block->GetWorldPos().x / 2);
-		// 同じ高さなら無視
-		if (blockRow == row) {
-			continue;
-		}
-		// 1マス上なら地面判定を消す
-		else if (blockRow == row + 1) {
+		auto [blockRow, blockColumn] = mapField_->CalcFieldGrid(block->GetWorldPos());
+		// 同じ高さなら地面判定を消す
+		if (row == blockRow) {
 			mapRow[blockColumn] = 0;
 		}
 	}
@@ -84,8 +75,7 @@ void Climber::AvoidFeatureBlock() {
 
 void Climber::OnDropped() {
 	// 到達可能な最大高に移動
-	int row = (int)mapField_->GetMapHeight() - static_cast<int>(model_->transform.translate.y / 2);
-	int column = static_cast<int>(model_->transform.translate.x / 2);
+	auto [row, column] = mapField_->CalcFieldGrid(model_->GetWorldPos());
 
 	int minRow = row;
 	int movedColumn = column;
@@ -118,7 +108,7 @@ void Climber::OnDropped() {
 			// 1マス上に登れるか
 			else if (r - 1 >= 0 &&
 				mapField_->GetMapRows(r)[reachedColumn] == 1 &&
-				mapField_->GetMapRows(r-1)[reachedColumn] == 0) {
+				mapField_->GetMapRows(r - 1)[reachedColumn] == 0) {
 				// 未探索なら追加
 				int up = r - 1;
 				if (!seen[up][reachedColumn]) {
@@ -128,6 +118,11 @@ void Climber::OnDropped() {
 					if (minRow > up) {
 						minRow = up;
 						movedColumn = reachedColumn;
+						movePositions.emplace_back(
+							reachedColumn * 2.0f,
+							((int)mapField_->GetMapHeight() - up) * 2.0f,
+							0.0f
+						);
 					}
 				}
 			}
@@ -150,7 +145,7 @@ void Climber::OnDropped() {
 }
 
 std::vector<int> Climber::CalcGroundBlocks() {
-	const size_t row = mapField_->GetMapHeight() - static_cast<int32_t>(model_->transform.translate.y / 2);
+	auto [row, column] = mapField_->CalcFieldGrid(model_->GetWorldPos());
 	std::vector<int> mapRow((int32_t)mapField_->GetMapRows(0).size(), 1);
 	// 一つ下の行
 	if (row + 1 != mapField_->GetMapHeight()) {
@@ -162,7 +157,7 @@ std::vector<int> Climber::CalcGroundBlocks() {
 
 	// 行動できない範囲の地面を0にする
 	{	// 左
-		int32_t left = static_cast<int32_t>(model_->transform.translate.x / 2);
+		int32_t left = column;
 		bool isMoveable = true;
 		for (; left >= 0; --left) {
 			if (!isMoveable) {
@@ -177,7 +172,7 @@ std::vector<int> Climber::CalcGroundBlocks() {
 		}
 	}
 	{	// 右
-		int32_t right = static_cast<int32_t>(model_->transform.translate.x / 2);
+		int32_t right = column;
 		bool isMoveable = true;
 		for (; right < static_cast<int32_t>(mapRow.size()); ++right) {
 			if (!isMoveable) {
@@ -194,7 +189,7 @@ std::vector<int> Climber::CalcGroundBlocks() {
 
 	// 壁以降の範囲を地面なしにする
 	{	// 左
-		int32_t left = static_cast<int32_t>(model_->transform.translate.x / 2);
+		int32_t left = column;
 		bool isWall = false;
 		for (; left >= 0; --left) {
 			if (!isWall) {
@@ -209,7 +204,7 @@ std::vector<int> Climber::CalcGroundBlocks() {
 		}
 	}
 	{	// 右
-		int32_t right = static_cast<int32_t>(model_->transform.translate.x / 2);
+		int32_t right = column;
 		bool isWall = false;
 		for (; right < static_cast<int32_t>(wallBlockRow.size()); ++right) {
 			if (!isWall) {
