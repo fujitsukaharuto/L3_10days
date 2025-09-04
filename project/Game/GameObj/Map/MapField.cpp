@@ -14,7 +14,7 @@ void MapField::Initialize() {
 	panelTex_->Load("white2x2.png");
 	panelTex_->SetSize(panelSize_);
 	panelTex_->SetPos({ 640.0f,-200.0f,0.0f });
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		std::unique_ptr<Sprite> button;
 		button = std::make_unique<Sprite>();
 		button->Load("white2x2.png");
@@ -24,6 +24,7 @@ void MapField::Initialize() {
 		if (i == 3) button->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 		if (i == 4) button->SetColor({ 1.0f,1.0f,0.0f,1.0f });
 		if (i == 5) button->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+		if (i == 6) button->SetColor({ 0.0f,0.8f,0.95f,1.0f });
 		buttonTex_.push_back(std::move(button));
 	}
 	panelTexturePosY_ = 70.0f;
@@ -33,13 +34,14 @@ void MapField::Initialize() {
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		BlockType type = BlockType::L;
 		if (i == 1) type = BlockType::T;
 		if (i == 2) type = BlockType::S;
 		if (i == 3) type = BlockType::Z;
 		if (i == 4) type = BlockType::O;
 		if (i == 5) type = BlockType::J;
+		if (i == 6) type = BlockType::I;
 		selectTypes_.push_back(type);
 	}
 }
@@ -67,7 +69,7 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 
 	panelTex_->Draw();
 	selectorTex_->Draw();
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < buttonTex_.size(); i++) {
 		buttonTex_[i]->Draw();
 	}
 }
@@ -262,6 +264,9 @@ void MapField::AddMino(BlockType type) {
 	case BlockType::J:
 		cellNum_ = { 4.0f, 2.0f };
 		break;
+	case BlockType::I:
+		cellNum_ = { 4.0f, 3.0f };
+		break;
 	default:
 		break;
 	}
@@ -389,6 +394,17 @@ void MapField::MoveControlMino() {
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y)][int(nextCell.x - 1.0f)] == 1) {
+			isMove = false;
+			break;
+		}
+		break;
+	case BlockType::I:
+		if (int(nextCell.x) == -1 || int(nextCell.x) == 20) {
+			isMove = false;
+			break;
+		}
+		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
+			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 3.0f)][int(nextCell.x)] == 1) {
 			isMove = false;
 			break;
 		}
@@ -525,6 +541,19 @@ void MapField::CellCheck() {
 		}
 
 		break;
+	case BlockType::I:
+
+
+		if (int(cellNum_.y + 1.0f) == 20) {
+			controlMino_->SetBlockMode(BlockMode::Stay);
+			return;
+		}
+		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
+			controlMino_->SetBlockMode(BlockMode::Stay);
+			return;
+		}
+
+		break;
 	default:
 		break;
 	}
@@ -599,6 +628,12 @@ void MapField::RemoveControlMino() {
 			map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
 			map_[int(cellNum_.y - 1.0f)][int(cellNum_.x - 1.0f)] = 1;
 			map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 1;
+			break;
+		case BlockType::I:
+			map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
+			map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
+			map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 1;
+			map_[int(cellNum_.y - 3.0f)][int(cellNum_.x)] = 1;
 			break;
 		default:
 			break;
@@ -724,6 +759,18 @@ void MapField::FutureMinoUpdate() {
 				break;
 			}
 			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+
+			break;
+		case BlockType::I:
+
+			if (int(cell.y + 1.0f) == 20) {
+				futureMino_->SetBlockMode(BlockMode::Stay);
+				break;
+			}
+			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
 				futureMino_->SetBlockMode(BlockMode::Stay);
 				break;
 			}

@@ -14,6 +14,7 @@ enum class BlockType {
 	Z,
 	O,
 	J,
+	I,
 };
 
 enum class BlockMode {

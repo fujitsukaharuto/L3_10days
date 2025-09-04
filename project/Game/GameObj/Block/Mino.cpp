@@ -78,7 +78,7 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
@@ -94,7 +94,7 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
@@ -110,7 +110,7 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
@@ -126,7 +126,7 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
@@ -142,7 +142,7 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { 2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 2.0f,2.0f,0.0f };
@@ -158,11 +158,27 @@ void Mino::InitBlock(BlockType type) {
 			std::unique_ptr<BaseBlock> block;
 			block = std::make_unique<BaseBlock>();
 			block->Initialize();
-      block->SetCollisionManager(cMana_);
+			block->SetCollisionManager(cMana_);
 			block->GetModel()->SetParent(&model_->transform);
 			if (i == 0) block->GetModel()->transform.translate = { -2.0f,0.0f,0.0f };
 			if (i == 1) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
 			if (i == 2) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+			block->GetModel()->SetColor(color);
+			blocks_.push_back(std::move(block));
+		}
+		model_->SetColor(color);
+		break;
+	case BlockType::I:
+		color = { 0.0f,0.85f,0.95f,1.0f };
+		for (int i = 0; i < 3; i++) {
+			std::unique_ptr<BaseBlock> block;
+			block = std::make_unique<BaseBlock>();
+			block->Initialize();
+			block->SetCollisionManager(cMana_);
+			block->GetModel()->SetParent(&model_->transform);
+			if (i == 0) block->GetModel()->transform.translate = { 0.0f,2.0f,0.0f };
+			if (i == 1) block->GetModel()->transform.translate = { 0.0f,4.0f,0.0f };
+			if (i == 2) block->GetModel()->transform.translate = { 0.0f,6.0f,0.0f };
 			block->GetModel()->SetColor(color);
 			blocks_.push_back(std::move(block));
 		}
