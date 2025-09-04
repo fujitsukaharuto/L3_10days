@@ -120,12 +120,14 @@ void MapField::UpdateSelectPanel() {
 			if (minoButtonNum_ < 0) {
 				minoButtonNum_ = int(selectTypes_.size()) - 1;
 			}
-		} else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
+		}
+		else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
 			minoButtonNum_++;
 			if (minoButtonNum_ == int(selectTypes_.size())) {
 				minoButtonNum_ = 0;
 			}
-		} else if (Input::GetInstance()->TriggerKey(DIK_UP)) {
+		}
+		else if (Input::GetInstance()->TriggerKey(DIK_UP)) {
 			if (!controlMino_) {
 				AddMino(selectTypes_[minoButtonNum_]);
 				return;
@@ -161,7 +163,8 @@ void MapField::SelectMino() {
 			float x = startX + float(minoButtonNum_) * space;
 			selectorTex_->SetPos({ x, posY, 0.0f });
 
-		} else {
+		}
+		else {
 			panelTex_->SetPos({ 640.0f,panelTexturePosY_,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
@@ -217,7 +220,8 @@ void MapField::ReturenSelectMino() {
 			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
 			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
 			selectorTex_->SetSize(selectorDeleteSize_);
-		} else {
+		}
+		else {
 			panelTex_->SetPos({ 640.0f,-200.0f,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
@@ -314,7 +318,8 @@ void MapField::MoveControlMino() {
 	if (Input::GetInstance()->TriggerKey(DIK_LEFT)) {
 		nextCell.x--;
 		isMove = true;
-	} else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
+	}
+	else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
 		nextCell.x++;
 		isMove = true;
 	}
@@ -528,7 +533,7 @@ void MapField::CellCheck() {
 }
 
 void MapField::QuickDrop() {
-	if (!controlMino_) return;
+	if (!controlMino_ || !canQuickDrop_) return;
 
 	if (controlMino_) {
 		while (controlMino_->GetBlockMode() == BlockMode::Fall) {
