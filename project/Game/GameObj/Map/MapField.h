@@ -31,6 +31,8 @@ public:
 	void CellCheck();
 	void QuickDrop();
 
+	void OldLineCheck();
+
 	void SetColliderManager(CollisionManager* cMana);
 	void SetClimber(Climber* climber);
 
@@ -41,6 +43,8 @@ public:
 	// TODO : 定数にする
 	size_t GetMapHeight() const { return map_.size(); }
 	size_t GetMapWidth() const { return map_[0].size(); }
+
+	const float GetOldDistance() const;
 
 private:
 	void RemoveControlMino();
@@ -72,6 +76,10 @@ private:
 	std::unique_ptr<Sprite> panelTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
+
+	int oldLine_ = 15;
+	int old_;
+	float nextSpace_ = 10.0f;
 
 	CollisionManager* cMana_;
 

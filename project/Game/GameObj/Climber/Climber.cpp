@@ -54,7 +54,7 @@ void Climber::AvoidFeatureBlock() {
 	// 落下前に地面に埋まらないよう移動
 	auto mapRow = CalcGroundBlocks();
 
-	int row = static_cast<int>(model_->transform.translate.y / 2);
+	int row = static_cast<int>((model_->transform.translate.y - mapField_->GetOldDistance()) / 2);
 
 	const auto& featureMino = mapField_->GetFeatureMino();
 	const auto& featureMinoBlocks = featureMino->GetBlocks();
@@ -84,7 +84,7 @@ void Climber::AvoidFeatureBlock() {
 
 void Climber::OnDropped() {
 	// 到達可能な最大高に移動
-	int row = (int)mapField_->GetMapHeight() - static_cast<int>(model_->transform.translate.y / 2);
+	int row = (int)mapField_->GetMapHeight() - static_cast<int>((model_->transform.translate.y - mapField_->GetOldDistance()) / 2);
 	int column = static_cast<int>(model_->transform.translate.x / 2);
 
 	int minRow = row;
@@ -146,11 +146,17 @@ void Climber::OnDropped() {
 
 	// 位置を移動
 	model_->transform.translate.x = movedColumn * 2.0f;
-	model_->transform.translate.y = ((int)mapField_->GetMapHeight() - minRow) * 2.0f;
+	float oldDistance = mapField_->GetOldDistance();
+	model_->transform.translate.y = ((int)mapField_->GetMapHeight() - minRow) * 2.0f + oldDistance;
+}
+
+void Climber::OldUp() {
+	model_->transform.translate.y = mapField_->GetOldDistance();
+	model_->transform.translate += kStartPos_;
 }
 
 std::vector<int> Climber::CalcGroundBlocks() {
-	const size_t row = mapField_->GetMapHeight() - static_cast<int32_t>(model_->transform.translate.y / 2);
+	const size_t row = mapField_->GetMapHeight() - static_cast<int32_t>((model_->transform.translate.y - mapField_->GetOldDistance()) / 2);
 	std::vector<int> mapRow((int32_t)mapField_->GetMapRows(0).size(), 1);
 	// 一つ下の行
 	if (row + 1 != mapField_->GetMapHeight()) {

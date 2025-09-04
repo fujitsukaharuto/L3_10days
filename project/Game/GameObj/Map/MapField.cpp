@@ -1,6 +1,7 @@
 #include "MapField.h"
 
 #include "Game/GameObj/Climber/Climber.h"
+#include "Game/Collider/CollisionManager.h"
 
 MapField::MapField() {}
 
@@ -72,6 +73,13 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	for (int i = 0; i < buttonTex_.size(); i++) {
 		buttonTex_[i]->Draw();
 	}
+
+	// 年の線
+	float growLine = float(oldLine_) * 2.0f;
+	growLine = growLine * float(old_ + 1);
+	growLine += (float(old_) * nextSpace_) * old_;
+	growLine -= 0.8f;
+	Line3dDrawer::GetInstance()->DrawLine3d({ -10.0f,growLine, -1.0f }, { 50.0f,growLine,-1.0f }, { 1.0f,1.0f,0.0f,1.0f });
 }
 
 void MapField::DebugGUI() {
@@ -278,12 +286,13 @@ void MapField::AddMino(BlockType type) {
 	mino->InitBlock(type);
 
 	controlMino_ = std::move(mino);
-	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
+	float oldDistance = GetOldDistance();
+	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance ,0.0f };
 
 	futureMino_ = std::make_unique<Mino>();
 	futureMino_->Initialize();
 	futureMino_->InitBlock(type);
-	futureMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
+	futureMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance ,0.0f };
 	FutureMinoUpdate();
 
 	selectPanelTime_ = defaultSelectPanelTime_;
@@ -416,7 +425,8 @@ void MapField::MoveControlMino() {
 
 	if (!isMove) return;
 	cellNum_ = nextCell;
-	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
+	float oldDistance = GetOldDistance();
+	controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 	FutureMinoUpdate();
 
 	if (climber_) {
@@ -568,9 +578,26 @@ void MapField::QuickDrop() {
 		while (controlMino_->GetBlockMode() == BlockMode::Fall) {
 			CellCheck();
 		}
-		controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
+		float oldDistance = GetOldDistance();
+		controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 		controlMino_->Update();
 		RemoveControlMino();
+	}
+}
+
+void MapField::OldLineCheck() {
+	if (controlMino_)return;
+
+	float growLine = float(oldLine_) * 2.0f;
+	growLine = growLine * float(old_ + 1);
+	growLine += (float(old_) * nextSpace_) * old_;
+	
+	if (climber_->GetWorldPos().y >= growLine) {
+		old_++;
+		cMana_->Reset();
+		minos_.clear();
+		climber_->OldUp();
+		map_ = std::vector(20, std::vector<int>(kMapWidth_));
 	}
 }
 
@@ -588,6 +615,13 @@ const std::vector<int>& MapField::GetMapRows(size_t row) const {
 
 const Mino* MapField::GetFeatureMino() const {
 	return futureMino_.get();
+}
+
+const float MapField::GetOldDistance() const {
+	float growLine = float(oldLine_) * 2.0f;
+	growLine += float(old_) * nextSpace_;
+	growLine *= float(old_);
+	return (growLine);
 }
 
 void MapField::RemoveControlMino() {
@@ -647,6 +681,7 @@ void MapField::RemoveControlMino() {
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
 		selectPanelTime_ = defaultSelectPanelTime_;
+		OldLineCheck();
 	}
 }
 
@@ -784,6 +819,7 @@ void MapField::FutureMinoUpdate() {
 			cell.y++;
 		}
 	}
-	futureMino_->GetModel()->transform.translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f,0.0f };
+	float oldDistance = GetOldDistance();
+	futureMino_->GetModel()->transform.translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f + oldDistance,0.0f };
 	futureMino_->Update();
 }

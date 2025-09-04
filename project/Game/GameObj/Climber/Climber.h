@@ -23,6 +23,8 @@ public:
 	void AvoidFeatureBlock();
 	void OnDropped();
 
+	void OldUp();
+
 private:
 	std::vector<int> CalcGroundBlocks();
 
