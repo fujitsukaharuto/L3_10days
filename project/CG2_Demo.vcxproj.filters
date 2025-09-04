@@ -358,6 +358,8 @@
     <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
+    <ClCompile Include="Game\GameObj\GenderMapField\GenderMapField.cpp" />
+    <ClCompile Include="Game\GameObj\GenderBlock\GenderBlock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -773,6 +775,8 @@
     <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
+    <ClInclude Include="Game\GameObj\GenderMapField\GenderMapField.h" />
+    <ClInclude Include="Game\GameObj\GenderBlock\GenderBlock.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
