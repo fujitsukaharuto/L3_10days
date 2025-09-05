@@ -32,6 +32,7 @@ public:
 	void MoveControlMino();
 	void CellCheck();
 	void QuickDrop();
+	void CellSet();
 
 	void OldLineCheck();
 
@@ -59,6 +60,7 @@ private:
 	void RemoveControlMino();
 	void FutureMinoUpdate();
 	void CameraMoveUpdate();
+	void CellSpriteSetColor();
 
 private:
 	bool canQuickDrop_ = true;
@@ -69,7 +71,7 @@ private:
 	float downTime_ = 60.0f;
 
 	Vector2 cellNum_;
-	std::vector<std::unique_ptr<BaseBlock>> cells_;
+	std::vector < std::vector<std::unique_ptr<Sprite>>> cells_;
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
