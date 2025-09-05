@@ -49,6 +49,11 @@ void BaseBlock::DebugGUI() {
 }
 
 
+void BaseBlock::LineUpdate() {
+	collider_->SetPos(model_->GetWorldPos());
+	collider_->InfoUpdate();
+}
+
 void BaseBlock::DrawLine() {
 #ifdef _DEBUG
 	collider_->DrawCollider();

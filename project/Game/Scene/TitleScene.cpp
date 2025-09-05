@@ -121,6 +121,7 @@ void TitleScene::Draw() {
 
 #pragma region 背景描画
 
+	//map_->BackDraw();
 
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
@@ -128,9 +129,14 @@ void TitleScene::Draw() {
 
 #pragma region 3Dオブジェクト
 	skybox_->Draw();
-
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
+	dxcommon_->ClearDepthBuffer();
+	map_->BackDraw();
+	dxcommon_->ClearDepthBuffer();
+
+	obj3dCommon->PreDraw();
+
 
 	//b1_->Draw();
 	//b2_->Draw();

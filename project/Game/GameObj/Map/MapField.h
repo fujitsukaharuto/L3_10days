@@ -21,6 +21,8 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false);
 	void DebugGUI();
 
+	void BackDraw();
+
 	void UpdateSelectPanel();
 	void SelectMino();
 	void ReturenSelectMino();
@@ -62,11 +64,12 @@ private:
 	bool canQuickDrop_ = true;
 
 	std::vector<std::vector<int>> map_;
-	const uint32_t kMapWidth_ = 20;
+	const uint32_t kMapWidth_ = 15;
 
 	float downTime_ = 60.0f;
 
 	Vector2 cellNum_;
+	std::vector<std::unique_ptr<BaseBlock>> cells_;
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
@@ -82,6 +85,7 @@ private:
 	Vector2 selectorDeleteSize_;
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
+	std::unique_ptr<Sprite> BackPanelTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
 
@@ -92,6 +96,8 @@ private:
 	bool isCameraMove_ = false;
 	float cameraHeight_ = 22.0f;
 	float cameraMoveTime_ = 30.0f;
+
+	Vector2 cellsPos_;
 
 	CollisionManager* cMana_;
 
