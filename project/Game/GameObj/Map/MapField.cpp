@@ -337,7 +337,7 @@ void MapField::AddMino(BlockType type) {
 	default:
 		break;
 	}
-	if (map_[int(cellNum_.y)][int(cellNum_.x)] == 1) return;
+	//if (map_[int(cellNum_.y)][int(cellNum_.x)] == 1) return;
 	std::unique_ptr<Mino> mino;
 	mino = std::make_unique<Mino>();
 	mino->Initialize();
@@ -397,6 +397,8 @@ void MapField::MoveControlMino() {
 	// セル番号に変換
 	int cellX = static_cast<int>(localX / cellSize);
 	int cellY = static_cast<int>(localY / cellSize);
+	cellX = std::clamp(cellX, 0, gridSize-1);
+	cellY = std::clamp(cellY, 0, gridSize-1);
 	if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
 		nextCell = { float(cellX),float(cellY) };
 		isMove = true;
@@ -407,10 +409,10 @@ void MapField::MoveControlMino() {
 
 	switch (controlMino_->GetBlockType()) {
 	case BlockType::L:
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 14
+		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 14
 			|| int(nextCell.y) <= 1) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 2));
+			nextCell.y = std::clamp(nextCell.y, 2.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
@@ -419,10 +421,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::T:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 14
+		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
 			|| int(nextCell.y) <= 0) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
+			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y)][int(nextCell.x - 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
@@ -431,10 +433,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::S:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 14
+		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
 			|| int(nextCell.y) <= 0) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
+			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + -1.0f)] == 1) {
@@ -443,10 +445,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::Z:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 14
+		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
 			|| int(nextCell.y) <= 0) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
+			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 1.0f)][int(nextCell.x - 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
@@ -455,10 +457,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::O:
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 14
+		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 14
 			|| int(nextCell.y) <= 0) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 2));
+			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] == 1 || map_[int(nextCell.y)][int(nextCell.x + 1.0f)] == 1) {
@@ -467,10 +469,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::J:
-		if (int(nextCell.x) == 0 || int(nextCell.x) == 15
+		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 15
 			|| int(nextCell.y) <= 1) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 1));
+			nextCell.y = std::clamp(nextCell.y, 2.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y)][int(nextCell.x - 1.0f)] == 1) {
@@ -479,10 +481,10 @@ void MapField::MoveControlMino() {
 		}
 		break;
 	case BlockType::I:
-		if (int(nextCell.x) == -1 || int(nextCell.x) == 15
+		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 15
 			|| int(nextCell.y) <= 2) {
-			isMove = false;
-			break;
+			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 1));
+			nextCell.y = std::clamp(nextCell.y, 3.0f, float(gridSize));
 		}
 		if (map_[int(nextCell.y)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 1.0f)][int(nextCell.x)] == 1
 			|| map_[int(nextCell.y - 2.0f)][int(nextCell.x)] == 1 || map_[int(nextCell.y - 3.0f)][int(nextCell.x)] == 1) {
