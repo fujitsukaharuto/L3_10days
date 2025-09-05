@@ -14,7 +14,7 @@ void MapField::Initialize() {
 	panelTex_ = std::make_unique<Sprite>();
 	panelTex_->Load("white2x2.png");
 	panelTex_->SetSize(panelSize_);
-	panelTex_->SetPos({ 640.0f,-200.0f,0.0f });
+	panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
 	for (int i = 0; i < 7; i++) {
 		std::unique_ptr<Sprite> button;
 		button = std::make_unique<Sprite>();
@@ -214,10 +214,10 @@ void MapField::SelectMino() {
 		if (selectPanelTime_ != 0.0f) {
 			float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
 			float posY = std::lerp(-200.0f, panelTexturePosY_, t);
-			panelTex_->SetPos({ 640.0f,posY,0.0f });
+			panelTex_->SetPos({ 320.0f,posY,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
-			float startX = 640.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
+			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
 
 			for (int i = 0; i < selectTypes_.size(); i++) {
 				Vector2 sSize = { (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f };
@@ -234,10 +234,10 @@ void MapField::SelectMino() {
 
 		}
 		else {
-			panelTex_->SetPos({ 640.0f,panelTexturePosY_,0.0f });
+			panelTex_->SetPos({ 320.0f,panelTexturePosY_,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
-			float startX = 640.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
+			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
 			for (int i = 0; i < selectTypes_.size(); i++) {
 				Vector2 sSize = { (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f };
 				buttonTex_[int(selectTypes_[i])]->SetSize(sSize);
@@ -273,10 +273,10 @@ void MapField::ReturenSelectMino() {
 		if (selectPanelTime_ != 0.0f) {
 			float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
 			float posY = std::lerp(panelTexturePosY_, -200.0f, t);
-			panelTex_->SetPos({ 640.0f,posY,0.0f });
+			panelTex_->SetPos({ 320.0f,posY,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
-			float startX = 640.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
+			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
 			for (int i = 0; i < selectTypes_.size(); i++) {
 				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
 
@@ -291,10 +291,10 @@ void MapField::ReturenSelectMino() {
 			selectorTex_->SetSize(selectorDeleteSize_);
 		}
 		else {
-			panelTex_->SetPos({ 640.0f,-200.0f,0.0f });
+			panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
-			float startX = 640.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
+			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
 			for (int i = 0; i < selectTypes_.size(); i++) {
 				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
 				float x = startX + i * space;
@@ -391,7 +391,7 @@ void MapField::MoveControlMino() {
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 	
 	const int gridSize = 15;
-	const int cellSize = 22; // 1マスのサイズ（px）
+	const int cellSize = 24; // 1マスのサイズ（px）
 	float localX = mouse.x - cellsPos_.x;
 	float localY = mouse.y - cellsPos_.y;
 	// セル番号に変換
