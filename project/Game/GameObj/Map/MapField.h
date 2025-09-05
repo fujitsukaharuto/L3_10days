@@ -56,6 +56,7 @@ public:
 private:
 	void RemoveControlMino();
 	void FutureMinoUpdate();
+	void CameraMoveUpdate();
 
 private:
 	bool canQuickDrop_ = true;
@@ -87,6 +88,10 @@ private:
 	int oldLine_ = 15;
 	int old_;
 	float nextSpace_ = 10.0f;
+
+	bool isCameraMove_ = false;
+	float cameraHeight_ = 22.0f;
+	float cameraMoveTime_ = 30.0f;
 
 	CollisionManager* cMana_;
 

@@ -50,6 +50,7 @@ void MapField::Initialize() {
 void MapField::Update() {
 	UpdateControlMino();
 	UpdateSelectPanel();
+	CameraMoveUpdate();
 
 	for (auto& mino : minos_) {
 		mino->Update();
@@ -77,7 +78,7 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	// 年の線
 	float growLine = float(oldLine_) * 2.0f;
 	growLine = growLine * float(old_ + 1);
-	growLine += (float(old_) * nextSpace_) * old_;
+	growLine += (float(old_) * nextSpace_);
 	growLine -= 0.8f;
 	Line3dDrawer::GetInstance()->DrawLine3d({ -10.0f,growLine, -1.0f }, { 50.0f,growLine,-1.0f }, { 1.0f,1.0f,0.0f,1.0f });
 }
@@ -119,6 +120,14 @@ void MapField::DebugGUI() {
 		if (ImGui::Button("QuickDrop")) {
 			QuickDrop();
 		}
+		if (ImGui::Button("AddOld")) {
+			old_++;
+			cMana_->Reset();
+			minos_.clear();
+			climber_->OldUp();
+			map_ = std::vector(20, std::vector<int>(kMapWidth_));
+			isCameraMove_ = true;
+		}
 	}
 #endif // _DEBUG
 }
@@ -149,6 +158,7 @@ void MapField::UpdateSelectPanel() {
 }
 
 void MapField::SelectMino() {
+	if (isCameraMove_) return;
 	if (!controlMino_) {
 		if (selectPanelTime_ > 0.0f) selectPanelTime_ -= FPSKeeper::DeltaTime();
 		if (selectPanelTime_ < 0.0f) selectPanelTime_ = 0.0f;
@@ -590,7 +600,7 @@ void MapField::OldLineCheck() {
 
 	float growLine = float(oldLine_) * 2.0f;
 	growLine = growLine * float(old_ + 1);
-	growLine += (float(old_) * nextSpace_) * old_;
+	growLine += (float(old_) * nextSpace_);
 	
 	if (climber_->GetWorldPos().y >= growLine) {
 		old_++;
@@ -598,6 +608,7 @@ void MapField::OldLineCheck() {
 		minos_.clear();
 		climber_->OldUp();
 		map_ = std::vector(20, std::vector<int>(kMapWidth_));
+		isCameraMove_ = true;
 	}
 }
 
@@ -626,8 +637,8 @@ std::pair<int, int> MapField::CalcFieldGrid(const Vector3& pos) const {
 
 const float MapField::GetOldDistance() const {
 	float growLine = float(oldLine_) * 2.0f;
-	growLine += float(old_) * nextSpace_;
 	growLine *= float(old_);
+	growLine += float(old_) * nextSpace_;
 	return (growLine);
 }
 
@@ -829,4 +840,28 @@ void MapField::FutureMinoUpdate() {
 	float oldDistance = GetOldDistance();
 	futureMino_->GetTransform().translate = { (cell.x) * 2.0f,(20.0f - cell.y) * 2.0f + oldDistance,0.0f };
 	futureMino_->Update();
+}
+
+void MapField::CameraMoveUpdate() {
+	if (isCameraMove_) {
+		cameraMoveTime_ -= FPSKeeper::DeltaTime();
+		if (cameraMoveTime_ <= 0.0f) {
+			cameraMoveTime_ = 0.0f;
+			isCameraMove_ = false;
+		}
+
+		float growLine = float(oldLine_) * 2.0f;
+		growLine = growLine * float(old_ + 1);
+		growLine += (float(old_) * nextSpace_);
+		growLine -= 8.0f;
+
+		float t = 1.0f - (cameraMoveTime_ / 30.0f);
+		float cameraY = std::lerp(cameraHeight_, growLine, t);
+		CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, cameraY, -75.0f };
+
+		if (!isCameraMove_) {
+			cameraMoveTime_ = 30.0f;
+			cameraHeight_ = growLine;
+		}
+	}
 }
