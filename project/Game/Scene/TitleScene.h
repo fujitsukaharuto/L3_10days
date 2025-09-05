@@ -8,6 +8,8 @@
 #include "Game/GameObj/Block/Mino.h"
 #include "Game/GameObj/Map/MapField.h"
 
+#include "Game/GameObj/GenderMapField/GenderMapField.h"
+
 class TitleScene:public BaseScene {
 public:
 	TitleScene();
@@ -33,6 +35,7 @@ private:
 	std::unique_ptr<Mino> b2_;
 
 	std::unique_ptr<MapField> map_;
+	std::unique_ptr<GenderMapField> genderMap_;
 
 	// 人間
 	std::unique_ptr<Climber> climber_;

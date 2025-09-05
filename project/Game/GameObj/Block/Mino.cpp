@@ -23,9 +23,7 @@ void Mino::Update() {
 
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
-	if (cMana_) {
-		cMana_->AddCollider(collider_.get());
-	}
+
 }
 
 void Mino::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {

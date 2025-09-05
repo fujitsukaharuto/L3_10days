@@ -36,7 +36,7 @@ private:
 	// マップ本体
 	std::vector<std::vector<GenderType>> map_;
 	// ブロック
-	std::vector<std::vector<GenderBlock>> blocks_;
+	std::vector<std::vector<std::unique_ptr<GenderBlock>>> blocks_;
 
 	// 高さ
 	const uint32_t kMapHeight_ = 20;

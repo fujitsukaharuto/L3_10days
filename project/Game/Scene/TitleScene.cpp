@@ -61,6 +61,8 @@ void TitleScene::Initialize() {
 	map_->Initialize();
 	map_->SetColliderManager(cMane_.get());
 
+	genderMap_ = std::make_unique<GenderMapField>();
+	
 
 	climber_ = std::make_unique<Climber>(map_.get());
 	climber_->Initialize();
@@ -107,6 +109,7 @@ void TitleScene::Update() {
 	b2_->Update();*/
 
 	map_->Update();
+	genderMap_->Update();
 
 	climber_->Update();
 
@@ -136,6 +139,7 @@ void TitleScene::Draw() {
 	//b2_->Draw();
 
 	map_->Draw();
+	genderMap_->Draw();
 
 	climber_->Draw();
 
