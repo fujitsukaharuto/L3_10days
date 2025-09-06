@@ -60,18 +60,23 @@ private:
 	void FutureMinoUpdate();
 	void CellSpriteSetColor();
 
+	void InitCells();
+
 private:
 	bool canQuickDrop_ = true;
 	bool isCameraMove_ = false;
 	bool haveControlMino_ = false;
 
 	std::vector<std::vector<int>> map_;
+	std::vector<std::vector<int>> TypeMap_;
 	const uint32_t kMapWidth_ = 15;
 
 	float downTime_ = 60.0f;
 
 	Vector2 cellNum_;
-	std::vector < std::vector<std::unique_ptr<Sprite>>> cells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> cells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> typeCells_;
+
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
