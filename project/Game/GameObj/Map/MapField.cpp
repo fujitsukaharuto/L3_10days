@@ -45,26 +45,13 @@ void MapField::Initialize() {
 		if (i == 6) type = BlockType::I;
 		selectTypes_.push_back(type);
 	}
-
-	cellsPos_ = { 150.0f,170.0f };
-	cells_.resize(15);
-	for (int i = 0; i < 15; i++) {
-		cells_[i].resize(15);
-		for (int j = 0; j < 15; j++) {
-			// unique_ptr の生成
-			auto cell = std::make_unique<Sprite>();
-			cell->Load("white2x2.png");
-			cell->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-			cell->SetSize({ 22.0f,22.0f });
-			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
-			cells_[i][j] = std::move(cell);
-		}
-	}
 	BackPanelTex_ = std::make_unique<Sprite>();
 	BackPanelTex_->Load("white2x2.png");
 	BackPanelTex_->SetColor({ 0.2f,0.2f,0.2f,1.0f });
 	BackPanelTex_->SetSize({ 640.0f,720.0f });
 	BackPanelTex_->SetPos({ 320.0f,360.0f,0.0f });
+
+	InitCells();
 }
 
 void MapField::Update() {
@@ -101,82 +88,20 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 
 	for (size_t i = 0; i < cells_.size(); i++) {
 		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j]) {
+			if (cells_[i][j] && typeCells_[i][j]) {
 				cells_[i][j]->Draw();
+				if (TypeMap_[i][j] == 1) {
+					typeCells_[i][j]->Draw();
+				}
 			}
 		}
 	}
-
-	//// 年の線
-	//float growLine = float(oldLine_) * 2.0f;
-	//growLine = growLine * float(old_ + 1);
-	//growLine += (float(old_) * nextSpace_);
-	//growLine -= 0.8f;
-	//Line3dDrawer::GetInstance()->DrawLine3d({ -10.0f,growLine, -1.0f }, { 50.0f,growLine,-1.0f }, { 1.0f,1.0f,0.0f,1.0f });
 }
 
 void MapField::DebugGUI() {
 #ifdef _DEBUG
 	if (ImGui::CollapsingHeader("MapField")) {
 
-		if (ImGui::Button("AddMino:L")) {
-			if (!controlMino_) {
-				AddMino(BlockType::L);
-			}
-		}ImGui::SameLine();
-		if (ImGui::Button("AddMino:T")) {
-			if (!controlMino_) {
-				AddMino(BlockType::T);
-			}
-		}
-		if (ImGui::Button("AddMino:S")) {
-			if (!controlMino_) {
-				AddMino(BlockType::S);
-			}
-		}ImGui::SameLine();
-		if (ImGui::Button("AddMino:Z")) {
-			if (!controlMino_) {
-				AddMino(BlockType::Z);
-			}
-		}
-		if (ImGui::Button("AddMino:O")) {
-			if (!controlMino_) {
-				AddMino(BlockType::O);
-			}
-		}ImGui::SameLine();
-		if (ImGui::Button("AddMino:J")) {
-			if (!controlMino_) {
-				AddMino(BlockType::J);
-			}
-		}
-		if (ImGui::Button("QuickDrop")) {
-			QuickDrop();
-		}
-		if (ImGui::Button("AddOld")) {
-			old_++;
-			cMana_->Reset();
-			minos_.clear();
-			climber_->OldUp();
-			map_ = std::vector(15, std::vector<int>(kMapWidth_));
-			isCameraMove_ = true;
-		}
-		ImGui::DragFloat2("cellPos", &cellsPos_.x, 0.1f);
-		if (ImGui::Button("SetCell")) {
-			cells_.clear();
-			cells_.resize(15);
-			for (int i = 0; i < 15; i++) {
-				cells_[i].resize(15);
-				for (int j = 0; j < 15; j++) {
-					// unique_ptr の生成
-					auto cell = std::make_unique<Sprite>();
-					cell->Load("white2x2.png");
-					cell->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-					cell->SetSize({ 22.5f,22.5f });
-					cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((15.0f - i) * 25.0f),0.0f });
-					cells_[i][j] = std::move(cell);
-				}
-			}
-		}
 	}
 #endif // _DEBUG
 }
@@ -511,7 +436,16 @@ void MapField::MoveControlMino() {
 				if (map_[i][j] == 1) {
 					continue;
 				}
-				cells_[i][j]->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+				cells_[i][j]->SetColor({ 0.1f,0.1f,0.1f,1.0f });
+				cells_[i][j]->SetSize({ 19.0f,19.0f });
+			}
+			if (typeCells_[i][j]) {
+				if (TypeMap_[i][j] == 1) {
+					typeCells_[i][j]->SetSize({ 25.0f,25.0f });
+					typeCells_[i][j]->SetColor({ 0.9f,0.9f,0.9f,0.3f });
+					continue;
+				}
+				typeCells_[i][j]->SetSize({ 2.0f,2.0f });
 			}
 		}
 	}
@@ -904,6 +838,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.65f,0.0f,1.0f });
 			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 1.0f,0.65f,0.0f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.65f,0.0f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::T:
@@ -911,6 +849,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.55f,0.0f,0.55f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.55f,0.0f,0.55f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 0.55f,0.0f,0.55f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::S:
@@ -918,6 +860,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.5f,0.0f,1.0f });
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.5f,0.0f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.5f,0.0f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::Z:
@@ -925,6 +871,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x - 1)]->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x - 1)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::O:
@@ -932,6 +882,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,1.0f,0.0f,1.0f });
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 1.0f,1.0f,0.0f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,1.0f,0.0f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::J:
@@ -939,6 +893,10 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,1.0f });
 			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,1.0f });
 			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.0f,1.0f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		case BlockType::I:
@@ -946,10 +904,66 @@ void MapField::CellSpriteSetColor() {
 			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.85f,0.95f,1.0f });
 			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 0.0f,0.85f,0.95f,1.0f });
 			cells_[int(cellNum_.y - 3)][int(cellNum_.x)]->SetColor({ 0.0f,0.85f,0.95f,1.0f });
+			cells_[int(cellNum_.y)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
+			cells_[int(cellNum_.y - 3)][int(cellNum_.x)]->SetSize({ 23.0f,23.0f });
 
 			break;
 		default:
 			break;
+		}
+	}
+}
+
+void MapField::InitCells() {
+	cellsPos_ = { 150.0f,170.0f };
+	cells_.resize(15);
+	for (int i = 0; i < 15; i++) {
+		cells_[i].resize(15);
+		for (int j = 0; j < 15; j++) {
+			// unique_ptr の生成
+			auto cell = std::make_unique<Sprite>();
+			cell->Load("white2x2.png");
+			cell->SetColor({ 0.1f,0.1f,0.1f,1.0f });
+			cell->SetSize({ 19.0f,19.0f });
+			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
+			cells_[i][j] = std::move(cell);
+		}
+	}
+
+	TypeMap_ = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,1,1,1,1,1,1,1,0,0,0,0},
+		{0,0,0,0,1,0,1,1,1,0,1,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
+		{0,0,0,0,0,1,1,0,1,1,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	};
+	typeCells_.resize(15);
+	for (int i = 0; i < 15; i++) {
+		typeCells_[i].resize(15);
+		for (int j = 0; j < 15; j++) {
+			// unique_ptr の生成
+			auto cell = std::make_unique<Sprite>();
+			cell->Load("white2x2.png");
+			cell->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+			cell->SetSize({ 2.0f,2.0f });
+			if (TypeMap_[i][j] == 1) {
+				cell->SetSize({ 25.0f,25.0f });
+				cell->SetColor({ 0.9f,0.9f,0.9f,0.3f });
+			}
+			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
+			typeCells_[i][j] = std::move(cell);
 		}
 	}
 }
