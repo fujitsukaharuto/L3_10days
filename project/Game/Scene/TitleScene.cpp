@@ -74,6 +74,10 @@ void TitleScene::Initialize() {
 	terrainCollider_->SetDepth(20.0f);
 	terrainCollider_->SetHeight(4.0f);
 
+	friendlyManager_ = std::make_unique<FriendlyManager>();
+	enemyManager_ = std::make_unique<EnemyManager>();
+
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -112,6 +116,12 @@ void TitleScene::Update() {
 
 	cMane_->CheckAllCollision();
 
+	// 
+	//　マネージャ更新
+	// 
+	friendlyManager_->Update();
+	enemyManager_->Update();
+
 	//climber_->Up();
 
 	ParticleManager::GetInstance()->Update();
@@ -142,8 +152,10 @@ void TitleScene::Draw() {
 	//b2_->Draw();
 
 	map_->Draw();
-
 	climber_->Draw();
+
+	friendlyManager_->Draw();
+	enemyManager_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();

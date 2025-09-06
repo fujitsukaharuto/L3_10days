@@ -302,8 +302,8 @@
     <ClCompile Include="Game\GameObj\Chara\BaseChara\BaseChara.cpp" />
     <ClCompile Include="Game\GameObj\Chara\Friendly\Friendly.cpp" />
     <ClCompile Include="Game\GameObj\Chara\Enemy\Enemy.cpp" />
-    <ClCompile Include="Game\GameObj\Chara\CharaManagers\EnemyManager\EnemyManager.cpp" />
-    <ClCompile Include="Game\GameObj\Chara\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
+    <ClCompile Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.cpp" />
+    <ClCompile Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -654,8 +654,8 @@
     <ClInclude Include="Game\GameObj\Chara\BaseChara\BaseChara.h" />
     <ClInclude Include="Game\GameObj\Chara\Friendly\Friendly.h" />
     <ClInclude Include="Game\GameObj\Chara\Enemy\Enemy.h" />
-    <ClInclude Include="Game\GameObj\Chara\CharaManagers\EnemyManager\EnemyManager.h" />
-    <ClInclude Include="Game\GameObj\Chara\CharaManagers\FriendlyManager\FriendlyManager.h" />
+    <ClInclude Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.h" />
+    <ClInclude Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
