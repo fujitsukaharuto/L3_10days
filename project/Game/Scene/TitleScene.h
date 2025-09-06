@@ -8,6 +8,9 @@
 #include "Game/GameObj/Block/Mino.h"
 #include "Game/GameObj/Map/MapField.h"
 
+#include "GameObj/Chara/CharaManagers/FriendlyManager/FriendlyManager.h"
+#include "GameObj/Chara/CharaManagers/EnemyManager/EnemyManager.h"
+
 class TitleScene:public BaseScene {
 public:
 	TitleScene();
@@ -41,6 +44,9 @@ private:
 
 	std::unique_ptr<CollisionManager> cMane_;
 	std::unique_ptr<AABBCollider> terrainCollider_;
+
+	// 敵のマネージャを追加
+
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
