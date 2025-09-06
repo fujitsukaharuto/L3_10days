@@ -13,5 +13,7 @@ public:
 	void Update()override;
 
 private:
-
+	// ひとまず進行方向
+	Vector3 kMoveDir_ = { -1.0f,0.0f,0.0f };
+	float speed_ = 0.01f;
 };
