@@ -22,6 +22,7 @@ public:
 	void DebugGUI();
 
 	void BackDraw();
+	void ArrangementDraw();
 
 	void UpdateSelectPanel();
 	void SelectMino();
@@ -71,11 +72,10 @@ private:
 	std::vector<std::vector<int>> TypeMap_;
 	const uint32_t kMapWidth_ = 15;
 
-	float downTime_ = 60.0f;
-
 	Vector2 cellNum_;
 	std::vector<std::vector<std::unique_ptr<Sprite>>> cells_;
 	std::vector<std::vector<std::unique_ptr<Sprite>>> typeCells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> arrangementCells_;
 
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
