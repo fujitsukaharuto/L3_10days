@@ -30,11 +30,10 @@ public:
 	void UpdateControlMino();
 
 	void MoveControlMino();
-	void CellCheck();
+	void CellCheck(); // Dropする時に置けるかどうかのチェック用
 	void QuickDrop();
 	void CellSet();
-
-	void OldLineCheck();
+	bool ArrangementCheck(); // マウスで置く際のチェック用
 
 	void SetColliderManager(CollisionManager* cMana);
 	void SetClimber(Climber* climber);
@@ -59,11 +58,12 @@ public:
 private:
 	void RemoveControlMino();
 	void FutureMinoUpdate();
-	void CameraMoveUpdate();
 	void CellSpriteSetColor();
 
 private:
 	bool canQuickDrop_ = true;
+	bool isCameraMove_ = false;
+	bool haveControlMino_ = false;
 
 	std::vector<std::vector<int>> map_;
 	const uint32_t kMapWidth_ = 15;
@@ -95,7 +95,6 @@ private:
 	int old_;
 	float nextSpace_ = 10.0f;
 
-	bool isCameraMove_ = false;
 	float cameraHeight_ = 22.0f;
 	float cameraMoveTime_ = 30.0f;
 

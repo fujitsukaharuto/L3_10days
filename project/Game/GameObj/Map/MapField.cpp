@@ -68,9 +68,13 @@ void MapField::Initialize() {
 }
 
 void MapField::Update() {
+	if (controlMino_) {
+		haveControlMino_ = true;
+	} else {
+		haveControlMino_ = false;
+	}
 	UpdateControlMino();
 	UpdateSelectPanel();
-	CameraMoveUpdate();
 
 	for (auto& mino : minos_) {
 		mino->Update();
@@ -183,19 +187,22 @@ void MapField::BackDraw() {
 
 void MapField::UpdateSelectPanel() {
 	if (!controlMino_) {
-		if (Input::GetInstance()->TriggerKey(DIK_LEFT)) {
-			minoButtonNum_--;
-			if (minoButtonNum_ < 0) {
-				minoButtonNum_ = int(selectTypes_.size()) - 1;
+		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+		for (int i = 0; i < selectTypes_.size(); i++) {
+			int idx = int(selectTypes_[i]);
+			Vector3 pos = buttonTex_[idx]->GetPos();   // 中心座標
+			Vector2 size = buttonTex_[idx]->GetSize(); // 幅・高さ
+
+			// 半サイズ
+			float halfW = size.x * 0.5f;
+			float halfH = size.y * 0.5f;
+			// マウスが矩形内かチェック
+			if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+				mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+				minoButtonNum_ = i;
 			}
 		}
-		else if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
-			minoButtonNum_++;
-			if (minoButtonNum_ == int(selectTypes_.size())) {
-				minoButtonNum_ = 0;
-			}
-		}
-		else if (Input::GetInstance()->TriggerKey(DIK_UP)) {
+		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 			if (!controlMino_) {
 				AddMino(selectTypes_[minoButtonNum_]);
 				return;
@@ -232,8 +239,7 @@ void MapField::SelectMino() {
 			float x = startX + float(minoButtonNum_) * space;
 			selectorTex_->SetPos({ x, posY, 0.0f });
 
-		}
-		else {
+		} else {
 			panelTex_->SetPos({ 320.0f,panelTexturePosY_,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
@@ -289,8 +295,7 @@ void MapField::ReturenSelectMino() {
 			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
 			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
 			selectorTex_->SetSize(selectorDeleteSize_);
-		}
-		else {
+		} else {
 			panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
@@ -346,7 +351,7 @@ void MapField::AddMino(BlockType type) {
 
 	controlMino_ = std::move(mino);
 	float oldDistance = GetOldDistance();
-	controlMino_->GetTransform().translate = {cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f};
+	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
 
 	futureMino_ = std::make_unique<Mino>();
 	futureMino_->Initialize();
@@ -372,7 +377,7 @@ void MapField::UpdateControlMino() {
 	MoveControlMino();
 
 	controlMino_->Update();
-	if (Input::GetInstance()->IsTriggerMouse(0)) {
+	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
 		return;
 	}
@@ -389,7 +394,7 @@ void MapField::MoveControlMino() {
 	Vector2 nextCell = cellNum_;
 	bool isMove = false;
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	
+
 	const int gridSize = 15;
 	const int cellSize = 24; // 1マスのサイズ（px）
 	float localX = mouse.x - cellsPos_.x;
@@ -397,8 +402,8 @@ void MapField::MoveControlMino() {
 	// セル番号に変換
 	int cellX = static_cast<int>(localX / cellSize);
 	int cellY = static_cast<int>(localY / cellSize);
-	cellX = std::clamp(cellX, 0, gridSize-1);
-	cellY = std::clamp(cellY, 0, gridSize-1);
+	cellX = std::clamp(cellX, 0, gridSize - 1);
+	cellY = std::clamp(cellY, 0, gridSize - 1);
 	if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
 		nextCell = { float(cellX),float(cellY) };
 		isMove = true;
@@ -520,8 +525,7 @@ void MapField::MoveControlMino() {
 		if (climber_->CanAvoidBlock()) {
 			climber_->AvoidFeatureBlock();
 			canQuickDrop_ = true;
-		}
-		else {
+		} else {
 			canQuickDrop_ = false;
 		}
 	}
@@ -531,130 +535,56 @@ void MapField::CellCheck() {
 	switch (controlMino_->GetBlockType()) {
 	case BlockType::L:
 
-
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::T:
 
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::S:
 
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::Z:
 
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::O:
 
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::J:
 
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	case BlockType::I:
 
-
-		if (int(cellNum_.y + 1.0f) == 15) {
+		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
 			controlMino_->SetBlockMode(BlockMode::Stay);
 			return;
 		}
-		if (map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-
 		break;
 	default:
 		break;
 	}
-
 	cellNum_.y++;
 }
 
@@ -676,27 +606,65 @@ void MapField::CellSet() {
 	if (!controlMino_) return;
 
 	if (controlMino_) {
+		if (!ArrangementCheck()) {
+			return;
+		}
 		controlMino_->SetBlockMode(BlockMode::Stay);
 		controlMino_->Update();
 		RemoveControlMino();
 	}
 }
 
-void MapField::OldLineCheck() {
-	if (controlMino_)return;
-
-	float growLine = float(oldLine_) * 2.0f;
-	growLine = growLine * float(old_ + 1);
-	growLine += (float(old_) * nextSpace_);
-	
-	if (climber_->GetWorldPos().y >= growLine) {
-		old_++;
-		cMana_->Reset();
-		minos_.clear();
-		climber_->OldUp();
-		map_ = std::vector(20, std::vector<int>(kMapWidth_));
-		isCameraMove_ = true;
+bool MapField::ArrangementCheck() {
+	bool result = false;
+	switch (controlMino_->GetBlockType()) {
+	case BlockType::L:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::T:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::S:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x + 1)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::Z:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x - 1)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::O:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x + 1)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::J:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] == 1) {
+			return result;
+		}
+		break;
+	case BlockType::I:
+		if (int(cellNum_.y) == 15 ||
+			map_[int(cellNum_.y)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y - 3)][int(cellNum_.x)] == 1) {
+			return result;
+		}
+		break;
+	default:
+		break;
 	}
+	result = true;
+	return result;
 }
 
 void MapField::SetColliderManager(CollisionManager* cMana) {
@@ -786,7 +754,6 @@ void MapField::RemoveControlMino() {
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
 		selectPanelTime_ = defaultSelectPanelTime_;
-		OldLineCheck();
 	}
 }
 
@@ -927,30 +894,6 @@ void MapField::FutureMinoUpdate() {
 	float oldDistance = GetOldDistance();
 	futureMino_->GetTransform().translate = { (cell.x) * 2.0f,(15.0f - cell.y) * 2.0f + oldDistance,0.0f };
 	futureMino_->Update();
-}
-
-void MapField::CameraMoveUpdate() {
-	if (isCameraMove_) {
-		cameraMoveTime_ -= FPSKeeper::DeltaTime();
-		if (cameraMoveTime_ <= 0.0f) {
-			cameraMoveTime_ = 0.0f;
-			isCameraMove_ = false;
-		}
-
-		float growLine = float(oldLine_) * 2.0f;
-		growLine = growLine * float(old_ + 1);
-		growLine += (float(old_) * nextSpace_);
-		growLine -= 8.0f;
-
-		float t = 1.0f - (cameraMoveTime_ / 30.0f);
-		float cameraY = std::lerp(cameraHeight_, growLine, t);
-		CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, cameraY, -75.0f };
-
-		if (!isCameraMove_) {
-			cameraMoveTime_ = 30.0f;
-			cameraHeight_ = growLine;
-		}
-	}
 }
 
 void MapField::CellSpriteSetColor() {

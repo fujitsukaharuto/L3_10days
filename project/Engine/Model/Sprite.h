@@ -57,6 +57,9 @@ public:
 
 	Vector2 GetDefaultSize() const { return defaultSize_; }
 
+	Vector3 GetPos() { return position_; }
+	Vector2 GetSize() { return size_; }
+
 	/*void SetPointLight(PointLight* light) { pointLight_ = light; }
 
 	void SetSpotLight(SpotLight* light) { spotLight_ = light; }*/
