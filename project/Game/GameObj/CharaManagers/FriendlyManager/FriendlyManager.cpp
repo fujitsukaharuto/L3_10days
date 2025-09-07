@@ -26,6 +26,7 @@ void FriendlyManager::AddFriendly(const CharaStatus& status) {
 }
 
 void FriendlyManager::DebugGUI() {
+#ifdef _DEBUG
 	if (ImGui::CollapsingHeader("FriendlyManager")) {
 		CharaStatus status;
 		status.hp = 10;
@@ -40,6 +41,7 @@ void FriendlyManager::DebugGUI() {
 			AddFriendly(status);
 		}
 	}
+#endif // _DEBUG
 }
 
 const std::vector<std::unique_ptr<Friendly>>& FriendlyManager::GetFriendlies() {
