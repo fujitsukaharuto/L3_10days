@@ -3,6 +3,8 @@
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
 
+class EnemyManager;
+
 /// <summary>
 /// 友軍
 /// </summary>
@@ -13,8 +15,15 @@ public:
 
 	void Update()override;
 
+	void Search()override;
+
+	void SetEne(EnemyManager* ene);
+
 private:
 	// ひとまず進行方向
 	Vector3 kMoveDir_ = { 1.0f,0.0f,0.0f };
 	float speed_ = 0.01f;
+
+private:
+	EnemyManager* ene_;
 };

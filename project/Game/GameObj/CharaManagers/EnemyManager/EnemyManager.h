@@ -5,6 +5,8 @@
 
 #include "GameObj/Chara/Enemy/Enemy.h"
 
+class FriendlyManager;
+
 /// <summary>
 /// 敵マネージャ
 /// </summary>
@@ -18,6 +20,10 @@ public:
 
 	void AddEnemy(const CharaStatus& status);
 
+	const std::vector<std::unique_ptr<Enemy>>& GetEnemies();
+
+	void SetFri(FriendlyManager* fri);
+
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
@@ -27,5 +33,8 @@ private:
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;
 	float enemyPopTimer_ = 0.0f;
+
+private:
+	FriendlyManager* fri_;
 
 };

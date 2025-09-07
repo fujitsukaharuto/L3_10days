@@ -34,5 +34,14 @@ void EnemyManager::Draw() {
 void EnemyManager::AddEnemy(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
 	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, kPopPosition_);
+	newObj->SetFri(fri_);
 	enemies_.push_back(std::move(newObj));
+}
+
+const std::vector<std::unique_ptr<Enemy>>& EnemyManager::GetEnemies() {
+	return enemies_;
+}
+
+void EnemyManager::SetFri(FriendlyManager* fri) {
+	fri_ = fri;
 }
