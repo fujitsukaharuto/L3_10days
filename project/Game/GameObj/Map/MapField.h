@@ -36,6 +36,8 @@ public:
 	void CellSet();
 	bool ArrangementCheck(); // マウスで置く際のチェック用
 
+	void CompleteArragement();
+
 	void SetColliderManager(CollisionManager* cMana);
 	void SetClimber(Climber* climber);
 
@@ -80,6 +82,11 @@ private:
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
+
+	// この３つはデバッグ表示用
+	std::vector<int> maxB_;
+	std::vector<int> manB_;
+	std::vector<int> womanB_;
 
 	int minoButtonNum_ = 0;
 	Vector2 panelSize_ = { 640.0f,100.0f };

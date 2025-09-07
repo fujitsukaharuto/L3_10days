@@ -111,7 +111,14 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 void MapField::DebugGUI() {
 #ifdef _DEBUG
 	if (ImGui::CollapsingHeader("MapField")) {
-
+		if (ImGui::Button("Complete")) {
+			CompleteArragement();
+		}
+		for (int i = 0; i < maxB_.size(); i++) {
+			ImGui::Text("Max : %d", maxB_[i]); ImGui::SameLine();
+			ImGui::Text("Man : %d", manB_[i]); ImGui::SameLine();
+			ImGui::Text("Woman : %d", womanB_[i]);
+		}
 	}
 #endif // _DEBUG
 }
@@ -185,12 +192,12 @@ void MapField::UpdateSelectPanel() {
 			if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 				mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 				minoButtonNum_ = i;
-			}
-		}
-		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-			if (!controlMino_) {
-				AddMino(selectTypes_[minoButtonNum_]);
-				return;
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						AddMino(selectTypes_[minoButtonNum_]);
+						return;
+					}
+				}
 			}
 		}
 	}
@@ -628,6 +635,31 @@ bool MapField::ArrangementCheck() {
 	}
 	result = true;
 	return result;
+}
+
+void MapField::CompleteArragement() {
+	if (controlMino_) return;
+	int manBlocks = 0;
+	int womanBlocks = 0;
+
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			if (TypeMap_[i][j] == 1 && map_[i][j] == 1) {
+				manBlocks++;
+			} else if (TypeMap_[i][j] == 1 && map_[i][j] == 2) {
+				womanBlocks++;
+			}
+
+		}
+	}
+	int maxBlocks = manBlocks + womanBlocks;
+
+	maxB_.push_back(maxBlocks);
+	manB_.push_back(manBlocks);
+	womanB_.push_back(womanBlocks);
+
+	map_ = std::vector(15, std::vector<int>(kMapWidth_));
+	minos_.clear();
 }
 
 void MapField::SetColliderManager(CollisionManager* cMana) {
