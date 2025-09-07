@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
-Enemy::Enemy(const std::string& modelName, const Vector3& popPos)
-	:BaseChara(modelName, popPos) {
+Enemy::Enemy(const CharaStatus& status, const Vector3& popPos)
+	:BaseChara(status, popPos) {
 	OriginGameObject::GetModel()->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 
 }

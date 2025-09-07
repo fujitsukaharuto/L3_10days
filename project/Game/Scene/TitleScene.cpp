@@ -79,6 +79,10 @@ void TitleScene::Initialize() {
 	friendlyManager_ = std::make_unique<FriendlyManager>();
 	enemyManager_ = std::make_unique<EnemyManager>();
 
+	battleSystem_ = std::make_unique<BattleSystem>(
+		friendlyManager_.get(),
+		enemyManager_.get()
+	);
 
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
@@ -123,6 +127,8 @@ void TitleScene::Update() {
 	// 
 	friendlyManager_->Update();
 	enemyManager_->Update();
+
+	battleSystem_->Update();
 
 	//climber_->Up();
 
@@ -191,6 +197,7 @@ void TitleScene::DebugGUI() {
 	ImGui::Indent();
 	map_->DebugGUI();
 	climber_->DebugGUI();
+	friendlyManager_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }

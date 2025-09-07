@@ -2,32 +2,54 @@
 
 #include "Game/OriginGameObject.h"
 
+enum Gender {
+	MEN,
+	WOMEN
+};
+
+enum State {
+	Search,
+	Approach,
+	Fight,
+};
+
+struct CharaStatus {
+	std::string name;
+	Gender gender;
+	uint32_t power;
+	uint32_t hp;
+};
+
 /// <summary>
 /// 敵キャラ
 /// </summary>
 class BaseChara: public OriginGameObject {
 public:
-	BaseChara(const std::string& modelName, const Vector3& popPos);
-	~BaseChara()override;
+	BaseChara(const CharaStatus& status, const Vector3& popPos);
+	virtual ~BaseChara()override = default;
 
-	void Update()override;
+	void Update()override {};
+
 	void Draw(Material* mate = nullptr, bool is = false)override;
 
-	void Attack();
+	void Action();
 
 protected:
-	// 
-	// 定数
-	// 
 
-	const float kMaxHp_ = 50.0f;
-	const float kAttackPower_ = 10.0f;
+	// ターゲット
+	BaseChara* target_ = nullptr;
 
 	// 
 	// 変数
 	// 
 
-	float hp_ = 0.0f;
+	// ステータス
+	CharaStatus status_;
 
+	// 状態
+	State state_;
+
+	// 最大HP
+	uint32_t maxHp_;
 
 };

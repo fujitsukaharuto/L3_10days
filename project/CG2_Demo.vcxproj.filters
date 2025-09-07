@@ -304,6 +304,7 @@
     <ClCompile Include="Game\GameObj\Chara\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
+    <ClCompile Include="Game\GameObj\BattleSystem\BattleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -656,6 +657,7 @@
     <ClInclude Include="Game\GameObj\Chara\Enemy\Enemy.h" />
     <ClInclude Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.h" />
+    <ClInclude Include="Game\GameObj\BattleSystem\BattleSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
