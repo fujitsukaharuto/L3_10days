@@ -17,7 +17,12 @@ public:
 
 	void AddFriendly(const CharaStatus& status);
 
+	void DebugGUI();
+
 private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
+
+	// 敵の沸く座標
+	const Vector3 kPopPosition_ = { 22.0f,10.0f,0.0f };
 
 };

@@ -1,9 +1,11 @@
 #include "BaseChara.h"
 
 BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
-
 	// ステータスを受け取る
 	status_ = status;
+
+	// ステートを初期化
+	state_ = State::Search;
 
 	// 最大hpを取得
 	maxHp_ = status_.hp;
@@ -11,14 +13,6 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::Initialize();
 	OriginGameObject::CreateModel(status_.name);
 	OriginGameObject::GetModel()->transform.translate = popPos;
-
-
-
-}
-
-BaseChara::~BaseChara() {}
-
-void BaseChara::Update() {
 
 }
 

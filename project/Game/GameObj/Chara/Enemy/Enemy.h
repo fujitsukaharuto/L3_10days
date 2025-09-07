@@ -7,7 +7,7 @@
 /// </summary>
 class Enemy: public BaseChara {
 public:
-	Enemy(const std::string& modelName, const Vector3& popPos);
+	Enemy(const CharaStatus& status, const Vector3& popPos);
 	~Enemy()override = default;
 
 	void Update()override;

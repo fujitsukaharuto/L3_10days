@@ -195,6 +195,7 @@ void TitleScene::DebugGUI() {
 	ImGui::Indent();
 	map_->DebugGUI();
 	climber_->DebugGUI();
+	friendlyManager_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }

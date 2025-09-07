@@ -8,7 +8,15 @@ void EnemyManager::Update() {
 		enemyPopTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
 	} else {
 		enemyPopTimer_ = 0.0f;
-		AddEnemy();
+
+		// TODO:ポップテーブルから沸きの設定をおこなえるようにする
+		CharaStatus status;
+		status.hp = 10;
+		status.name = "cube.obj";
+		status.power = 2;
+		status.gender = MEN;
+
+		AddEnemy(status);
 	}
 
 	for (auto& obj : enemies_) {
