@@ -21,6 +21,7 @@ void Enemy::Update() {
 	} else {
 		state_ = State::Search;
 	}
+
 	// 移動量計算
 	Vector3 velocity{};
 
@@ -33,7 +34,11 @@ void Enemy::Update() {
 			OriginGameObject::GetModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
 			break;
 		case State::Approach:
-			// ターゲットした敵に近づいていく
+			// ターゲットした敵に近づいていく		
+			if (target_) {
+				const Vector3 targetPos = target_->GetModel()->GetWorldPos();
+
+			}
 
 			break;
 		case State::Fight:
