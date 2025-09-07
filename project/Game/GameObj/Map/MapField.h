@@ -64,6 +64,7 @@ private:
 	void CellSpriteSetColor();
 
 	void InitCells();
+	void GenderColor();
 
 private:
 	bool canQuickDrop_ = true;
@@ -88,6 +89,7 @@ private:
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
 
+	int gender_ = 0;
 	int minoButtonNum_ = 0;
 	Vector2 panelSize_ = { 640.0f,100.0f };
 	float selectPanelTime_ = 0.0f;
@@ -99,6 +101,8 @@ private:
 	Vector2 selectorDeleteSize_;
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
+	std::unique_ptr<Sprite> manPanelTex_;
+	std::unique_ptr<Sprite> womanPanelTex_;
 	std::unique_ptr<Sprite> BackPanelTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
