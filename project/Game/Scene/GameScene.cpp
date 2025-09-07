@@ -4,7 +4,6 @@
 #include "FPSKeeper.h"
 #include "Game/GameObj/FollowCamera.h"
 #include "Engine/Model/ModelManager.h"
-#include "Engine/Light/LightManager.h"
 
 #include "Particle/ParticleManager.h"
 #include "Scene/SceneManager.h"
