@@ -358,6 +358,8 @@
     <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
+    <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
+    <ClCompile Include="Game\Editor\MinoEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -773,6 +775,9 @@
     <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
+    <ClInclude Include="BuiltinTypes.h" />
+    <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
+    <ClInclude Include="Game\Editor\MinoEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

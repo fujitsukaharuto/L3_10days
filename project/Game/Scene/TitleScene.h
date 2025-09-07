@@ -8,6 +8,10 @@
 #include "Game/GameObj/Block/Mino.h"
 #include "Game/GameObj/Map/MapField.h"
 
+#ifdef _DEBUG
+#include "Game/Editor/UsableMinoEditor.h"
+#endif
+
 class TitleScene:public BaseScene {
 public:
 	TitleScene();
@@ -48,4 +52,8 @@ private:
 	float blackTime = 20.0f;
 	bool isChangeFase = false;
 	bool isParticleDebugScene_ = false;
+
+#ifdef _DEBUG
+	UsableMinoEditor minoEditor_;
+#endif
 };
