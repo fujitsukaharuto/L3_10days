@@ -18,16 +18,6 @@ GameScene::~GameScene() {
 void GameScene::Initialize() {
 
 	GlobalVariables* globalvariables = GlobalVariables::GetInstance();
-	const char* groupName = "Sphere";
-	const char* groupName2 = "Fence";
-
-	globalvariables->CreateGroup(groupName);
-	globalvariables->AddItem(groupName, "parametar", spherePara);
-	globalvariables->AddItem(groupName, "Position", spherevec);
-
-	globalvariables->CreateGroup(groupName2);
-	globalvariables->AddItem(groupName2, "parametar", fencePara);
-	globalvariables->AddItem(groupName2, "Position", fencevec);
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
@@ -69,10 +59,7 @@ void GameScene::Update() {
 
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_8)) {
-		SoundData& soundData1 = audioPlayer_->SoundLoadWave("xxx.wav");
-		audioPlayer_->SoundPlayWave(soundData1);
-	}
+	
 #endif // _DEBUG
 
 	skybox_->Update();
@@ -189,13 +176,4 @@ void GameScene::LoadSceneLevelData(const std::string& name) {
 }
 
 void GameScene::ApplyGlobalVariables() {
-	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
-	const char* groupName = "Sphere";
-	const char* groupName2 = "Fence";
-
-	spherePara = globalVariables->GetFloatValue(groupName, "parametar");
-	spherevec = globalVariables->GetVector3Value(groupName, "Position");
-
-	fencePara = globalVariables->GetFloatValue(groupName2, "parametar");
-	fencevec = globalVariables->GetVector3Value(groupName2, "Position");
 }

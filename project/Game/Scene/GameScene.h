@@ -31,19 +31,10 @@ private:
 	std::unique_ptr<AnimationModel> terrain = nullptr;
 	std::unique_ptr<SkyBox> skybox_;
 
+
+
+
 	bool isBackTitle_ = false;
-
-	float spherePara = 10;
-	Vector3 spherevec = { 0.0f,1.0f,0.0f };
-
-	float fencePara = 10;
-	Vector3 fencevec = { -2.0f,-1.0f,1.0f };
-
-	bool isDebugCameraMode_ = false;
-
-
-	ParticleEmitter emit;
-
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
