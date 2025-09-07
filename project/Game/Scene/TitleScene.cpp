@@ -26,7 +26,7 @@ void TitleScene::Initialize() {
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
-	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
+	//dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
 
 	cMane_ = std::make_unique<CollisionManager>();
 

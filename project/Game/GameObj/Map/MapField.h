@@ -93,7 +93,9 @@ private:
 
 	int gender_ = 0;
 	int minoButtonNum_ = 0;
-	Vector2 panelSize_ = { 640.0f,100.0f };
+	int mapSizeNum_ = 2;
+	int blockButtonNum_ = 0;
+	Vector2 panelSize_ = { 400.0f,65.0f };
 	float selectPanelTime_ = 0.0f;
 	float defaultSelectPanelTime_ = 30.0f;
 	float panelTexturePosY_;
@@ -106,6 +108,11 @@ private:
 	std::unique_ptr<Sprite> manPanelTex_;
 	std::unique_ptr<Sprite> frameTex_;
 	std::unique_ptr<Sprite> completeTex_;
+
+	std::unique_ptr<Sprite> mapSizeTex_;
+	std::unique_ptr<Sprite> arrowLTex_;
+	std::unique_ptr<Sprite> arrowRTex_;
+
 	std::unique_ptr<Sprite> BackPanelTex_;
 	std::unique_ptr<Sprite> factoryBackPanelTex_;
 	std::unique_ptr<Sprite> cursorTex_;

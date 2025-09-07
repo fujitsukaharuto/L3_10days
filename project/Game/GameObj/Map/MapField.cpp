@@ -2,6 +2,7 @@
 
 #include "Game/GameObj/Climber/Climber.h"
 #include "Game/Collider/CollisionManager.h"
+#include "Engine//Math/Random/Random.h"
 
 MapField::MapField() {}
 
@@ -12,9 +13,8 @@ void MapField::Initialize() {
 	map_ = std::vector(15, std::vector<int>(kMapWidth_));
 
 	panelTex_ = std::make_unique<Sprite>();
-	panelTex_->Load("white2x2.png");
-	panelTex_->SetSize(panelSize_);
-	panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
+	panelTex_->Load("blockBox.png");
+	panelTex_->SetPos({ 285.0f,102.5f,0.0f });
 	for (int i = 0; i < 7; i++) {
 		std::unique_ptr<Sprite> button;
 		button = std::make_unique<Sprite>();
@@ -26,9 +26,11 @@ void MapField::Initialize() {
 		if (i == 4) button->SetColor({ 1.0f,1.0f,0.0f,1.0f });
 		if (i == 5) button->SetColor({ 0.0f,0.0f,1.0f,1.0f });
 		if (i == 6) button->SetColor({ 0.0f,0.8f,0.95f,1.0f });
+		button->SetSize({ 55.0f,37.5f });
+		button->SetPos({ 185.0f,95.0f,0.0f });
 		buttonTex_.push_back(std::move(button));
 	}
-	panelTexturePosY_ = 130.0f;
+	panelTexturePosY_ = 102.5f;
 
 	manPanelTex_ = std::make_unique<Sprite>();
 	manPanelTex_->Load("choice.png");
@@ -44,7 +46,7 @@ void MapField::Initialize() {
 
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
-	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
 
 	for (int i = 0; i < 7; i++) {
 		BlockType type = BlockType::L;
@@ -69,6 +71,20 @@ void MapField::Initialize() {
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
 	grabCursorTex_ = std::make_unique<Sprite>();
 	grabCursorTex_->Load("grabCursor.png");
+
+	arrowLTex_ = std::make_unique<Sprite>();
+	arrowLTex_->Load("arrow.png");
+	arrowLTex_->SetFlipX(true);
+	arrowLTex_->SetAnchor({ 0.5f,0.5f });
+	arrowLTex_->SetPos({ 55.0f, 400.0f,0.0f });
+	arrowRTex_ = std::make_unique<Sprite>();
+	arrowRTex_->Load("arrow.png");
+	arrowRTex_->SetPos({ 515.0f, 400.0f,0.0f });
+
+	mapSizeTex_ = std::make_unique<Sprite>();
+	mapSizeTex_->Load("frameSize.png");
+	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
+	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
 	InitCells();
 }
@@ -102,10 +118,19 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	manPanelTex_->Draw();
 	frameTex_->Draw();
 	completeTex_->Draw();
+	if (mapSizeNum_ != 2) {
+		arrowLTex_->Draw();
+	}
+	if (mapSizeNum_ != 0) {
+		arrowRTex_->Draw();
+	}
+	mapSizeTex_->Draw();
 	panelTex_->Draw();
 	selectorTex_->Draw();
 	for (int i = 0; i < buttonTex_.size(); i++) {
-		buttonTex_[i]->Draw();
+		if (blockButtonNum_ == i) {
+			buttonTex_[i]->Draw();
+		}
 	}
 
 	for (size_t i = 0; i < cells_.size(); i++) {
@@ -230,31 +255,29 @@ void MapField::ArrangementDraw() {
 void MapField::UpdateSelectPanel() {
 	if (!controlMino_) {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
-		for (int i = 0; i < selectTypes_.size(); i++) {
-			int idx = int(selectTypes_[i]);
-			Vector3 pos = buttonTex_[idx]->GetPos();   // 中心座標
-			Vector2 size = buttonTex_[idx]->GetSize(); // 幅・高さ
 
-			// 半サイズ
-			float halfW = size.x * 0.5f;
-			float halfH = size.y * 0.5f;
-			// マウスが矩形内かチェック
-			if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-				mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-				minoButtonNum_ = i;
-				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-					if (!controlMino_) {
-						AddMino(selectTypes_[minoButtonNum_]);
-						return;
-					}
+		// blockどれつかむか
+		Vector3 pos = buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		Vector2 size = buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 0;
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					AddMino(selectTypes_[blockButtonNum_]);
+					return;
 				}
 			}
 		}
-		Vector3 pos = manPanelTex_->GetPos();
-		Vector2 size = manPanelTex_->GetSize();
-		float halfW = size.x * 0.5f;
-		float halfH = size.y * 0.5f;
-		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x&&
+
+		// 性別決める
+		pos = manPanelTex_->GetPos();
+		size = manPanelTex_->GetSize();
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_) {
@@ -272,6 +295,7 @@ void MapField::UpdateSelectPanel() {
 				}
 			}
 		}
+		// 完了を押す
 		pos = completeTex_->GetPos();
 		size = completeTex_->GetSize();
 		halfW = size.x * 0.5f;
@@ -281,6 +305,33 @@ void MapField::UpdateSelectPanel() {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_) {
 					CompleteArragement();
+				}
+			}
+		}
+		// マップサイズの変更
+		pos = arrowLTex_->GetPos();
+		size = arrowLTex_->GetSize();
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 2) {
+					mapSizeNum_++;
+					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+				}
+			}
+		}
+		pos = arrowRTex_->GetPos();
+		size = arrowRTex_->GetSize();
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 0) {
+					mapSizeNum_--;
+					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 				}
 			}
 		}
@@ -295,9 +346,9 @@ void MapField::SelectMino() {
 		if (selectPanelTime_ > 0.0f) selectPanelTime_ -= FPSKeeper::DeltaTime();
 		if (selectPanelTime_ < 0.0f) selectPanelTime_ = 0.0f;
 		if (selectPanelTime_ != 0.0f) {
-			float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
+			/*float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
 			float posY = std::lerp(-200.0f, panelTexturePosY_, t);
-			panelTex_->SetPos({ 320.0f,posY,0.0f });
+			panelTex_->SetPos({ 285.0f,posY,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
 			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
@@ -313,10 +364,10 @@ void MapField::SelectMino() {
 			}
 
 			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, posY, 0.0f });
+			selectorTex_->SetPos({ x, posY, 0.0f });*/
 
 		} else {
-			panelTex_->SetPos({ 320.0f,panelTexturePosY_,0.0f });
+			/*panelTex_->SetPos({ 285.0f,panelTexturePosY_,0.0f });
 
 			float space = 570.0f / float(selectTypes_.size());
 			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
@@ -331,9 +382,22 @@ void MapField::SelectMino() {
 			}
 
 			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, panelTexturePosY_, 0.0f });
+			selectorTex_->SetPos({ x, panelTexturePosY_, 0.0f });*/
 		}
 
+		if (minoButtonNum_ == 0) {
+			selectorTex_->SetPos({ 185.0f,95.0f, 0.0f });
+			selectorMaxSize_ = { 150.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 150.0f + 10.0f,40.0f + 10.0f };
+		} else if (minoButtonNum_ == 1) {
+			selectorTex_->SetPos({ 335.0f,95.0f, 0.0f });
+			selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
+		} else if (minoButtonNum_ == 2) {
+			selectorTex_->SetPos({ 435.0f,95.0f, 0.0f });
+			selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
+		}
 		selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
 		selectorSizeTime_ = fmodf(selectorSizeTime_, std::numbers::pi_v<float>);
 		// sin波で 0.0 ～ 1.0 に正規化
@@ -886,6 +950,7 @@ void MapField::RemoveControlMino() {
 
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
+		blockButtonNum_ = Random::GetInt(0, 6);
 		//selectPanelTime_ = defaultSelectPanelTime_;
 	}
 }

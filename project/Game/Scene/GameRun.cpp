@@ -44,6 +44,8 @@ void GameRun::Initialize() {
 	textureManager_->Load("normalCursor.png");
 	textureManager_->Load("grabCursor.png");
 	textureManager_->Load("completed.png");
+	textureManager_->Load("arrow.png");
+	textureManager_->Load("frameSize.png");
 
 
 #pragma endregion
