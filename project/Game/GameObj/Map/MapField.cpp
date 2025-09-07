@@ -81,6 +81,13 @@ void MapField::Initialize() {
 	arrowRTex_->Load("arrow.png");
 	arrowRTex_->SetPos({ 515.0f, 400.0f,0.0f });
 
+	factoryTex_ = std::make_unique<Sprite>();
+	factoryTex_->Load("myFactory.png");
+	factoryTex_->SetPos({ 595.0f, 360.0f,0.0f });
+	enemyFactoryTex_ = std::make_unique<Sprite>();
+	enemyFactoryTex_->Load("enemyFactory.png");
+	enemyFactoryTex_->SetPos({ 1255.0f, 360.0f,0.0f });
+
 	mapSizeTex_ = std::make_unique<Sprite>();
 	mapSizeTex_->Load("frameSize.png");
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
@@ -124,6 +131,8 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	if (mapSizeNum_ != 0) {
 		arrowRTex_->Draw();
 	}
+	factoryTex_->Draw();
+	enemyFactoryTex_->Draw();
 	mapSizeTex_->Draw();
 	panelTex_->Draw();
 	selectorTex_->Draw();
@@ -182,12 +191,58 @@ void MapField::DebugGUI() {
 #endif // _DEBUG
 }
 
+void MapField::TitleInit() {
+	map_ = {
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+			{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,1,1,0,0,0,2,2,0,0,0,0},
+			{0,0,0,1,1,0,2,2,0,0,2,2,0,0,0},
+			{0,0,0,0,0,0,2,2,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,1,0,2,0,0,0,0,0,0},
+			{0,0,0,0,0,0,1,0,2,0,0,0,0,0,0},
+			{0,0,0,0,0,1,1,0,2,2,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	};
+	for (size_t i = 0; i < cells_.size(); i++) {
+		for (size_t j = 0; j < cells_[i].size(); j++) {
+			if (cells_[i][j] && typeCells_[i][j]) {
+				if (map_[i][j] == 2) {
+					arrangementCells_[i][j]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+				}
+			}
+		}
+	}
+}
+
+void MapField::TitleUpdate() {
+	if (controlMino_) {
+		haveControlMino_ = true;
+	} else {
+		haveControlMino_ = false;
+	}
+	//UpdateControlMino();
+	TitleUpdateSelectPanel();
+}
+
+void MapField::TitleUpdateSelectPanel() {
+	if (!controlMino_) {
+	}
+	SelectMino();
+}
+
 void MapField::BackDraw() {
-	BackPanelTex_->Draw();
+	//BackPanelTex_->Draw();
 }
 
 void MapField::FactoryDraw() {
 	factoryBackPanelTex_->Draw();
+	BackPanelTex_->Draw();
 }
 
 void MapField::CursorDraw() {
@@ -807,6 +862,7 @@ void MapField::CompleteArragement() {
 
 	map_ = std::vector(15, std::vector<int>(kMapWidth_));
 	minos_.clear();
+	blockButtonNum_ = Random::GetInt(0, 6);
 }
 
 void MapField::SetColliderManager(CollisionManager* cMana) {
@@ -950,7 +1006,6 @@ void MapField::RemoveControlMino() {
 
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
-		blockButtonNum_ = Random::GetInt(0, 6);
 		//selectPanelTime_ = defaultSelectPanelTime_;
 	}
 }

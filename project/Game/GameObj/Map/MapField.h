@@ -21,6 +21,10 @@ public:
 	void Draw(Material* mate = nullptr, bool is = false);
 	void DebugGUI();
 
+	void TitleInit();
+	void TitleUpdate();
+	void TitleUpdateSelectPanel();
+
 	void BackDraw();
 	void FactoryDraw();
 	void CursorDraw();
@@ -112,6 +116,9 @@ private:
 	std::unique_ptr<Sprite> mapSizeTex_;
 	std::unique_ptr<Sprite> arrowLTex_;
 	std::unique_ptr<Sprite> arrowRTex_;
+
+	std::unique_ptr<Sprite> factoryTex_;
+	std::unique_ptr<Sprite> enemyFactoryTex_;
 
 	std::unique_ptr<Sprite> BackPanelTex_;
 	std::unique_ptr<Sprite> factoryBackPanelTex_;

@@ -5,6 +5,7 @@
 #include "Game/GameObj/FollowCamera.h"
 #include "Game/TestBaseObj.h"
 #include "Game/Collider/CollisionManager.h"
+#include "Game/GameObj/Map/MapField.h"
 
 
 class GameScene :public BaseScene {
@@ -31,8 +32,13 @@ private:
 	std::unique_ptr<AnimationModel> terrain = nullptr;
 	std::unique_ptr<SkyBox> skybox_;
 
+	std::unique_ptr<AnimationModel> ni_ = nullptr;
+	std::unique_ptr<AnimationModel> nn_ = nullptr;
+	std::unique_ptr<AnimationModel> ge_ = nullptr;
+	std::unique_ptr<AnimationModel> nn2_ = nullptr;
+	std::unique_ptr<AnimationModel> factory_ = nullptr;
 
-
+	std::unique_ptr<MapField> map_;
 
 	bool isBackTitle_ = false;
 
