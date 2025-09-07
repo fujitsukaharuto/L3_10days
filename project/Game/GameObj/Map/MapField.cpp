@@ -649,7 +649,6 @@ void MapField::CompleteArragement() {
 			} else if (TypeMap_[i][j] == 1 && map_[i][j] == 2) {
 				womanBlocks++;
 			}
-
 		}
 	}
 	int maxBlocks = manBlocks + womanBlocks;
