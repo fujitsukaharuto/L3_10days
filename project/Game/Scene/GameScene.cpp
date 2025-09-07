@@ -18,6 +18,7 @@ GameScene::~GameScene() {
 void GameScene::Initialize() {
 
 	GlobalVariables* globalvariables = GlobalVariables::GetInstance();
+	globalvariables;
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
