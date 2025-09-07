@@ -20,6 +20,11 @@ enum class BlockType {
 	I,
 };
 
+enum class GenderType {
+	Man,
+	Woman,
+};
+
 enum class BlockMode {
 	Fall,
 	Stay,
@@ -38,7 +43,7 @@ public:
 	void DebugGUI();
 
 	void DrawLine();
-	void InitBlock(BlockType type);
+	void InitBlock(BlockType type, GenderType gender);
 
 	//========================================================================*/
 	//* Collision
@@ -61,6 +66,7 @@ public:
 	BlockMode GetBlockMode() {
 		return blockMode_;
 	}
+	GenderType GetGender() { return gender_; }
 
 	Trans& GetTransform();
 	const Trans& GetTransform() const;
@@ -78,6 +84,7 @@ private:
 
 	BlockType blockType_;
 	BlockMode blockMode_;
+	GenderType gender_;
 
 	std::vector<std::unique_ptr<BaseBlock>> blocks_;
 

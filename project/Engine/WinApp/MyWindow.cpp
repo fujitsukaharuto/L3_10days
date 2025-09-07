@@ -28,6 +28,10 @@ void MyWin::Finalize() {
 bool MyWin::ProcessMessage() {
 	MSG msg{};
 
+	if (!isDrawCursor_) {
+		CursorUpdate();
+	}
+
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 		if (msg.message == WM_QUIT) {
 			return true;
@@ -105,4 +109,23 @@ void MyWin::ThrowAwayWindow() {
 	UnregisterClass(wc_.lpszClassName, wc_.hInstance);
 	CoUninitialize();
 	CloseWindow(hwnd_);
+}
+
+void MyWin::CursorUpdate() {
+	RECT rect;
+	GetClientRect(hwnd_, &rect);
+
+	POINT mousePos;
+	GetCursorPos(&mousePos);
+	ScreenToClient(hwnd_, &mousePos);
+
+	// ウィンドウ内かどうか判定
+	bool inside = (mousePos.x >= 0 && mousePos.x < rect.right &&
+		mousePos.y >= 0 && mousePos.y < rect.bottom);
+
+	if (inside) {
+		ShowCursor(FALSE);  // 独自カーソルを使う
+	} else {
+		ShowCursor(TRUE);   // OS標準カーソルを表示
+	}
 }

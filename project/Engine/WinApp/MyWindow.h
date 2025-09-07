@@ -28,7 +28,7 @@ public:
 	const WNDCLASS& GetWNDCLASS() const { return wc_; }
 	const RECT& GetRECT() const { return wrc_; }
 
-
+	void SetDrawCursor(bool isDraw) { isDrawCursor_ = isDraw; }
 
 private:
 
@@ -38,6 +38,7 @@ private:
 
 	void ThrowAwayWindow();
 
+	void CursorUpdate();
 
 private:
 	MyWin(const MyWin&) = delete;
@@ -47,5 +48,7 @@ private:
 	HWND hwnd_ = nullptr;
 	WNDCLASS wc_{};
 	RECT wrc_;
+
+	bool isDrawCursor_ = true;
 
 };

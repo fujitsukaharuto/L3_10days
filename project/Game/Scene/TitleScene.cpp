@@ -11,6 +11,7 @@
 #include "Engine/Editor/CommandManager.h"
 
 
+
 TitleScene::TitleScene() {}
 
 TitleScene::~TitleScene() {}
@@ -20,6 +21,7 @@ void TitleScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
+	//MyWin::GetInstance()->SetDrawCursor(false);
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
 

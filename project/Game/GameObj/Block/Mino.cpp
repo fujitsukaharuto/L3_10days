@@ -40,8 +40,9 @@ void Mino::DrawLine() {
 #endif // _DEBUG
 }
 
-void Mino::InitBlock(BlockType type) {
+void Mino::InitBlock(BlockType type, GenderType gender) {
 	blockType_ = type;
+	gender_ = gender;
 	blockMode_ = BlockMode::Fall;
 
 	Vector4 color = { 1.0f,0.65f,0.0f,1.0f };
