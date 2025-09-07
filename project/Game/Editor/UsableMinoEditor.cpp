@@ -168,6 +168,7 @@ void UsableMinoEditor::Serialize() const {
 			minoJson["Color"] = { data.color.x,data.color.y,data.color.z };
 			minoJson["NumMaxUse"] = data.numMaxUse;
 			minoJson["Blocks"] = data.blocks;
+			minoJson["GenderType"] = data.gender;
 		}
 
 		root["Minos"] = minosJson;
@@ -200,6 +201,9 @@ void UsableMinoEditor::Deserialize() {
 				}
 				if (minoJson.contains("NumMaxUse") && minoJson["NumMaxUse"].is_number()) {
 					minoData.numMaxUse = minoJson["NumMaxUse"];
+				}
+				if (minoJson.contains("GenderType") && minoJson["GenderType"].is_number()) {
+					minoData.gender = minoJson["GenderType"];
 				}
 				if (minoJson.contains("Blocks") && minoJson["Blocks"].is_array()) {
 					minoData.blocks = minoJson["Blocks"];
