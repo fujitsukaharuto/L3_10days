@@ -125,11 +125,11 @@ void GameScene::Draw() {
 
 	obj3dCommon->PreDraw();
 
-	//map_->FactoryDraw();
+	map_->FactoryDraw();
 
 	//terrain->Draw();
 
-	//map_->Draw();
+	map_->Draw();
 	ni_->Draw();
 	nn_->Draw();
 	ge_->Draw();
