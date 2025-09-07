@@ -4,6 +4,8 @@
 
 #include "GameObj/Chara/Friendly/Friendly.h"
 
+class EnemyManager;
+
 /// <summary>
 /// 味方マネージャ
 /// </summary>
@@ -19,10 +21,17 @@ public:
 
 	void DebugGUI();
 
+	const std::vector<std::unique_ptr<Friendly>>& GetFriendlies();
+
+	void SetEne(EnemyManager* ene);
+
 private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
 
 	// 敵の沸く座標
 	const Vector3 kPopPosition_ = { 22.0f,10.0f,0.0f };
+
+private:
+	EnemyManager* ene_;
 
 };

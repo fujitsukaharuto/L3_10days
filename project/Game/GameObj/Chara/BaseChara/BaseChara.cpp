@@ -14,11 +14,25 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::CreateModel(status_.name);
 	OriginGameObject::GetModel()->transform.translate = popPos;
 
+	collider.radius = 8.0f;
+}
+
+void BaseChara::Update() {
+	// コライダーの座標を更新
+	collider.pos = OriginGameObject::GetModel()->GetWorldPos();
 }
 
 void BaseChara::Draw(Material* mate, bool is) {
 	OriginGameObject::Draw(mate, is);
 
+}
+
+CharaStatus BaseChara::GetStatus() {
+	return status_;
+}
+
+void BaseChara::SetTarget(BaseChara* target) {
+	target_ = target;
 }
 
 void BaseChara::Action() {
@@ -30,4 +44,8 @@ void BaseChara::Action() {
 
 		break;
 	}
+}
+
+void BaseChara::CheckIsDeadTarget() {
+
 }
