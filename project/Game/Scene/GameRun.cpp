@@ -69,6 +69,7 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("Star.obj");
 	modelManager_->LoadOBJ("player.obj");
 	modelManager_->LoadOBJ("Boss_Arrow.obj");
+	modelManager_->LoadOBJ("title.obj");
 	modelManager_->LoadGLTF("title1.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
