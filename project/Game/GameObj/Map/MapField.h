@@ -23,6 +23,7 @@ public:
 
 	void BackDraw();
 	void FactoryDraw();
+	void CursorDraw();
 	void ArrangementDraw();
 
 	void UpdateSelectPanel();
@@ -103,8 +104,12 @@ private:
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
 	std::unique_ptr<Sprite> manPanelTex_;
-	std::unique_ptr<Sprite> womanPanelTex_;
+	std::unique_ptr<Sprite> frameTex_;
+	std::unique_ptr<Sprite> completeTex_;
 	std::unique_ptr<Sprite> BackPanelTex_;
+	std::unique_ptr<Sprite> factoryBackPanelTex_;
+	std::unique_ptr<Sprite> cursorTex_;
+	std::unique_ptr<Sprite> grabCursorTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
 
@@ -116,6 +121,7 @@ private:
 	float cameraMoveTime_ = 30.0f;
 
 	Vector2 cellsPos_;
+	float cellsSize_ = 18.0f;
 
 	CollisionManager* cMana_;
 

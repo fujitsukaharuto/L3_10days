@@ -31,15 +31,14 @@ void MapField::Initialize() {
 	panelTexturePosY_ = 130.0f;
 
 	manPanelTex_ = std::make_unique<Sprite>();
-	manPanelTex_->Load("white2x2.png");
-	manPanelTex_->SetSize({ 275.0f,100.0f });
-	manPanelTex_->SetPos({ 190.0f, 20.0f,0.0f });
-	manPanelTex_->SetColor({ 0.0f,0.0f,1.0f,1.0f });
-	womanPanelTex_ = std::make_unique<Sprite>();
-	womanPanelTex_->Load("white2x2.png");
-	womanPanelTex_->SetSize({ 275.0f,100.0f });
-	womanPanelTex_->SetPos({ 460.0f, 20.0f,0.0f });
-	womanPanelTex_->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+	manPanelTex_->Load("choice.png");
+	manPanelTex_->SetPos({ 285.0f, 35.0f,0.0f });
+	frameTex_ = std::make_unique<Sprite>();
+	frameTex_->Load("Frame.png");
+	frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+	completeTex_ = std::make_unique<Sprite>();
+	completeTex_->Load("completed.png");
+	completeTex_->SetPos({ 285.0f, 660.0f,0.0f });
 
 	selectPanelTime_ = defaultSelectPanelTime_;
 
@@ -58,10 +57,18 @@ void MapField::Initialize() {
 		selectTypes_.push_back(type);
 	}
 	BackPanelTex_ = std::make_unique<Sprite>();
-	BackPanelTex_->Load("white2x2.png");
-	BackPanelTex_->SetColor({ 0.2f,0.2f,0.2f,1.0f });
-	BackPanelTex_->SetSize({ 640.0f,720.0f });
-	BackPanelTex_->SetPos({ 320.0f,360.0f,0.0f });
+	BackPanelTex_->Load("background.png");
+	BackPanelTex_->SetPos({ 925.0f,360.0f,0.0f });
+	factoryBackPanelTex_ = std::make_unique<Sprite>();
+	factoryBackPanelTex_->Load("factoryBackground.png");
+	factoryBackPanelTex_->SetSize({ 580.0f,720.0f });
+	factoryBackPanelTex_->SetPos({ 285.0f,360.0f,0.0f });
+
+	cursorTex_ = std::make_unique<Sprite>();
+	cursorTex_->Load("normalCursor.png");
+	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	grabCursorTex_ = std::make_unique<Sprite>();
+	grabCursorTex_->Load("grabCursor.png");
 
 	InitCells();
 }
@@ -93,7 +100,8 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	}*/
 
 	manPanelTex_->Draw();
-	womanPanelTex_->Draw();
+	frameTex_->Draw();
+	completeTex_->Draw();
 	panelTex_->Draw();
 	selectorTex_->Draw();
 	for (int i = 0; i < buttonTex_.size(); i++) {
@@ -139,18 +147,34 @@ void MapField::DebugGUI() {
 		Vector2 size = manPanelTex_->GetSize();
 		ImGui::DragFloat2("ManPanelSize", &size.x);
 		manPanelTex_->SetSize(size);
-		pos = womanPanelTex_->GetPos();
+		pos = frameTex_->GetPos();
 		ImGui::DragFloat2("WomanPanelPos", &pos.x);
-		womanPanelTex_->SetPos(pos);
-		size = womanPanelTex_->GetSize();
+		frameTex_->SetPos(pos);
+		size = frameTex_->GetSize();
 		ImGui::DragFloat2("WomanPanelSize", &size.x);
-		womanPanelTex_->SetSize(size);
+		frameTex_->SetSize(size);
 	}
 #endif // _DEBUG
 }
 
 void MapField::BackDraw() {
 	BackPanelTex_->Draw();
+}
+
+void MapField::FactoryDraw() {
+	factoryBackPanelTex_->Draw();
+}
+
+void MapField::CursorDraw() {
+	if (haveControlMino_) {
+		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+		grabCursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
+		grabCursorTex_->Draw();
+	} else {
+		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+		cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
+		cursorTex_->Draw();
+	}
 }
 
 void MapField::ArrangementDraw() {
@@ -230,7 +254,7 @@ void MapField::UpdateSelectPanel() {
 		Vector2 size = manPanelTex_->GetSize();
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
-		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x&&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_) {
@@ -239,16 +263,24 @@ void MapField::UpdateSelectPanel() {
 				}
 			}
 		}
-		pos = womanPanelTex_->GetPos();
-		size = womanPanelTex_->GetSize();
+		if (mouse.x >= pos.x && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					gender_ = int(GenderType::Woman);
+					GenderColor();
+				}
+			}
+		}
+		pos = completeTex_->GetPos();
+		size = completeTex_->GetSize();
 		halfW = size.x * 0.5f;
 		halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_) {
-					gender_ = int(GenderType::Woman);
-					GenderColor();
+					CompleteArragement();
 				}
 			}
 		}
@@ -438,7 +470,7 @@ void MapField::MoveControlMino() {
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 
 	const int gridSize = 15;
-	const int cellSize = 24; // 1マスのサイズ（px）
+	const int cellSize = int(cellsSize_ - 1.0f); // 1マスのサイズ（px）
 	float localX = mouse.x - cellsPos_.x;
 	float localY = mouse.y - cellsPos_.y;
 	// セル番号に変換
@@ -854,7 +886,7 @@ void MapField::RemoveControlMino() {
 
 		minos_.push_back(std::move(controlMino_));
 		controlMino_ = nullptr;
-		selectPanelTime_ = defaultSelectPanelTime_;
+		//selectPanelTime_ = defaultSelectPanelTime_;
 	}
 }
 
@@ -1119,7 +1151,7 @@ void MapField::CellSpriteSetColor() {
 }
 
 void MapField::InitCells() {
-	cellsPos_ = { 150.0f,230.0f };
+	cellsPos_ = { 158.0f,280.0f };
 	cells_.resize(15);
 	for (int i = 0; i < 15; i++) {
 		cells_[i].resize(15);
@@ -1127,9 +1159,9 @@ void MapField::InitCells() {
 			// unique_ptr の生成
 			auto cell = std::make_unique<Sprite>();
 			cell->Load("white2x2.png");
-			cell->SetColor({ 0.1f,0.1f,0.1f,1.0f });
-			cell->SetSize({ 19.0f,19.0f });
-			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
+			cell->SetColor({ 0.2f,0.2f,0.2f,0.4f });
+			cell->SetSize({ cellsSize_ - 6.0f,cellsSize_ - 6.0f });
+			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i) *cellsSize_),0.0f });
 			cells_[i][j] = std::move(cell);
 		}
 	}
@@ -1161,10 +1193,10 @@ void MapField::InitCells() {
 			cell->SetColor({ 0.5f,0.5f,0.5f,1.0f });
 			cell->SetSize({ 2.0f,2.0f });
 			if (TypeMap_[i][j] == 1) {
-				cell->SetSize({ 25.0f,25.0f });
-				cell->SetColor({ 0.9f,0.9f,0.9f,0.3f });
+				cell->SetSize({ cellsSize_,cellsSize_ });
+				cell->SetColor({ 0.1f,0.1f,0.1f,0.5f });
 			}
-			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
+			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i) *cellsSize_),0.0f });
 			typeCells_[i][j] = std::move(cell);
 		}
 	}
@@ -1177,8 +1209,8 @@ void MapField::InitCells() {
 			auto cell = std::make_unique<Sprite>();
 			cell->Load("white2x2.png");
 			cell->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			cell->SetSize({ 25.0f,25.0f });
-			cell->SetPos({ cellsPos_.x + (j * 25.0f),cellsPos_.y + ((i) * 25.0f),0.0f });
+			cell->SetSize({ cellsSize_,cellsSize_ });
+			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i) *cellsSize_),0.0f });
 			arrangementCells_[i][j] = std::move(cell);
 		}
 	}
