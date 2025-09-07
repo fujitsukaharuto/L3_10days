@@ -95,7 +95,9 @@ void TitleScene::Initialize() {
 	animParentObj_->SetNoneScaleParent(true);
 	animParentObj_->LoadTransformFromJson("AnimParent_transform.json");*/
 
-
+#ifdef _DEBUG
+	minoEditor_.Initialize();
+#endif // _DEBUG
 
 	ParticleManager::Load(emit, "lightning");
 }
@@ -195,6 +197,8 @@ void TitleScene::Draw() {
 
 void TitleScene::DebugGUI() {
 #ifdef _DEBUG
+	minoEditor_.DrawGUI();
+
 	ImGui::Indent();
 	map_->DebugGUI();
 	climber_->DebugGUI();
