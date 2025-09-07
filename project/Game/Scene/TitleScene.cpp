@@ -11,6 +11,7 @@
 #include "Engine/Editor/CommandManager.h"
 
 
+
 TitleScene::TitleScene() {}
 
 TitleScene::~TitleScene() {}
@@ -20,6 +21,7 @@ void TitleScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
+	MyWin::GetInstance()->SetDrawCursor(false);
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
 
@@ -74,6 +76,14 @@ void TitleScene::Initialize() {
 	terrainCollider_->SetDepth(20.0f);
 	terrainCollider_->SetHeight(4.0f);
 
+	friendlyManager_ = std::make_unique<FriendlyManager>();
+	enemyManager_ = std::make_unique<EnemyManager>();
+
+	battleSystem_ = std::make_unique<BattleSystem>(
+		friendlyManager_.get(),
+		enemyManager_.get()
+	);
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -114,6 +124,14 @@ void TitleScene::Update() {
 
 	cMane_->CheckAllCollision();
 
+	// 
+	//　マネージャ更新
+	// 
+	friendlyManager_->Update();
+	enemyManager_->Update();
+
+	battleSystem_->Update();
+
 	//climber_->Up();
 
 	ParticleManager::GetInstance()->Update();
@@ -123,18 +141,17 @@ void TitleScene::Draw() {
 
 #pragma region 背景描画
 
-	//map_->BackDraw();
-
+	map_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
 
 #pragma region 3Dオブジェクト
-	skybox_->Draw();
+	//skybox_->Draw();
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 	dxcommon_->ClearDepthBuffer();
-	map_->BackDraw();
+	map_->FactoryDraw();
 	dxcommon_->ClearDepthBuffer();
 
 	obj3dCommon->PreDraw();
@@ -144,8 +161,10 @@ void TitleScene::Draw() {
 	//b2_->Draw();
 
 	map_->Draw();
-
 	climber_->Draw();
+
+	friendlyManager_->Draw();
+	enemyManager_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();
@@ -170,6 +189,8 @@ void TitleScene::Draw() {
 		black_->Draw();
 	}
 
+	map_->CursorDraw();
+
 #pragma endregion
 	ModelManager::GetInstance()->PickingDataCopy();
 }
@@ -181,6 +202,7 @@ void TitleScene::DebugGUI() {
 	ImGui::Indent();
 	map_->DebugGUI();
 	climber_->DebugGUI();
+	friendlyManager_->DebugGUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }

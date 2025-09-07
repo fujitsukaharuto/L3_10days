@@ -197,26 +197,8 @@
     <ClCompile Include="Game\GameObj\LockOn.cpp">
       <Filter>Game\GameObj</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\Player.cpp">
-      <Filter>Game\GameObj\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\Behavior\PlayerJump.cpp">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\Behavior\PlayerRoot.cpp">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\AttackBehavior\PlayerAttackRoot.cpp">
-      <Filter>Game\GameObj\Player\AttackBehavior</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\ParticleDebugScene.cpp">
       <Filter>Game\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\PlayerBullet.cpp">
-      <Filter>Game\GameObj\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Boss.cpp">
-      <Filter>Game\GameObj\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\CommandManager.cpp">
       <Filter>Engine\Editor</Filter>
@@ -236,12 +218,6 @@
     <ClCompile Include="Engine\ImGuiManager\NodeGraph.cpp">
       <Filter>Engine\ImGuiManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossRoot.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
     <ClCompile Include="externals\imgui\utilities\drawing.cpp">
       <Filter>Externals\imgui\utilities</Filter>
     </ClCompile>
@@ -251,32 +227,11 @@
     <ClCompile Include="externals\imgui\utilities\builders.cpp">
       <Filter>Externals\imgui\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\BossCore.cpp">
-      <Filter>Game\GameObj\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\BossItem\WaveWall.cpp">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\BossItem\Beam.cpp">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossBeamAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Editor\CreateObjCommand.cpp">
       <Filter>Engine\Editor</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\DeleteObjCommand.cpp">
       <Filter>Engine\Editor</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossJumpAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossSwordAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\BossItem\UnderRing.cpp">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GraphicPipeline\SpritePipe.cpp">
       <Filter>Engine\GraphicPipeline</Filter>
@@ -292,9 +247,6 @@
     </ClCompile>
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\GrayCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Player\Behavior\PlayerAvoid.cpp">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\BloomCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
@@ -314,9 +266,6 @@
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\RetroTVCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossAreaAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\InitParticleCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClCompile>
@@ -335,15 +284,6 @@
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\BossItem\Arrow.cpp">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossArrowAttack.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObj\Enemy\Behavior\BossRodFall.cpp">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObj\Block\BaseBlock.cpp">
       <Filter>Game\GameObj\Block</Filter>
     </ClCompile>
@@ -360,6 +300,13 @@
     <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
     <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
     <ClCompile Include="Game\Editor\MinoEditor.cpp" />
+    <ClCompile Include="Game\Scene\FightScene.cpp" />
+    <ClCompile Include="Game\GameObj\Chara\BaseChara\BaseChara.cpp" />
+    <ClCompile Include="Game\GameObj\Chara\Friendly\Friendly.cpp" />
+    <ClCompile Include="Game\GameObj\Chara\Enemy\Enemy.cpp" />
+    <ClCompile Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.cpp" />
+    <ClCompile Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
+    <ClCompile Include="Game\GameObj\BattleSystem\BattleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -596,35 +543,8 @@
     <ClInclude Include="Game\GameObj\LockOn.h">
       <Filter>Game\GameObj</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\Player.h">
-      <Filter>Game\GameObj\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\Behavior\BasePlayerBehavior.h">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\Behavior\PlayerJump.h">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\Behavior\PlayerRoot.h">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\AttackBehavior\PlayerAttackRoot.h">
-      <Filter>Game\GameObj\Player\AttackBehavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\AttackBehavior\BasePlayerAttackBehavior.h">
-      <Filter>Game\GameObj\Player\AttackBehavior</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\ParticleDebugScene.h">
       <Filter>Game\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\PlayerBullet.h">
-      <Filter>Game\GameObj\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Boss.h">
-      <Filter>Game\GameObj\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BaseBossBehavior.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Editor\ICommand.h">
       <Filter>Engine\Editor</Filter>
@@ -650,12 +570,6 @@
     <ClInclude Include="Engine\ImGuiManager\NodeGraph.h">
       <Filter>Engine\ImGuiManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossRoot.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="externals\imgui\utilities\drawing.h">
       <Filter>Externals\imgui\utilities</Filter>
     </ClInclude>
@@ -665,32 +579,11 @@
     <ClInclude Include="externals\imgui\utilities\builders.h">
       <Filter>Externals\imgui\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\BossCore.h">
-      <Filter>Game\GameObj\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\BossItem\WaveWall.h">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\BossItem\Beam.h">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossBeamAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Editor\CreateObjCommand.h">
       <Filter>Engine\Editor</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Editor\DeleteObjCommand.h">
       <Filter>Engine\Editor</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossJumpAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossSwordAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\BossItem\UnderRing.h">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GraphicPipeline\SpritePipe.h">
       <Filter>Engine\GraphicPipeline</Filter>
@@ -710,9 +603,6 @@
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\GrayCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Player\Behavior\PlayerAvoid.h">
-      <Filter>Game\GameObj\Player\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\BloomCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClInclude>
@@ -730,9 +620,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\RetroTVCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossAreaAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
     </ClInclude>
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\InitParticleCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
@@ -752,15 +639,6 @@
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\BossItem\Arrow.h">
-      <Filter>Game\GameObj\Enemy\BossItem</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossArrowAttack.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Enemy\Behavior\BossRodFall.h">
-      <Filter>Game\GameObj\Enemy\Behavior</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObj\Block\BaseBlock.h">
       <Filter>Game\GameObj\Block</Filter>
     </ClInclude>
@@ -778,6 +656,13 @@
     <ClInclude Include="BuiltinTypes.h" />
     <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
     <ClInclude Include="Game\Editor\MinoEditor.h" />
+    <ClInclude Include="Game\Scene\FightScene.h" />
+    <ClInclude Include="Game\GameObj\Chara\BaseChara\BaseChara.h" />
+    <ClInclude Include="Game\GameObj\Chara\Friendly\Friendly.h" />
+    <ClInclude Include="Game\GameObj\Chara\Enemy\Enemy.h" />
+    <ClInclude Include="Game\GameObj\CharaManagers\EnemyManager\EnemyManager.h" />
+    <ClInclude Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.h" />
+    <ClInclude Include="Game\GameObj\BattleSystem\BattleSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

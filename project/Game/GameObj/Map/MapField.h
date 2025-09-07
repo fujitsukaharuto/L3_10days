@@ -22,6 +22,9 @@ public:
 	void DebugGUI();
 
 	void BackDraw();
+	void FactoryDraw();
+	void CursorDraw();
+	void ArrangementDraw();
 
 	void UpdateSelectPanel();
 	void SelectMino();
@@ -34,6 +37,8 @@ public:
 	void QuickDrop();
 	void CellSet();
 	bool ArrangementCheck(); // マウスで置く際のチェック用
+
+	void CompleteArragement();
 
 	void SetColliderManager(CollisionManager* cMana);
 	void SetClimber(Climber* climber);
@@ -60,22 +65,33 @@ private:
 	void FutureMinoUpdate();
 	void CellSpriteSetColor();
 
+	void InitCells();
+	void GenderColor();
+
 private:
 	bool canQuickDrop_ = true;
 	bool isCameraMove_ = false;
 	bool haveControlMino_ = false;
 
 	std::vector<std::vector<int>> map_;
+	std::vector<std::vector<int>> TypeMap_;
 	const uint32_t kMapWidth_ = 15;
 
-	float downTime_ = 60.0f;
-
 	Vector2 cellNum_;
-	std::vector < std::vector<std::unique_ptr<Sprite>>> cells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> cells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> typeCells_;
+	std::vector<std::vector<std::unique_ptr<Sprite>>> arrangementCells_;
+
 	std::unique_ptr<Mino> controlMino_;
 	std::unique_ptr<Mino> futureMino_;
 	std::vector<std::unique_ptr<Mino>> minos_;
 
+	// この３つはデバッグ表示用
+	std::vector<int> maxB_;
+	std::vector<int> manB_;
+	std::vector<int> womanB_;
+
+	int gender_ = 0;
 	int minoButtonNum_ = 0;
 	Vector2 panelSize_ = { 640.0f,100.0f };
 	float selectPanelTime_ = 0.0f;
@@ -87,7 +103,13 @@ private:
 	Vector2 selectorDeleteSize_;
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
+	std::unique_ptr<Sprite> manPanelTex_;
+	std::unique_ptr<Sprite> frameTex_;
+	std::unique_ptr<Sprite> completeTex_;
 	std::unique_ptr<Sprite> BackPanelTex_;
+	std::unique_ptr<Sprite> factoryBackPanelTex_;
+	std::unique_ptr<Sprite> cursorTex_;
+	std::unique_ptr<Sprite> grabCursorTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
 
@@ -99,6 +121,7 @@ private:
 	float cameraMoveTime_ = 30.0f;
 
 	Vector2 cellsPos_;
+	float cellsSize_ = 18.0f;
 
 	CollisionManager* cMana_;
 

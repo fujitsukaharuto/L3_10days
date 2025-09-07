@@ -8,6 +8,11 @@
 #include "Game/GameObj/Block/Mino.h"
 #include "Game/GameObj/Map/MapField.h"
 
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
+#include "GameObj/CharaManagers/EnemyManager/EnemyManager.h"
+
+#include "GameObj/BattleSystem/BattleSystem.h"
+
 #ifdef _DEBUG
 #include "Game/Editor/UsableMinoEditor.h"
 #endif
@@ -45,6 +50,13 @@ private:
 
 	std::unique_ptr<CollisionManager> cMane_;
 	std::unique_ptr<AABBCollider> terrainCollider_;
+
+	// 戦闘システム
+	std::unique_ptr<BattleSystem> battleSystem_;
+	// 自軍のマネージャ
+	std::unique_ptr<FriendlyManager> friendlyManager_;
+	// 敵のマネージャ
+	std::unique_ptr<EnemyManager> enemyManager_;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;

@@ -29,9 +29,9 @@ void BaseBlock::Initialize() {
 void BaseBlock::Update() {
 	collider_->SetPos(model_->GetWorldPos());
 	collider_->InfoUpdate();
-	if (cMana_) {
+	/*if (cMana_) {
 		cMana_->AddCollider(collider_.get());
-	}
+	}*/
 }
 
 void BaseBlock::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
