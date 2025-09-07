@@ -22,6 +22,7 @@ public:
 	void DebugGUI();
 
 	void BackDraw();
+	void FactoryDraw();
 	void ArrangementDraw();
 
 	void UpdateSelectPanel();
