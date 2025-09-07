@@ -36,6 +36,18 @@ void GameRun::Initialize() {
 	textureManager_->Load("key_beta.png");
 	textureManager_->Load("SquareFrame.png");
 	textureManager_->Load("FX12_Lightning_01.png");
+
+	textureManager_->Load("background.png");
+	textureManager_->Load("factoryBackground.png");
+	textureManager_->Load("frame.png");
+	textureManager_->Load("choice.png");
+	textureManager_->Load("normalCursor.png");
+	textureManager_->Load("grabCursor.png");
+	textureManager_->Load("completed.png");
+	textureManager_->Load("arrow.png");
+	textureManager_->Load("frameSize.png");
+
+
 #pragma endregion
 
 

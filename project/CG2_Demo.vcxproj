@@ -66,6 +66,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)externals;$(ProjectDir)Game;$(ProjectDir)Engine/WinApp;$(ProjectDir)Engine/Model;$(ProjectDir)Engine/Math;$(ProjectDir)Engine/Logger;$(ProjectDir)Engine/Light;$(ProjectDir)Engine/Input;$(ProjectDir)Engine/ImGuiManager;$(ProjectDir)Engine/GraphicPipeline;$(ProjectDir)Engine/GlobalVariables;$(ProjectDir)Engine/DX;$(ProjectDir)Engine/Camera;$(ProjectDir)Engine/Audio;$(ProjectDir)Engine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>BuiltinTypes.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +95,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <AdditionalIncludeDirectories>$(ProjectDir)externals\assimp\include;$(ProjectDir)externals;$(ProjectDir)Game;$(ProjectDir)Engine/WinApp;$(ProjectDir)Engine/Model;$(ProjectDir)Engine/Math;$(ProjectDir)Engine/Logger;$(ProjectDir)Engine/Light;$(ProjectDir)Engine/Input;$(ProjectDir)Engine/ImGuiManager;$(ProjectDir)Engine/GraphicPipeline;$(ProjectDir)Engine/GlobalVariables;$(ProjectDir)Engine/DX;$(ProjectDir)Engine/Camera;$(ProjectDir)Engine/Audio;$(ProjectDir)Engine;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>BuiltinTypes.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -221,8 +223,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\SceneFactory.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
+    <ClCompile Include="Game\Editor\MinoEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BuiltinTypes.h" />
     <ClInclude Include="Engine\Audio\AudioPlayer.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
     <ClInclude Include="Engine\Camera\CameraManager.h" />
@@ -348,6 +353,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Scene\SceneFactory.h" />
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\TestBaseObj.h" />
+    <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
+    <ClInclude Include="Game\Editor\MinoEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">

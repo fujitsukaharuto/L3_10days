@@ -298,6 +298,8 @@
     <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
     <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
+    <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
+    <ClCompile Include="Game\Editor\MinoEditor.cpp" />
     <ClCompile Include="Game\Scene\FightScene.cpp" />
     <ClCompile Include="Game\GameObj\Chara\BaseChara\BaseChara.cpp" />
     <ClCompile Include="Game\GameObj\Chara\Friendly\Friendly.cpp" />
@@ -651,6 +653,9 @@
     <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
     <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
+    <ClInclude Include="BuiltinTypes.h" />
+    <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
+    <ClInclude Include="Game\Editor\MinoEditor.h" />
     <ClInclude Include="Game\Scene\FightScene.h" />
     <ClInclude Include="Game\GameObj\Chara\BaseChara\BaseChara.h" />
     <ClInclude Include="Game\GameObj\Chara\Friendly\Friendly.h" />

@@ -21,12 +21,12 @@ void TitleScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
-	//MyWin::GetInstance()->SetDrawCursor(false);
+	MyWin::GetInstance()->SetDrawCursor(false);
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
 
 	dxcommon_->GetOffscreenManager()->ResetPostEffect();
-	dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
+	//dxcommon_->GetOffscreenManager()->AddPostEffect(PostEffectList::Bloom);
 
 	cMane_ = std::make_unique<CollisionManager>();
 
@@ -95,7 +95,9 @@ void TitleScene::Initialize() {
 	animParentObj_->SetNoneScaleParent(true);
 	animParentObj_->LoadTransformFromJson("AnimParent_transform.json");*/
 
-
+#ifdef _DEBUG
+	minoEditor_.Initialize();
+#endif // _DEBUG
 
 	ParticleManager::Load(emit, "lightning");
 }
@@ -139,18 +141,17 @@ void TitleScene::Draw() {
 
 #pragma region 背景描画
 
-	//map_->BackDraw();
-
+	map_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
 
 #pragma region 3Dオブジェクト
-	skybox_->Draw();
+	//skybox_->Draw();
 	obj3dCommon->PreDraw();
 	terrain_->Draw();
 	dxcommon_->ClearDepthBuffer();
-	map_->BackDraw();
+	map_->FactoryDraw();
 	dxcommon_->ClearDepthBuffer();
 
 	obj3dCommon->PreDraw();
@@ -188,12 +189,16 @@ void TitleScene::Draw() {
 		black_->Draw();
 	}
 
+	map_->CursorDraw();
+
 #pragma endregion
 	ModelManager::GetInstance()->PickingDataCopy();
 }
 
 void TitleScene::DebugGUI() {
 #ifdef _DEBUG
+	minoEditor_.DrawGUI();
+
 	ImGui::Indent();
 	map_->DebugGUI();
 	climber_->DebugGUI();

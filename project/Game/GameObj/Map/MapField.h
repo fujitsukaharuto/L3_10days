@@ -22,6 +22,8 @@ public:
 	void DebugGUI();
 
 	void BackDraw();
+	void FactoryDraw();
+	void CursorDraw();
 	void ArrangementDraw();
 
 	void UpdateSelectPanel();
@@ -91,7 +93,9 @@ private:
 
 	int gender_ = 0;
 	int minoButtonNum_ = 0;
-	Vector2 panelSize_ = { 640.0f,100.0f };
+	int mapSizeNum_ = 2;
+	int blockButtonNum_ = 0;
+	Vector2 panelSize_ = { 400.0f,65.0f };
 	float selectPanelTime_ = 0.0f;
 	float defaultSelectPanelTime_ = 30.0f;
 	float panelTexturePosY_;
@@ -102,8 +106,17 @@ private:
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
 	std::unique_ptr<Sprite> manPanelTex_;
-	std::unique_ptr<Sprite> womanPanelTex_;
+	std::unique_ptr<Sprite> frameTex_;
+	std::unique_ptr<Sprite> completeTex_;
+
+	std::unique_ptr<Sprite> mapSizeTex_;
+	std::unique_ptr<Sprite> arrowLTex_;
+	std::unique_ptr<Sprite> arrowRTex_;
+
 	std::unique_ptr<Sprite> BackPanelTex_;
+	std::unique_ptr<Sprite> factoryBackPanelTex_;
+	std::unique_ptr<Sprite> cursorTex_;
+	std::unique_ptr<Sprite> grabCursorTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
 
@@ -115,6 +128,7 @@ private:
 	float cameraMoveTime_ = 30.0f;
 
 	Vector2 cellsPos_;
+	float cellsSize_ = 18.0f;
 
 	CollisionManager* cMana_;
 
