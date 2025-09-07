@@ -198,11 +198,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
     <ClCompile Include="Game\GameObj\Chara\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\GameObj\Chara\Friendly\Friendly.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\Climber.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
     <ClCompile Include="externals\imgui\utilities\builders.cpp" />
     <ClCompile Include="externals\imgui\utilities\drawing.cpp" />
     <ClCompile Include="externals\imgui\utilities\widgets.cpp" />
@@ -327,11 +322,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.h" />
     <ClInclude Include="Game\GameObj\Chara\Enemy\Enemy.h" />
     <ClInclude Include="Game\GameObj\Chara\Friendly\Friendly.h" />
-    <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\Climber.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
     <ClInclude Include="externals\imgui\utilities\builders.h" />
     <ClInclude Include="externals\imgui\utilities\drawing.h" />
     <ClInclude Include="externals\imgui\utilities\widgets.h" />

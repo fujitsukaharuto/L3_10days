@@ -40,7 +40,7 @@ void Mino::DrawLine() {
 #endif // _DEBUG
 }
 
-void Mino::InitBlock(BlockType type, GenderType gender) {
+void Mino::InitBlock(GenderType gender) {
 	blockType_ = type;
 	gender_ = gender;
 	blockMode_ = BlockMode::Fall;
@@ -167,12 +167,6 @@ void Mino::InitBlock(BlockType type, GenderType gender) {
 		block->GetModel()->SetColor(color);
 	}
 }
-
-void Mino::OnCollisionEnter([[maybe_unused]] const ColliderInfo& other) {}
-
-void Mino::OnCollisionStay([[maybe_unused]] const ColliderInfo& other) {}
-
-void Mino::OnCollisionExit([[maybe_unused]] const ColliderInfo& other) {}
 
 Trans& Mino::GetTransform() {
 	return transform;

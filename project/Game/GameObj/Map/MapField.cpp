@@ -1,6 +1,5 @@
 #include "MapField.h"
 
-#include "Game/GameObj/Climber/Climber.h"
 #include "Game/Collider/CollisionManager.h"
 #include "Engine//Math/Random/Random.h"
 
@@ -9,9 +8,6 @@ MapField::MapField() {}
 MapField::~MapField() {}
 
 void MapField::Initialize() {
-
-	map_ = std::vector(15, std::vector<int>(kMapWidth_));
-
 	panelTex_ = std::make_unique<Sprite>();
 	panelTex_->Load("blockBox.png");
 	panelTex_->SetPos({ 285.0f,102.5f,0.0f });
@@ -412,94 +408,15 @@ void MapField::SelectMino() {
 	}
 }
 
-void MapField::ReturenSelectMino() {
-	if (controlMino_) {
-		if (selectPanelTime_ > 0.0f) selectPanelTime_ -= FPSKeeper::DeltaTime();
-		if (selectPanelTime_ < 0.0f) selectPanelTime_ = 0.0f;
-		if (selectPanelTime_ != 0.0f) {
-			float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
-			float posY = std::lerp(panelTexturePosY_, -200.0f, t);
-			panelTex_->SetPos({ 320.0f,posY,0.0f });
-
-			float space = 570.0f / float(selectTypes_.size());
-			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
-			for (int i = 0; i < selectTypes_.size(); i++) {
-				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
-
-				float x = startX + i * space;
-				buttonTex_[int(selectTypes_[i])]->SetPos({ x, posY, 0.0f });
-			}
-
-			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, posY, 0.0f });
-			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
-			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
-			selectorTex_->SetSize(selectorDeleteSize_);
-		} else {
-			panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
-
-			float space = 570.0f / float(selectTypes_.size());
-			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
-			for (int i = 0; i < selectTypes_.size(); i++) {
-				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
-				float x = startX + i * space;
-				buttonTex_[int(selectTypes_[i])]->SetPos({ x, -200.0f, 0.0f });
-			}
-
-			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, -200.0f, 0.0f });
-			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
-			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
-			selectorTex_->SetSize(selectorDeleteSize_);
-		}
-	}
-}
-
-void MapField::AddMino(BlockType type) {
-	if (controlMino_) return;
-	switch (type) {
-	case BlockType::L:
-		cellNum_ = { 4.0f, 2.0f };
-		break;
-	case BlockType::T:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::S:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::Z:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::O:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::J:
-		cellNum_ = { 4.0f, 2.0f };
-		break;
-	case BlockType::I:
-		cellNum_ = { 4.0f, 3.0f };
-		break;
-	default:
-		break;
-	}
-	//if (map_[int(cellNum_.y)][int(cellNum_.x)] == 1) return;
+void MapField::AddMino() {
 	std::unique_ptr<Mino> mino;
 	mino = std::make_unique<Mino>();
 	mino->Initialize();
 	mino->SetCollisionMana(cMana_);
-	mino->InitBlock(type, GenderType(gender_));
+	mino->InitBlock(GenderType(gender_));
 
 	controlMino_ = std::move(mino);
-	float oldDistance = GetOldDistance();
 	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-
-	futureMino_ = std::make_unique<Mino>();
-	futureMino_->Initialize();
-	futureMino_->InitBlock(type, GenderType(gender_));
-	futureMino_->GetTransform().translate = { (cellNum_.x) * 2.0f,(15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-	FutureMinoUpdate();
-
-	//selectPanelTime_ = defaultSelectPanelTime_;
 }
 
 void MapField::UpdateControlMino() {
@@ -518,9 +435,6 @@ void MapField::UpdateControlMino() {
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
 		return;
-	}
-	if (futureMino_) {
-		futureMino_->Update();
 	}
 	RemoveControlMino();
 
@@ -637,16 +551,6 @@ void MapField::MoveControlMino() {
 
 	float oldDistance = GetOldDistance();
 	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-	FutureMinoUpdate();
-
-	if (climber_) {
-		if (climber_->CanAvoidBlock()) {
-			climber_->AvoidFeatureBlock();
-			canQuickDrop_ = true;
-		} else {
-			canQuickDrop_ = false;
-		}
-	}
 }
 
 void MapField::CellCheck() {
@@ -813,30 +717,8 @@ void MapField::SetColliderManager(CollisionManager* cMana) {
 	cMana_ = cMana;
 }
 
-void MapField::SetClimber(Climber* climber) {
-	climber_ = climber;
-}
-
 const std::vector<int>& MapField::GetMapRows(size_t row) const {
 	return map_[row];
-}
-
-const Mino* MapField::GetFeatureMino() const {
-	return futureMino_.get();
-}
-
-std::pair<int, int> MapField::CalcFieldGrid(const Vector3& pos) const {
-	return {
-		static_cast<int>(GetMapHeight() - (pos.y - GetOldDistance()) / 2.0f),
-		static_cast<int>(pos.x / 2.0f)
-	};
-}
-
-const float MapField::GetOldDistance() const {
-	float growLine = float(oldLine_) * 2.0f;
-	growLine *= float(old_);
-	growLine += float(old_) * nextSpace_;
-	return (growLine);
 }
 
 void MapField::RemoveControlMino() {
@@ -953,145 +835,6 @@ void MapField::RemoveControlMino() {
 		blockButtonNum_ = Random::GetInt(0, 6);
 		//selectPanelTime_ = defaultSelectPanelTime_;
 	}
-}
-
-void MapField::FutureMinoUpdate() {
-	if (!futureMino_) return;
-	Vector2 cell = cellNum_;
-	futureMino_->SetBlockMode(BlockMode::Fall);
-	while (futureMino_->GetBlockMode() == BlockMode::Fall) {
-		switch (futureMino_->GetBlockType()) {
-		case BlockType::L:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::T:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::S:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::Z:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::O:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::J:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::I:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		default:
-			break;
-		}
-
-		if (futureMino_->GetBlockMode() != BlockMode::Stay) {
-			cell.y++;
-		}
-	}
-	float oldDistance = GetOldDistance();
-	futureMino_->GetTransform().translate = { (cell.x) * 2.0f,(15.0f - cell.y) * 2.0f + oldDistance,0.0f };
-	futureMino_->Update();
 }
 
 void MapField::CellSpriteSetColor() {
