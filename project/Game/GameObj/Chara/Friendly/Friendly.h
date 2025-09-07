@@ -2,6 +2,10 @@
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
+struct FriendlyStatus {
+
+};
+
 /// <summary>
 /// 友軍
 /// </summary>
