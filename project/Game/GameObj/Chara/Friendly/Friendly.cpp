@@ -1,7 +1,7 @@
 #include "Friendly.h"
 
-Friendly::Friendly(const std::string& modelName, const Vector3& popPos)
-	:BaseChara(modelName, popPos) {
+Friendly::Friendly(const CharaStatus& status, const Vector3& popPos)
+	:BaseChara(status, popPos) {
 
 }
 

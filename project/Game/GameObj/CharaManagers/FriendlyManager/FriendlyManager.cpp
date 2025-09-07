@@ -17,7 +17,7 @@ void FriendlyManager::Draw() {
 	}
 }
 
-void FriendlyManager::AddFriendly() {
+void FriendlyManager::AddFriendly(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
 	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>("cube.obj", Vector3(0.0f, 0.0f, 0.0f));
 	friendlies_.push_back(std::move(newObj));

@@ -1,12 +1,18 @@
 #include "BaseChara.h"
 
-BaseChara::BaseChara(const std::string& modelName, const Vector3& popPos) {
-	OriginGameObject::Initialize();
-	OriginGameObject::CreateModel(modelName);
+BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 
+	// ステータスを受け取る
+	status_ = status;
+
+	// 最大hpを取得
+	maxHp_ = status_.hp;
+
+	OriginGameObject::Initialize();
+	OriginGameObject::CreateModel(status_.name);
 	OriginGameObject::GetModel()->transform.translate = popPos;
 
-	hp_ = kMaxHp_;
+
 
 }
 
@@ -21,6 +27,13 @@ void BaseChara::Draw(Material* mate, bool is) {
 
 }
 
-void BaseChara::Attack() {
+void BaseChara::Action() {
+	switch (status_.gender) {
+	case MEN:
 
+		break;
+	case WOMEN:
+
+		break;
+	}
 }

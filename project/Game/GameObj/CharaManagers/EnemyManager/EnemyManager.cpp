@@ -23,8 +23,8 @@ void EnemyManager::Draw() {
 	}
 }
 
-void EnemyManager::AddEnemy() {
+void EnemyManager::AddEnemy(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
-	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>("cube.obj", kPopPosition_);
+	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, kPopPosition_);
 	enemies_.push_back(std::move(newObj));
 }

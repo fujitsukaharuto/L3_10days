@@ -16,7 +16,7 @@ public:
 	void Update();
 	void Draw();
 
-	void AddEnemy();
+	void AddEnemy(const CharaStatus& status);
 
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;

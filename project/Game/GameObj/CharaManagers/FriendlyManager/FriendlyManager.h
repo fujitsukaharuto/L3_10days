@@ -15,7 +15,7 @@ public:
 	void Update();
 	void Draw();
 
-	void AddFriendly();
+	void AddFriendly(const CharaStatus& status);
 
 private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
