@@ -101,8 +101,9 @@ private:
 	int mapSizeNum_ = 2;
 	int blockButtonNum_ = 0;
 	Vector2 panelSize_ = { 400.0f,65.0f };
-	float selectPanelTime_ = 0.0f;
-	float defaultSelectPanelTime_ = 30.0f;
+	float manPanelTime_ = 0.0f;
+	float womanPanelTime_ = 0.0f;
+	float defaultSelectPanelTime_ = 20.0f;
 	float panelTexturePosY_;
 	float selectorSizeTime_;
 	Vector2 selectorMaxSize_;
@@ -110,7 +111,7 @@ private:
 	Vector2 selectorDeleteSize_;
 	std::vector<BlockType> selectTypes_;
 	std::unique_ptr<Sprite> panelTex_;
-	std::unique_ptr<Sprite> manPanelTex_;
+	std::unique_ptr<Sprite> genderPanelTex_;
 	std::unique_ptr<Sprite> frameTex_;
 	std::unique_ptr<Sprite> completeTex_;
 
