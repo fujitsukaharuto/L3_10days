@@ -24,6 +24,7 @@ public:
 
 	void SetLightCommand(ID3D12GraphicsCommandList* commandList);
 
+	DirectionLight* GetDirectionLight() { return directionLight_.get(); }
 	PointLight* GetPointLight(int num) { return pointLights_[num].get(); }
 	SpotLight* GetSpotLight(int num) { return spotLights_[num].get(); }
 

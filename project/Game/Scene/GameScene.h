@@ -5,6 +5,7 @@
 #include "Game/GameObj/FollowCamera.h"
 #include "Game/TestBaseObj.h"
 #include "Game/Collider/CollisionManager.h"
+#include "Game/GameObj/Map/MapField.h"
 
 
 class GameScene :public BaseScene {
@@ -31,19 +32,18 @@ private:
 	std::unique_ptr<AnimationModel> terrain = nullptr;
 	std::unique_ptr<SkyBox> skybox_;
 
+	std::unique_ptr<AnimationModel> ni_ = nullptr;
+	std::unique_ptr<AnimationModel> nn_ = nullptr;
+	std::unique_ptr<AnimationModel> ge_ = nullptr;
+	std::unique_ptr<AnimationModel> nn2_ = nullptr;
+	std::unique_ptr<AnimationModel> factory_ = nullptr;
+	//std::unique_ptr<Object3d> title = nullptr;
+
+	Vector3 tPos;
+
+	std::unique_ptr<MapField> map_;
+
 	bool isBackTitle_ = false;
-
-	float spherePara = 10;
-	Vector3 spherevec = { 0.0f,1.0f,0.0f };
-
-	float fencePara = 10;
-	Vector3 fencevec = { -2.0f,-1.0f,1.0f };
-
-	bool isDebugCameraMode_ = false;
-
-
-	ParticleEmitter emit;
-
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;

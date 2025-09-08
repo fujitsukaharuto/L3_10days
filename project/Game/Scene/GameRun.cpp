@@ -29,7 +29,8 @@ void GameRun::Initialize() {
 	textureManager_->Load("Atlas.png");
 	textureManager_->Load("underRing.png");
 	textureManager_->Load("boal16x16.png");
-	textureManager_->Load("Title.png");
+	textureManager_->Load("title.png");
+	textureManager_->Load("title_png.png");
 	textureManager_->Load("clear_beta.png");
 	textureManager_->Load("gameover_beta.png");
 	textureManager_->Load("spaceKey.png");
@@ -46,6 +47,8 @@ void GameRun::Initialize() {
 	textureManager_->Load("completed.png");
 	textureManager_->Load("arrow.png");
 	textureManager_->Load("frameSize.png");
+	textureManager_->Load("enemyFactory.png");
+	textureManager_->Load("myFactory.png");
 
 
 #pragma endregion
@@ -66,7 +69,12 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("Star.obj");
 	modelManager_->LoadOBJ("player.obj");
 	modelManager_->LoadOBJ("Boss_Arrow.obj");
-	modelManager_->LoadGLTF("T_boss.gltf");
+	modelManager_->LoadOBJ("title.obj");
+	modelManager_->LoadGLTF("title1.gltf");
+	modelManager_->LoadGLTF("title2.gltf");
+	modelManager_->LoadGLTF("title2.gltf");
+	modelManager_->LoadGLTF("title3.gltf");
+	modelManager_->LoadGLTF("title5.gltf");
 #pragma endregion
 
 
