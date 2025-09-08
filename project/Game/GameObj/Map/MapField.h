@@ -37,6 +37,8 @@ public:
 	void AddMino(BlockType type);
 	void UpdateControlMino();
 
+	void ArrowUpdate();
+
 	void MoveControlMino();
 	void CellCheck(); // Dropする時に置けるかどうかのチェック用
 	void QuickDrop();
@@ -106,6 +108,7 @@ private:
 	float defaultSelectPanelTime_ = 20.0f;
 	float panelTexturePosY_;
 	float selectorSizeTime_;
+	float arrowMoveTime_;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;

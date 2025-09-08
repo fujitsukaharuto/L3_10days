@@ -450,6 +450,7 @@ void MapField::UpdateSelectPanel() {
 			}
 		}
 	}
+	ArrowUpdate();
 	SelectMino();
 	//ReturenSelectMino();
 }
@@ -626,6 +627,18 @@ void MapField::UpdateControlMino() {
 	}
 	RemoveControlMino();
 
+}
+
+void MapField::ArrowUpdate() {
+	arrowMoveTime_ += FPSKeeper::DeltaTime() * 0.1f;
+	arrowMoveTime_ = fmodf(arrowMoveTime_, std::numbers::pi_v<float>);
+	// sin波で 0.0 ～ 1.0 に正規化
+	float t = fabsf((sinf(arrowMoveTime_) + 1.0f) * 0.5f);
+	Vector2 pos;
+	pos.x = 55.0f + (45.0f - 55.0f) * t;
+	pos.y = 515.0f + (525.0f - 515.0f) * t;
+	arrowLTex_->SetPos({ pos.x ,400.0f,0.0f });
+	arrowRTex_->SetPos({ pos.y ,400.0f,0.0f });
 }
 
 void MapField::MoveControlMino() {
