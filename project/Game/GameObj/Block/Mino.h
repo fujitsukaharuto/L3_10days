@@ -11,9 +11,9 @@
 #include "Game/GameObj/Block/BaseBlock.h"
 
 enum class GenderType {
-	Man,
-	Woman,
-	None,
+	None = 0,
+	Man = 1,
+	Woman = 2,
 };
 
 class CollisionManager;

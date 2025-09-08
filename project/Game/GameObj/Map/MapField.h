@@ -32,7 +32,6 @@ public:
 
 	void CellBackgroundDraw();
 	void CellRequiredSpriteDraw();
-	void RequiredCellSpriteDraw();
 
 	void UpdateSelectPanel();
 	void SelectMino();
