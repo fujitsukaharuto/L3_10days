@@ -8,7 +8,7 @@
 		{
 			"name":"Scene",
 			"nodes":[
-				3
+				2
 			]
 		}
 	],
@@ -28,24 +28,14 @@
 			]
 		},
 		{
-			"name":"neutral_bone",
-			"rotation":[
-				-0.7071067690849304,
-				0,
-				0,
-				0.7071067690849304
-			]
-		},
-		{
 			"mesh":0,
 			"name":"factory.001",
 			"skin":0
 		},
 		{
 			"children":[
-				2,
-				0,
-				1
+				1,
+				0
 			],
 			"name":"5",
 			"rotation":[
@@ -86,7 +76,7 @@
 					}
 				}
 			],
-			"name":"5Action.002",
+			"name":"5Action",
 			"samplers":[
 				{
 					"input":8,
@@ -109,7 +99,7 @@
 	"materials":[
 		{
 			"doubleSided":true,
-			"name":"\u30de\u30c6\u30ea\u30a2\u30eb.014",
+			"name":"\u30de\u30c6\u30ea\u30a2\u30eb",
 			"pbrMetallicRoughness":{
 				"baseColorTexture":{
 					"index":0
@@ -121,7 +111,7 @@
 	],
 	"meshes":[
 		{
-			"name":"factory.001",
+			"name":"factory",
 			"primitives":[
 				{
 					"attributes":{
@@ -155,8 +145,7 @@
 		{
 			"inverseBindMatrices":7,
 			"joints":[
-				0,
-				1
+				0
 			],
 			"name":"5"
 		}
@@ -217,7 +206,7 @@
 		{
 			"bufferView":7,
 			"componentType":5126,
-			"count":2,
+			"count":1,
 			"type":"MAT4"
 		},
 		{
@@ -308,33 +297,33 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":128,
+			"byteLength":64,
 			"byteOffset":611748
 		},
 		{
 			"buffer":0,
 			"byteLength":364,
-			"byteOffset":611876
+			"byteOffset":611812
 		},
 		{
 			"buffer":0,
 			"byteLength":1092,
-			"byteOffset":612240
+			"byteOffset":612176
 		},
 		{
 			"buffer":0,
 			"byteLength":8,
-			"byteOffset":613332
+			"byteOffset":613268
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-			"byteOffset":613340
+			"byteOffset":613276
 		},
 		{
 			"buffer":0,
 			"byteLength":1092,
-			"byteOffset":613372
+			"byteOffset":613308
 		}
 	],
 	"samplers":[
@@ -345,7 +334,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":614464,
+			"byteLength":614400,
 			"uri":"title5.bin"
 		}
 	]
