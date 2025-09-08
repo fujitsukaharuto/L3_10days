@@ -88,6 +88,7 @@ void MapField::Initialize() {
 
 	mapSizeTex_ = std::make_unique<Sprite>();
 	mapSizeTex_->Load("frameSize.png");
+	mapSizeTex_->SetSize({ 40.0f, 50.0f });
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
