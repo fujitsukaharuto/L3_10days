@@ -201,8 +201,9 @@ void MapField::TitleUpdateSelectPanel() {
 }
 
 void MapField::TitleDraw() {
+	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
-	//completeTex_->Draw();
+	completeTex_->Draw();
 	if (mapSizeNum_ != 2) {
 		arrowLTex_->Draw();
 	}
@@ -241,6 +242,10 @@ void MapField::TitleDraw() {
 			}
 		}
 	}
+	BackPanelTex_->Draw();
+
+	factoryTex_->Draw();
+	enemyFactoryTex_->Draw();
 }
 
 void MapField::BackDraw() {
