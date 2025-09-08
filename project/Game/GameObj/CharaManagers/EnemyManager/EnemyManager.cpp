@@ -16,7 +16,7 @@ void EnemyManager::Update() {
 		status.hp = 10;
 		status.name = "cube.obj";
 		status.power = 2;
-		status.gender = MEN;
+		status.gender = MAN;
 
 		AddEnemy(status);
 	}

@@ -123,12 +123,12 @@ void BaseChara::SetTarget(BaseChara* target) {
 
 void BaseChara::Action() {
 	switch (status_.gender) {
-	case MEN:
+	case MAN:
 		if (target_) {
 			target_->GetDamage(status_.power);
 		}
 		break;
-	case WOMEN:
+	case WOMAN:
 
 		break;
 	}

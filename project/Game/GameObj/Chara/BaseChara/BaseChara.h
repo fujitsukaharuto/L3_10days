@@ -6,8 +6,8 @@
 #include "Game/Collider/AABBCollider.h"
 
 enum Gender {
-	MEN,
-	WOMEN
+	MAN,
+	WOMAN
 };
 
 enum class Tag {
