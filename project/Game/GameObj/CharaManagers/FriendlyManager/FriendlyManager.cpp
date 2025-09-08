@@ -25,7 +25,9 @@ void FriendlyManager::Draw() {
 }
 
 void FriendlyManager::DeleteDeadObject() {
-
+	std::erase_if(friendlies_, [](const std::unique_ptr<Friendly>& f) {
+		return !f->GetIsAlive();
+		});
 }
 
 void FriendlyManager::AddFriendly(const CharaStatus& status) {

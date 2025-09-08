@@ -39,6 +39,12 @@ void EnemyManager::Draw() {
 	}
 }
 
+void EnemyManager::DeleteDeadObject() {
+	std::erase_if(enemies_, [](const std::unique_ptr<Enemy>& f) {
+		return !f->GetIsAlive();
+		});
+}
+
 void EnemyManager::AddEnemy(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
 	const float posZ = Random::GetFloat(minPopRangeZ_, maxPopRangeZ_);

@@ -14,7 +14,7 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::CreateModel(status_.name);
 	OriginGameObject::GetModel()->transform.translate = popPos;
 
-	collider.radius = 10.0f;
+	collider.radius = 5.0f;
 
 	isAlive_ = true;
 }

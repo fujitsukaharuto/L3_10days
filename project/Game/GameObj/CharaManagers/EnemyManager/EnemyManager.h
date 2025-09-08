@@ -18,6 +18,8 @@ public:
 	void Update();
 	void CheckIsTargetDead();
 
+	void DeleteDeadObject();
+
 	void Draw();
 
 	void AddEnemy(const CharaStatus& status);
@@ -34,7 +36,7 @@ private:
 
 	// 沸く位置の乱数用変数
 	float maxPopRangeZ_ = -5.0f;
-	float minPopRangeZ_ = -15.0f;
+	float minPopRangeZ_ = -25.0f;
 
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;
