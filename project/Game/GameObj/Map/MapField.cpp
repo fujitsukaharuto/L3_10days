@@ -443,6 +443,7 @@ void MapField::UpdateSelectPanel() {
 
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
 					isSmallChange_ = true;
 				}
 			}
@@ -460,6 +461,8 @@ void MapField::UpdateSelectPanel() {
 
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
+					isSmallChange_ = false;
 				}
 			}
 		}
@@ -659,14 +662,10 @@ void MapField::ArrowUpdate() {
 void MapField::FrameUpdate() {
 	if (frameMoveTime_ > 0.0f) {
 		frameMoveTime_ -= FPSKeeper::DeltaTime();
+
 		if (frameMoveTime_ <= 0.0f) {
 			frameMoveTime_ = 0.0f;
-			frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
-			frameTex_->SetPos({ -290.0f, 400.0f,0.0f });
-			isSmallChange_ = false;
-			return;
 		}
-
 		float t = 1.0f - (frameMoveTime_ / 30.0f);
 		if (isSmallChange_) {
 			float mainPos = std::lerp(285.0f, 880.0f, t);
@@ -680,6 +679,11 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
+		}
+		if (frameMoveTime_ <= 0.0f) {
+			frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+			frameTex_->SetPos({ -290.0f, 400.0f,0.0f });
+			isSmallChange_ = false;
 		}
 	}
 }
