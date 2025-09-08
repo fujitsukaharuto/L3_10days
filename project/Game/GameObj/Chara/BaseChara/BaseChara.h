@@ -25,7 +25,7 @@ struct CharaStatus {
 	std::string name;
 	Gender gender;
 	uint32_t power;
-	uint32_t hp;
+	int32_t hp;
 };
 
 struct SearchCollider {
@@ -36,7 +36,7 @@ struct SearchCollider {
 /// <summary>
 /// 敵キャラ
 /// </summary>
-class BaseChara: public OriginGameObject {
+class BaseChara : public OriginGameObject {
 public:
 	BaseChara(const CharaStatus& status, const Vector3& popPos);
 	virtual ~BaseChara()override = default;
@@ -45,17 +45,19 @@ public:
 
 	void Draw(Material* mate = nullptr, bool is = false)override;
 
-	CharaStatus GetStatus();
+	void GetDamage(int32_t damage);
 
+	void GetHeal(int32_t heal);
+
+	void CheckIsTargetDead();
+
+	bool GetIsAlive()const;
+	CharaStatus GetStatus();
 	void SetTarget(BaseChara* target);
 
 protected:
 	virtual void Search() {};
-
 	void Action();
-
-	void CheckIsDeadTarget();
-
 protected:
 
 	// 索敵用コライダー
@@ -68,6 +70,16 @@ protected:
 	// 変数
 	// 
 
+	bool isAlive_ = true;
+
+	// 進行方向
+	Vector3 moveDir_;
+
+	// スピード
+	float speed_ = 0.01f;
+	// ターゲットに近づくときのスピード
+	float approachSpeed_ = 0.02f;
+
 	// ステータス
 	CharaStatus status_;
 
@@ -75,6 +87,13 @@ protected:
 	State state_;
 
 	// 最大HP
-	uint32_t maxHp_;
+	int32_t maxHp_;
+
+	// 戦闘距離
+	float fightRange_ = 3.0f;
+
+	// 戦闘時行動クールタイム
+	const float kActionCoolTime_ = 3.0f;
+	float actionCoolTimer_ = 0.0f;
 
 };

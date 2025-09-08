@@ -16,6 +16,10 @@ public:
 	~EnemyManager() = default;
 
 	void Update();
+	void CheckIsTargetDead();
+
+	void DeleteDeadObject();
+
 	void Draw();
 
 	void AddEnemy(const CharaStatus& status);
@@ -28,7 +32,11 @@ private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	// 敵の沸く座標
-	const Vector3 kPopPosition_ = { 60.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 60.0f,10.0f,0.0f };
+
+	// 沸く位置の乱数用変数
+	float maxPopRangeZ_ = -5.0f;
+	float minPopRangeZ_ = -25.0f;
 
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;

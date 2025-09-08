@@ -107,6 +107,9 @@ private:
 	Vector2 scale_ = { 1.0f,1.0f };
 	float rotate_ = 0.0f;
 
+	Matrix4x4 worldMatrix_;
+	Matrix4x4 viewProjectionMatrix_;
+
 	bool isFlipX_ = false;
 	bool isFlipY_ = false;
 

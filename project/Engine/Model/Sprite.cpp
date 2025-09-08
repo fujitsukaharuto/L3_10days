@@ -143,6 +143,9 @@ void Sprite::InitializeBuffer() {
 	wvpResource_ = dxcommon_->CreateBufferResource(dxcommon_->GetDevice(), sizeof(TransformationMatrix));
 	wvpData_ = nullptr;
 	wvpResource_->Map(0, nullptr, reinterpret_cast<void**>(&wvpData_));
+	Matrix4x4 viewMatrix = MakeIdentity4x4();
+	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(MyWin::kWindowWidth), float(MyWin::kWindowHeight), 0.0f, 100.0f);
+	viewProjectionMatrix_ = Multiply(viewMatrix, projectionMatrix);
 	SetWvp();
 
 	cameraPosResource_ = dxcommon_->CreateBufferResource(dxcommon_->GetDevice(), sizeof(DirectionalLight));
@@ -165,13 +168,10 @@ void Sprite::AdjustTextureSize() {
 }
 
 void Sprite::SetWvp() {
-	Matrix4x4 worldMatrix = Multiply(Multiply(MakeScaleMatrix({ size_.x * scale_.x,size_.y * scale_.y,1.0f }), MakeRotateZMatrix(rotate_)), MakeTranslateMatrix(position_));
-	Matrix4x4 viewMatrix = MakeIdentity4x4();
+	worldMatrix_ = Multiply(Multiply(MakeScaleMatrix({ size_.x * scale_.x,size_.y * scale_.y,1.0f }), MakeRotateZMatrix(rotate_)), MakeTranslateMatrix(position_));
+	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix_, viewProjectionMatrix_);
 
-	Matrix4x4 projectionMatrix = MakeOrthographicMatrix(0.0f, 0.0f, float(MyWin::kWindowWidth), float(MyWin::kWindowHeight), 0.0f, 100.0f);
-	Matrix4x4 worldViewProjectionMatrix = Multiply(worldMatrix, Multiply(viewMatrix, projectionMatrix));
-
-	wvpData_->World = worldMatrix;
+	wvpData_->World = worldMatrix_;
 	wvpData_->WVP = worldViewProjectionMatrix;
 	wvpData_->WorldInverseTransPose = Transpose(Inverse(wvpData_->World));
 }

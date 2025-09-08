@@ -15,7 +15,11 @@ public:
 	~FriendlyManager() = default;
 
 	void Update();
+	void CheckIsTargetDead();
+
 	void Draw();
+
+	void DeleteDeadObject();
 
 	void AddFriendly(const CharaStatus& status);
 
@@ -29,7 +33,11 @@ private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
 
 	// 敵の沸く座標
-	const Vector3 kPopPosition_ = { 22.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 19.0f,10.0f,0.0f };
+
+	// 沸く位置の乱数用変数
+	float maxPopRangeZ_ = -5.0f;
+	float minPopRangeZ_ = -25.0f;
 
 private:
 	EnemyManager* ene_;
