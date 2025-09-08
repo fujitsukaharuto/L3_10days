@@ -51,6 +51,7 @@ void EnemyManager::AddEnemy(const CharaStatus& status) {
 	popPosition_.z = posZ;
 	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, popPosition_);
 	newObj->SetFri(fri_);
+	newObj->SetEne(this);
 	enemies_.push_back(std::move(newObj));
 }
 

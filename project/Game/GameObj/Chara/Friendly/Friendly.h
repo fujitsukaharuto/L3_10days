@@ -3,7 +3,7 @@
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
 
-class EnemyManager;
+
 
 /// <summary>
 /// 友軍
@@ -17,8 +17,5 @@ public:
 
 	void Search()override;
 
-	void SetEne(EnemyManager* ene);
-
-private:
-	EnemyManager* ene_;
+	
 };
