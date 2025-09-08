@@ -56,6 +56,12 @@ void GameRun::Initialize() {
 	textureManager_->Load("Mino5.png");
 	textureManager_->Load("Mino6.png");
 	textureManager_->Load("Mino7.png");
+	textureManager_->Load("clearReport.png");
+	textureManager_->Load("gameoverReport.png");
+	textureManager_->Load("resultBackground.png");
+	textureManager_->Load("resultFrame.png");
+	textureManager_->Load("titleReturn.png");
+	textureManager_->Load("tryAgain.png");
 
 
 #pragma endregion
