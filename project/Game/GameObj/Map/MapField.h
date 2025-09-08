@@ -10,6 +10,8 @@
 
 class CollisionManager;
 class Climber;
+class FriendlyManager;
+
 
 class MapField {
 public:
@@ -50,7 +52,7 @@ public:
 
 	void SetColliderManager(CollisionManager* cMana);
 	void SetClimber(Climber* climber);
-
+	void SetFriendlyManager(FriendlyManager* friendlyManager);
 public:
 	const std::vector<int>& GetMapRows(size_t row) const;
 	const Mino* GetFeatureMino() const;
@@ -149,4 +151,6 @@ private:
 	CollisionManager* cMana_;
 
 	Climber* climber_{ nullptr };
+
+	FriendlyManager* friendlyManager_;
 };

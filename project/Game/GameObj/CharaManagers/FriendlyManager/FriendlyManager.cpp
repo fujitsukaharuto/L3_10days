@@ -47,11 +47,11 @@ void FriendlyManager::DebugGUI() {
 		status.name = "cube.obj";
 		status.power = 2;
 		if (ImGui::Button("PopFriendlyMEN")) {
-			status.gender = MEN;
+			status.gender = MAN;
 			AddFriendly(status);
 		}
 		if (ImGui::Button("PopFriendlyWOMEN")) {
-			status.gender = WOMEN;
+			status.gender = WOMAN;
 			AddFriendly(status);
 		}
 	}
