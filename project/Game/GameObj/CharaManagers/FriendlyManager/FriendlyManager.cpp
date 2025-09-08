@@ -9,13 +9,22 @@ void FriendlyManager::Update() {
 	for (auto& obj : friendlies_) {
 		obj->Update();
 	}
+}
 
+void FriendlyManager::CheckIsTargetDead() {
+	for (auto& obj : friendlies_) {
+		obj->CheckIsTargetDead();
+	}
 }
 
 void FriendlyManager::Draw() {
 	for (auto& obj : friendlies_) {
 		obj->Draw();
 	}
+}
+
+void FriendlyManager::DeleteDeadObject() {
+
 }
 
 void FriendlyManager::AddFriendly(const CharaStatus& status) {

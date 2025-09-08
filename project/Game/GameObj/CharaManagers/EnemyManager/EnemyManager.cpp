@@ -25,6 +25,12 @@ void EnemyManager::Update() {
 
 }
 
+void EnemyManager::CheckIsTargetDead() {
+	for (auto& obj : enemies_) {
+		obj->CheckIsTargetDead();
+	}
+}
+
 void EnemyManager::Draw() {
 	for (auto& obj : enemies_) {
 		obj->Draw();

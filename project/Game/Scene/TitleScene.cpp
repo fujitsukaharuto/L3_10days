@@ -134,6 +134,10 @@ void TitleScene::Update() {
 	friendlyManager_->Update();
 	enemyManager_->Update();
 
+	// 相手が死んでいた時にターゲットから外す処理
+	friendlyManager_->CheckIsTargetDead();
+	enemyManager_->CheckIsTargetDead();
+
 	battleSystem_->Update();
 
 	//climber_->Up();
