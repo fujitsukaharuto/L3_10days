@@ -22,6 +22,12 @@ private:
 	std::unique_ptr<Object3dCommon> obj3dCommon = nullptr;
 	std::unique_ptr<Object3d> sphere = nullptr;
 
+	std::unique_ptr<Sprite> report_;
+	std::unique_ptr<Sprite> goTitle_;
+	std::unique_ptr<Sprite> retry_;
+	std::unique_ptr<Sprite> frame_;
+	std::unique_ptr<Sprite> back_;
+
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
 	float blackLimmite = 20.0f;

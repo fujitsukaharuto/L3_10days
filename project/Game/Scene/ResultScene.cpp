@@ -36,6 +36,23 @@ void ResultScene::Initialize() {
 	sphere->CreateSphere();
 	sphere->SetColor({ 1.0f,0.0f,0.0f,1.0f });
 
+	goTitle_ = std::make_unique<Sprite>();
+	goTitle_->Load("titleReturn.png");
+	goTitle_->SetPos({ 980.0f,-20.0f,0.0f });
+
+	report_ = std::make_unique<Sprite>();
+	report_->Load("clearReport.png");
+	report_->SetAngle(0.38f);
+	report_->SetPos({ 180.0f,470.0f,0.0f });
+
+	frame_ = std::make_unique<Sprite>();
+	frame_->Load("resultFrame.png");
+	frame_->SetPos({ 640.0f,360.0f,0.0f });
+
+	back_ = std::make_unique<Sprite>();
+	back_->Load("resultBackground.png");
+	back_->SetPos({ 640.0f,360.0f,0.0f });
+
 }
 
 void ResultScene::Update() {
@@ -58,7 +75,10 @@ void ResultScene::Draw() {
 
 #pragma region 背景描画
 
-
+	back_->Draw();
+	frame_->Draw();
+	report_->Draw();
+	goTitle_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
@@ -113,7 +133,7 @@ void ResultScene::BlackFade() {
 				blackTime = blackLimmite;
 			}
 		} else {
-			ChangeScene("TITLE", 40.0f);
+			ChangeScene("GAME", 40.0f);
 		}
 	} else {
 		if (blackTime > 0.0f) {
@@ -124,13 +144,14 @@ void ResultScene::BlackFade() {
 		}
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
-	XINPUT_STATE pad;
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		if (blackTime == 0.0f) {
-			isChangeFase = true;
-		}
-	} else if (Input::GetInstance()->GetGamepadState(pad)) {
-		if (Input::GetInstance()->TriggerButton(PadInput::A)) {
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	Vector3 pos = { 980.0f,280.0f,0.0f };   // 中心座標
+	Vector2 size = { 330.0f,80.0f }; // 幅・高さ
+	float halfW = size.x * 0.5f;
+	float halfH = size.y * 0.5f;
+	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+		if (Input::GetInstance()->IsTriggerMouse(0)) {
 			if (blackTime == 0.0f) {
 				isChangeFase = true;
 			}
