@@ -13,6 +13,7 @@
 enum class GenderType {
 	Man,
 	Woman,
+	None,
 };
 
 class CollisionManager;
@@ -50,4 +51,5 @@ private:
 	GenderType gender_;
 
 	std::vector<std::unique_ptr<BaseBlock>> blocks_;
+	std::vector<std::unique_ptr<Sprite>> buttonTextures;
 };

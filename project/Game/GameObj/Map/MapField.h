@@ -24,7 +24,10 @@ public:
 	void BackDraw();
 	void FactoryDraw();
 	void CursorDraw();
-	void ArrangementDraw();
+
+	void CellBackgroundDraw();
+	void CellRequiredSpriteDraw();
+	void RequiredCellSpriteDraw();
 
 	void UpdateSelectPanel();
 	void SelectMino();
@@ -32,21 +35,17 @@ public:
 	void UpdateControlMino();
 
 	void MoveControlMino();
-	void CellCheck(); // Dropする時に置けるかどうかのチェック用
 	void CellSet();
 	bool ArrangementCheck(); // マウスで置く際のチェック用
 
 	void CompleteArragement();
 
-	void SetClimber(Climber* climber);
-
 public:
-	const std::vector<int>& GetMapRows(size_t row) const;
-	const Mino* GetFeatureMino() const;
-
 	// TODO : 定数にする
-	size_t GetMapHeight() const { return map_.size(); }
-	size_t GetMapWidth() const { return map_[0].size(); }
+	size_t GetMapHeight() const { return 15; }
+	size_t GetMapWidth() const { return 15; }
+
+	std::pair<i32, i32> CalcCellIndex(const Vector3& position) const;
 
 private:
 	void RemoveControlMino();
@@ -60,9 +59,10 @@ private:
 	/// マップ上の各セルデータ
 	/// </summary>
 	struct CellData {
-		bool isFilled = false; // ブロックが配置されているか
-		bool required; // 攻撃に関与するセル
+		GenderType genderType{ GenderType::None }; // ブロックが配置されているか
+		bool isRequired; // 攻撃に関与するセル
 		std::unique_ptr<Sprite> background; // セルの背景
+		std::unique_ptr<Sprite> required;
 		std::unique_ptr<Sprite> block; // セルに配置されているブロック
 	};
 
@@ -77,19 +77,18 @@ private:
 	bool haveControlMino_ = false;
 
 	const uint32_t kMapWidth_ = 15;
+	const uint32_t kMapHeight_ = 15;
 
 	std::vector<std::vector<CellData>> cellsData_;
 
 	std::vector<MinoTable> minoTables;
 
 	Vector2 cellNum_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> cells_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> typeCells_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> arrangementCells_;
 
-	Mino* controlMino_;
+	std::unique_ptr<Mino> controlMino_;
 
 	// この３つはデバッグ表示用
+	// これは何…
 	std::vector<int> maxB_;
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
@@ -121,11 +120,11 @@ private:
 	std::unique_ptr<Sprite> factoryBackPanelTex_;
 	std::unique_ptr<Sprite> cursorTex_;
 	std::unique_ptr<Sprite> grabCursorTex_;
-	std::vector<std::unique_ptr<Sprite>> buttonTex_;
+	// std::vector<std::unique_ptr<Sprite>> buttonTex_; // ミノ側に持たせる
 	std::unique_ptr<Sprite> selectorTex_;
 
 	float nextSpace_ = 10.0f;
 
-	Vector2 cellsPos_;
-	float cellsSize_ = 18.0f;
+	Vector2 cellsPos_; // セルの左下の位置
+	float cellsSize_ = 18.0f; // セル一つの大きさ
 };
