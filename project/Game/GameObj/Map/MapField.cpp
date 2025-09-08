@@ -20,15 +20,14 @@ void MapField::Initialize() {
 	for (int i = 0; i < 7; i++) {
 		std::unique_ptr<Sprite> button;
 		button = std::make_unique<Sprite>();
-		button->Load("white2x2.png");
-		if (i == 0) button->SetColor({ 1.0f,0.65f,0.0f,1.0f });
-		if (i == 1) button->SetColor({ 0.55f,0.0f,0.55f,1.0f });
-		if (i == 2) button->SetColor({ 0.0f,0.5f,0.0f,1.0f });
-		if (i == 3) button->SetColor({ 1.0f,0.0f,0.0f,1.0f });
-		if (i == 4) button->SetColor({ 1.0f,1.0f,0.0f,1.0f });
-		if (i == 5) button->SetColor({ 0.0f,0.0f,1.0f,1.0f });
-		if (i == 6) button->SetColor({ 0.0f,0.8f,0.95f,1.0f });
-		button->SetSize({ 55.0f,37.5f });
+		if (i == 0) { button->Load("Mino1.png"); }
+		if (i == 1) { button->Load("Mino2.png"); }
+		if (i == 2) { button->Load("Mino3.png"); }
+		if (i == 3) { button->Load("Mino4.png"); }
+		if (i == 4) { button->Load("Mino5.png"); }
+		if (i == 5) { button->Load("Mino6.png"); }
+		if (i == 6) { button->Load("Mino7.png"); }
+		button->SetSize({ 36.0f,36.0f });
 		button->SetPos({ 185.0f,95.0f,0.0f });
 		buttonTex_.push_back(std::move(button));
 	}
@@ -203,8 +202,9 @@ void MapField::TitleUpdateSelectPanel() {
 }
 
 void MapField::TitleDraw() {
+	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
-	//completeTex_->Draw();
+	completeTex_->Draw();
 	if (mapSizeNum_ != 2) {
 		arrowLTex_->Draw();
 	}
@@ -243,6 +243,10 @@ void MapField::TitleDraw() {
 			}
 		}
 	}
+	BackPanelTex_->Draw();
+
+	factoryTex_->Draw();
+	enemyFactoryTex_->Draw();
 }
 
 void MapField::BackDraw() {
@@ -431,6 +435,9 @@ void MapField::UpdateSelectPanel() {
 
 				}
 			}
+			completeTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+		} else {
+			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		// マップサイズの変更
 		pos = arrowLTex_->GetPos();
@@ -446,9 +453,13 @@ void MapField::UpdateSelectPanel() {
 
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
 					isSmallChange_ = true;
 				}
 			}
+			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		} else {
+			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
 		size = arrowRTex_->GetSize();
@@ -463,8 +474,13 @@ void MapField::UpdateSelectPanel() {
 
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
+					isSmallChange_ = false;
 				}
 			}
+			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		} else {
+			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
 	ArrowUpdate();
@@ -662,14 +678,10 @@ void MapField::ArrowUpdate() {
 void MapField::FrameUpdate() {
 	if (frameMoveTime_ > 0.0f) {
 		frameMoveTime_ -= FPSKeeper::DeltaTime();
+
 		if (frameMoveTime_ <= 0.0f) {
 			frameMoveTime_ = 0.0f;
-			frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
-			frameTex_->SetPos({ -290.0f, 400.0f,0.0f });
-			isSmallChange_ = false;
-			return;
 		}
-
 		float t = 1.0f - (frameMoveTime_ / 30.0f);
 		if (isSmallChange_) {
 			float mainPos = std::lerp(285.0f, 880.0f, t);
@@ -683,6 +695,11 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
+		}
+		if (frameMoveTime_ <= 0.0f) {
+			frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+			frameTex_->SetPos({ -290.0f, 400.0f,0.0f });
+			isSmallChange_ = false;
 		}
 	}
 }

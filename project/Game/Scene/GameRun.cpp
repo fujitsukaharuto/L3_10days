@@ -49,6 +49,13 @@ void GameRun::Initialize() {
 	textureManager_->Load("frameSize.png");
 	textureManager_->Load("enemyFactory.png");
 	textureManager_->Load("myFactory.png");
+	textureManager_->Load("Mino1.png");
+	textureManager_->Load("Mino2.png");
+	textureManager_->Load("Mino3.png");
+	textureManager_->Load("Mino4.png");
+	textureManager_->Load("Mino5.png");
+	textureManager_->Load("Mino6.png");
+	textureManager_->Load("Mino7.png");
 
 
 #pragma endregion
@@ -208,7 +215,7 @@ void GameRun::Initialize() {
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_->SetFactory(sceneFactory_.get());
-	sceneManager_->StartScene("TITLE");
+	sceneManager_->StartScene("GAME");
 }
 
 void GameRun::Finalize() {
