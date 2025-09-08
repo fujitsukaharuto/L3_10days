@@ -15,7 +15,11 @@ public:
 	~FriendlyManager() = default;
 
 	void Update();
+	void CheckIsTargetDead();
+
 	void Draw();
+
+	void DeleteDeadObject();
 
 	void AddFriendly(const CharaStatus& status);
 

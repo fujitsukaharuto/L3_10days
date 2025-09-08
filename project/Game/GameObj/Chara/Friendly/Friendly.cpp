@@ -9,9 +9,7 @@ Friendly::Friendly(const CharaStatus& status, const Vector3& popPos)
 }
 
 void Friendly::Update() {
-
 	BaseChara::Update();
-
 
 }
 
@@ -19,6 +17,10 @@ void Friendly::Search() {
 	const auto& enemies = ene_->GetEnemies();
 
 	for (auto& enemy : enemies) {
+
+		// 死んでいたらターゲットにしない
+		if (!enemy->GetIsAlive())continue;
+
 		// 敵の座標を取得
 		const Vector3 pos = enemy->GetModel()->GetWorldPos();
 
@@ -33,6 +35,7 @@ void Friendly::Search() {
 
 		if (distSq <= radiusSq) {
 			SetTarget(enemy.get());
+			state_ = State::Approach;
 			return;
 		}
 

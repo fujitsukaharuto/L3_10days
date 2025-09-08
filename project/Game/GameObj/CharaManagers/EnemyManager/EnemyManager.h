@@ -16,6 +16,8 @@ public:
 	~EnemyManager() = default;
 
 	void Update();
+	void CheckIsTargetDead();
+
 	void Draw();
 
 	void AddEnemy(const CharaStatus& status);
