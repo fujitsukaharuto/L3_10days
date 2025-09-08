@@ -18,15 +18,14 @@ void MapField::Initialize() {
 	for (int i = 0; i < 7; i++) {
 		std::unique_ptr<Sprite> button;
 		button = std::make_unique<Sprite>();
-		button->Load("white2x2.png");
-		if (i == 0) button->SetColor({ 1.0f,0.65f,0.0f,1.0f });
-		if (i == 1) button->SetColor({ 0.55f,0.0f,0.55f,1.0f });
-		if (i == 2) button->SetColor({ 0.0f,0.5f,0.0f,1.0f });
-		if (i == 3) button->SetColor({ 1.0f,0.0f,0.0f,1.0f });
-		if (i == 4) button->SetColor({ 1.0f,1.0f,0.0f,1.0f });
-		if (i == 5) button->SetColor({ 0.0f,0.0f,1.0f,1.0f });
-		if (i == 6) button->SetColor({ 0.0f,0.8f,0.95f,1.0f });
-		button->SetSize({ 55.0f,37.5f });
+		if (i == 0) { button->Load("Mino1.png"); }
+		if (i == 1) { button->Load("Mino2.png"); }
+		if (i == 2) { button->Load("Mino3.png"); }
+		if (i == 3) { button->Load("Mino4.png"); }
+		if (i == 4) { button->Load("Mino5.png"); }
+		if (i == 5) { button->Load("Mino6.png"); }
+		if (i == 6) { button->Load("Mino7.png"); }
+		button->SetSize({ 36.0f,36.0f });
 		button->SetPos({ 185.0f,95.0f,0.0f });
 		buttonTex_.push_back(std::move(button));
 	}
@@ -433,6 +432,9 @@ void MapField::UpdateSelectPanel() {
 					CompleteArragement();
 				}
 			}
+			completeTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+		} else {
+			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		// マップサイズの変更
 		pos = arrowLTex_->GetPos();
@@ -452,6 +454,9 @@ void MapField::UpdateSelectPanel() {
 					isSmallChange_ = true;
 				}
 			}
+			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		} else {
+			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
 		size = arrowRTex_->GetSize();
@@ -470,6 +475,9 @@ void MapField::UpdateSelectPanel() {
 					isSmallChange_ = false;
 				}
 			}
+			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		} else {
+			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
 	ArrowUpdate();
