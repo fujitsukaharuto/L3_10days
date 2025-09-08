@@ -33,7 +33,11 @@ private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
 
 	// 敵の沸く座標
-	const Vector3 kPopPosition_ = { 22.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 17.0f,10.0f,0.0f };
+
+	// 沸く位置の乱数用変数
+	float maxPopRangeZ_ = 0.0f;
+	float minPopRangeZ_ = -10.0f;
 
 private:
 	EnemyManager* ene_;

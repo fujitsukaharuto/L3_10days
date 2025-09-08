@@ -1,5 +1,7 @@
 #include "EnemyManager.h"
 
+#include "Random/Random.h"
+
 EnemyManager::EnemyManager() {}
 
 void EnemyManager::Update() {
@@ -39,7 +41,9 @@ void EnemyManager::Draw() {
 
 void EnemyManager::AddEnemy(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
-	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, kPopPosition_);
+	const float posZ = Random::GetFloat(minPopRangeZ_, maxPopRangeZ_);
+	popPosition_.z = posZ;
+	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, popPosition_);
 	newObj->SetFri(fri_);
 	enemies_.push_back(std::move(newObj));
 }
