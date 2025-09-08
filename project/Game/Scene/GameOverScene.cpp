@@ -57,6 +57,9 @@ void GameOverScene::Initialize() {
 	back_->Load("resultBackground.png");
 	back_->SetPos({ 640.0f,360.0f,0.0f });
 
+	cursorTex_ = std::make_unique<Sprite>();
+	cursorTex_->Load("normalCursor.png");
+
 }
 
 void GameOverScene::Update() {
@@ -70,7 +73,8 @@ void GameOverScene::Update() {
 
 	sphere->transform.rotate.y += 0.02f;
 
-
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 
 	ParticleManager::GetInstance()->Update();
 }
@@ -104,7 +108,7 @@ void GameOverScene::Draw() {
 	if (blackTime != 0.0f) {
 		black_->Draw();
 	}
-
+	cursorTex_->Draw();
 #pragma endregion
 	ModelManager::GetInstance()->PickingDataCopy();
 }

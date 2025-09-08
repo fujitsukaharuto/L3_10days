@@ -27,6 +27,8 @@ private:
 	std::unique_ptr<Sprite> frame_;
 	std::unique_ptr<Sprite> back_;
 
+	std::unique_ptr<Sprite> cursorTex_;
+
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
 	float blackLimmite = 20.0f;
