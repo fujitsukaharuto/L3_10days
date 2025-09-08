@@ -33,8 +33,8 @@ private:
 	Vector3 popPosition_ = { 60.0f,10.0f,0.0f };
 
 	// 沸く位置の乱数用変数
-	float maxPopRangeZ_ = 0.0f;
-	float minPopRangeZ_ = -10.0f;
+	float maxPopRangeZ_ = -5.0f;
+	float minPopRangeZ_ = -15.0f;
 
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;

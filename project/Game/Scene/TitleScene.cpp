@@ -23,8 +23,8 @@ void TitleScene::Initialize() {
 	obj3dCommon->Initialize();
 
 	MyWin::GetInstance()->SetDrawCursor(false);
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 22.0f, -75.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.26f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 35.0f, -75.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
