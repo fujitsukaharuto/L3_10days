@@ -88,6 +88,8 @@ void TitleScene::Initialize() {
 		enemyManager_.get()
 	);
 
+	map_->SetFriendlyManager(friendlyManager_.get());
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");

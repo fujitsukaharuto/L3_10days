@@ -63,7 +63,7 @@ void BaseChara::Update() {
 		// 正規化
 		const Vector3 nDir = Vector3::Normalize(dir);
 		// 移動量計算
-		velocity = nDir * speed_;
+		velocity = nDir * approachSpeed_;
 	}
 	break;
 	case State::Fight:
@@ -123,12 +123,12 @@ void BaseChara::SetTarget(BaseChara* target) {
 
 void BaseChara::Action() {
 	switch (status_.gender) {
-	case MEN:
+	case MAN:
 		if (target_) {
 			target_->GetDamage(status_.power);
 		}
 		break;
-	case WOMEN:
+	case WOMAN:
 
 		break;
 	}
