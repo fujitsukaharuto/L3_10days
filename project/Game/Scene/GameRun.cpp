@@ -208,7 +208,7 @@ void GameRun::Initialize() {
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_->SetFactory(sceneFactory_.get());
-	sceneManager_->StartScene("TITLE");
+	sceneManager_->StartScene("GAME");
 }
 
 void GameRun::Finalize() {

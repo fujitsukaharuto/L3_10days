@@ -4,6 +4,7 @@
 #include "FPSKeeper.h"
 #include "Game/GameObj/FollowCamera.h"
 #include "Engine/Model/ModelManager.h"
+#include "Engine/Light/LightManager.h"
 
 #include "Particle/ParticleManager.h"
 #include "Scene/SceneManager.h"
@@ -18,6 +19,12 @@ GameScene::~GameScene() {
 void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
+
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
@@ -218,7 +225,7 @@ void GameScene::BlackFade() {
 			if (isBackTitle_) {
 				ChangeScene("TITLE", 40.0f);
 			} else {
-				ChangeScene("RESULT", 40.0f);
+				ChangeScene("TITLE", 40.0f);
 			}
 		}
 	} else {
@@ -231,7 +238,7 @@ void GameScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 #ifdef _DEBUG
-	if (Input::GetInstance()->PushKey(DIK_0) && Input::GetInstance()->TriggerKey(DIK_1)) {
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}
