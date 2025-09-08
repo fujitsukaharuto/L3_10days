@@ -5,7 +5,7 @@
 Enemy::Enemy(const CharaStatus& status, const Vector3& popPos)
 	:BaseChara(status, popPos) {
 	OriginGameObject::GetModel()->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
-
+	moveDir_ = { -1.0f,0.0f,0.0f };
 	state_ = State::Search;
 }
 
@@ -27,23 +27,23 @@ void Enemy::Update() {
 
 	// 状態に応じた更新処理
 	switch (state_) {
-		case State::Search:
-			Search();
-			// 移動
-			velocity = kMoveDir_.Normalize() * speed_;
-			OriginGameObject::GetModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
-			break;
-		case State::Approach:
-			// ターゲットした敵に近づいていく		
-			if (target_) {
-				const Vector3 targetPos = target_->GetModel()->GetWorldPos();
+	case State::Search:
+		Search();
+		// 移動
+		velocity = moveDir_.Normalize() * speed_;
+		OriginGameObject::GetModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
+		break;
+	case State::Approach:
+		// ターゲットした敵に近づいていく		
+		if (target_) {
+			const Vector3 targetPos = target_->GetModel()->GetWorldPos();
 
-			}
+		}
 
-			break;
-		case State::Fight:
+		break;
+	case State::Fight:
 
-			break;
+		break;
 	}
 }
 

@@ -4,41 +4,15 @@
 
 Friendly::Friendly(const CharaStatus& status, const Vector3& popPos)
 	:BaseChara(status, popPos) {
+	moveDir_ = { 1.0f,0.0f,0.0f };
+	state_ = State::Search;
 }
 
 void Friendly::Update() {
 
 	BaseChara::Update();
 
-	// 状態判定
-	if (target_) {
-		// ターゲットがいた場合アプローチ状態にする
-		state_ = State::Approach;
 
-	} else {
-		state_ = State::Search;
-	}
-
-	// 移動量計算
-	Vector3 velocity{};
-
-	// 状態に応じた更新処理
-	switch (state_) {
-		case State::Search:
-			Search();
-			// 移動
-			velocity = kMoveDir_.Normalize() * speed_;
-			OriginGameObject::GetModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
-			break;
-		case State::Approach:
-			// ターゲットした敵に近づいていく
-
-			break;
-		case State::Fight:
-
-			break;
-
-	}
 }
 
 void Friendly::Search() {

@@ -36,7 +36,7 @@ struct SearchCollider {
 /// <summary>
 /// 敵キャラ
 /// </summary>
-class BaseChara: public OriginGameObject {
+class BaseChara : public OriginGameObject {
 public:
 	BaseChara(const CharaStatus& status, const Vector3& popPos);
 	virtual ~BaseChara()override = default;
@@ -68,6 +68,13 @@ protected:
 	// 変数
 	// 
 
+
+	// 進行方向
+	Vector3 moveDir_;
+
+	// スピード
+	float speed_ = 0.01f;
+
 	// ステータス
 	CharaStatus status_;
 
@@ -76,5 +83,8 @@ protected:
 
 	// 最大HP
 	uint32_t maxHp_;
+
+	// 戦闘距離
+	float fightRange_ = 3.0f;
 
 };
