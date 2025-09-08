@@ -38,6 +38,9 @@ void MapField::Initialize() {
 	frameTex_ = std::make_unique<Sprite>();
 	frameTex_->Load("Frame.png");
 	frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+	subFrameTex_ = std::make_unique<Sprite>();
+	subFrameTex_->Load("Frame.png");
+	subFrameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 	completeTex_ = std::make_unique<Sprite>();
 	completeTex_->Load("completed.png");
 	completeTex_->SetPos({ 285.0f, 660.0f,0.0f });
@@ -121,46 +124,8 @@ void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 		mino->Draw();
 	}*/
 
-	frameTex_->Draw();
-	completeTex_->Draw();
-	if (mapSizeNum_ != 2) {
-		arrowLTex_->Draw();
-	}
-	if (mapSizeNum_ != 0) {
-		arrowRTex_->Draw();
-	}
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
-	mapSizeTex_->Draw();
-	panelTex_->Draw();
-	selectorTex_->Draw();
-	for (int i = 0; i < buttonTex_.size(); i++) {
-		if (blockButtonNum_ == i) {
-			buttonTex_[i]->Draw();
-		}
-	}
-	genderPanelTex_->Draw();
-
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				cells_[i][j]->Draw();
-				if (TypeMap_[i][j] == 1) {
-					typeCells_[i][j]->Draw();
-				}
-			}
-		}
-	}
-	ArrangementDraw();
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				if (map_[i][j] >= 1) {
-					arrangementCells_[i][j]->Draw();
-				}
-			}
-		}
-	}
 }
 
 void MapField::DebugGUI() {
@@ -284,6 +249,45 @@ void MapField::BackDraw() {
 
 void MapField::FactoryDraw() {
 	factoryBackPanelTex_->Draw();
+	frameTex_->Draw();
+	completeTex_->Draw();
+	if (mapSizeNum_ != 2) {
+		arrowLTex_->Draw();
+	}
+	if (mapSizeNum_ != 0) {
+		arrowRTex_->Draw();
+	}
+	mapSizeTex_->Draw();
+	panelTex_->Draw();
+	selectorTex_->Draw();
+	for (int i = 0; i < buttonTex_.size(); i++) {
+		if (blockButtonNum_ == i) {
+			buttonTex_[i]->Draw();
+		}
+	}
+	genderPanelTex_->Draw();
+
+	for (size_t i = 0; i < cells_.size(); i++) {
+		for (size_t j = 0; j < cells_[i].size(); j++) {
+			if (cells_[i][j] && typeCells_[i][j]) {
+				cells_[i][j]->Draw();
+				if (TypeMap_[i][j] == 1) {
+					typeCells_[i][j]->Draw();
+				}
+			}
+		}
+	}
+	ArrangementDraw();
+	for (size_t i = 0; i < cells_.size(); i++) {
+		for (size_t j = 0; j < cells_[i].size(); j++) {
+			if (cells_[i][j] && typeCells_[i][j]) {
+				if (map_[i][j] >= 1) {
+					arrangementCells_[i][j]->Draw();
+				}
+			}
+		}
+	}
+
 	BackPanelTex_->Draw();
 }
 
@@ -639,6 +643,20 @@ void MapField::ArrowUpdate() {
 	pos.y = 515.0f + (525.0f - 515.0f) * t;
 	arrowLTex_->SetPos({ pos.x ,400.0f,0.0f });
 	arrowRTex_->SetPos({ pos.y ,400.0f,0.0f });
+}
+
+void MapField::FrameUpdate() {
+	if (frameMoveTime_ > 0.0f) {
+		frameMoveTime_ -= FPSKeeper::DeltaTime();
+		if (frameMoveTime_ <= 0.0f) {
+			frameMoveTime_ = 0.0f;
+		}
+
+
+		if (isSmallChange_) {
+
+		}
+	}
 }
 
 void MapField::MoveControlMino() {

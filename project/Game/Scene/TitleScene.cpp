@@ -169,7 +169,7 @@ void TitleScene::Draw() {
 	//b2_->Draw();
 
 	map_->Draw();
-	climber_->Draw();
+	//climber_->Draw();
 
 	friendlyManager_->Draw();
 	enemyManager_->Draw();

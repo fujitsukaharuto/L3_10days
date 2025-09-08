@@ -38,6 +38,7 @@ public:
 	void UpdateControlMino();
 
 	void ArrowUpdate();
+	void FrameUpdate();
 
 	void MoveControlMino();
 	void CellCheck(); // Dropする時に置けるかどうかのチェック用
@@ -79,6 +80,7 @@ private:
 	bool canQuickDrop_ = true;
 	bool isCameraMove_ = false;
 	bool haveControlMino_ = false;
+	bool isSmallChange_ = false;
 
 	std::vector<std::vector<int>> map_;
 	std::vector<std::vector<int>> TypeMap_;
@@ -109,6 +111,7 @@ private:
 	float panelTexturePosY_;
 	float selectorSizeTime_;
 	float arrowMoveTime_;
+	float frameMoveTime_;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
@@ -116,6 +119,7 @@ private:
 	std::unique_ptr<Sprite> panelTex_;
 	std::unique_ptr<Sprite> genderPanelTex_;
 	std::unique_ptr<Sprite> frameTex_;
+	std::unique_ptr<Sprite> subFrameTex_;
 	std::unique_ptr<Sprite> completeTex_;
 
 	std::unique_ptr<Sprite> mapSizeTex_;
