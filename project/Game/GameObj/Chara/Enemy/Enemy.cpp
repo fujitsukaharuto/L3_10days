@@ -40,7 +40,3 @@ void Enemy::Search() {
 
 	}
 }
-
-void Enemy::SetFri(FriendlyManager* fri) {
-	fri_ = fri;
-}

@@ -36,6 +36,7 @@ void FriendlyManager::AddFriendly(const CharaStatus& status) {
 	popPosition_.z = posZ;
 	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>(status, popPosition_);
 	newObj->SetEne(ene_);
+	newObj->SetFri(this);
 	friendlies_.push_back(std::move(newObj));
 }
 
