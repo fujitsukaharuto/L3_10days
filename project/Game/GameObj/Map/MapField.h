@@ -24,6 +24,7 @@ public:
 	void TitleInit();
 	void TitleUpdate();
 	void TitleUpdateSelectPanel();
+	void TitleDraw();
 
 	void BackDraw();
 	void FactoryDraw();

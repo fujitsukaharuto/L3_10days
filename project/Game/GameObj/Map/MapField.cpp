@@ -236,6 +236,49 @@ void MapField::TitleUpdateSelectPanel() {
 	SelectMino();
 }
 
+void MapField::TitleDraw() {
+	manPanelTex_->Draw();
+	frameTex_->Draw();
+	//completeTex_->Draw();
+	if (mapSizeNum_ != 2) {
+		arrowLTex_->Draw();
+	}
+	if (mapSizeNum_ != 0) {
+		arrowRTex_->Draw();
+	}
+	factoryTex_->Draw();
+	enemyFactoryTex_->Draw();
+	mapSizeTex_->Draw();
+	panelTex_->Draw();
+	//selectorTex_->Draw();
+	for (int i = 0; i < buttonTex_.size(); i++) {
+		if (blockButtonNum_ == i) {
+			buttonTex_[i]->Draw();
+		}
+	}
+
+	for (size_t i = 0; i < cells_.size(); i++) {
+		for (size_t j = 0; j < cells_[i].size(); j++) {
+			if (cells_[i][j] && typeCells_[i][j]) {
+				cells_[i][j]->Draw();
+				if (TypeMap_[i][j] == 1) {
+					typeCells_[i][j]->Draw();
+				}
+			}
+		}
+	}
+	ArrangementDraw();
+	for (size_t i = 0; i < cells_.size(); i++) {
+		for (size_t j = 0; j < cells_[i].size(); j++) {
+			if (cells_[i][j] && typeCells_[i][j]) {
+				if (map_[i][j] >= 1) {
+					arrangementCells_[i][j]->Draw();
+				}
+			}
+		}
+	}
+}
+
 void MapField::BackDraw() {
 	//BackPanelTex_->Draw();
 }

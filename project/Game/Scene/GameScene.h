@@ -37,7 +37,7 @@ private:
 	std::unique_ptr<AnimationModel> ge_ = nullptr;
 	std::unique_ptr<AnimationModel> nn2_ = nullptr;
 	std::unique_ptr<AnimationModel> factory_ = nullptr;
-	std::unique_ptr<Object3d> title = nullptr;
+	//std::unique_ptr<Object3d> title = nullptr;
 
 	Vector3 tPos;
 

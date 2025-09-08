@@ -19,6 +19,8 @@ void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
 
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 0.0f, -8.0f };
+
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
@@ -48,37 +50,42 @@ void GameScene::Initialize() {
 	map_->TitleInit();
 	map_->SetColliderManager(cMane_.get());
 
-	title = std::make_unique<Object3d>();
+	/*title = std::make_unique<Object3d>();
 	title->Create("title.obj");
 	title->SetLightEnable(LightMode::kLightNone);
 	title->transform.translate = { 39.0f,33.0f,0.0f };
 	title->transform.scale = { 10.0f,10.0f,10.0f };
-	title->transform.rotate.y = 3.14f;
+	title->transform.rotate.y = 3.14f;*/
 
 	ni_ = std::make_unique<AnimationModel>();
 	ni_->Create("title1.gltf");
 	ni_->LoadAnimationFile("title1.gltf");
-	ni_->transform.translate = { -4.5f,5.0f,0.0f };
+	ni_->transform.translate = { 2.1f,1.0f,0.0f };
+	ni_->transform.rotate.y = 3.14f;
 
 	nn_ = std::make_unique<AnimationModel>();
 	nn_->Create("title2.gltf");
 	nn_->LoadAnimationFile("title2.gltf");
-	nn_->transform.translate = { -1.5f,5.0f,0.0f };
+	nn_->transform.translate = { 2.1f,1.0f,0.0f };
+	nn_->transform.rotate.y = 3.14f;
 
 	ge_ = std::make_unique<AnimationModel>();
 	ge_->Create("title3.gltf");
 	ge_->LoadAnimationFile("title3.gltf");
-	ge_->transform.translate = { 1.5f,5.0f,0.0f };
+	ge_->transform.translate = { 2.1f,1.0f,0.0f };
+	ge_->transform.rotate.y = 3.14f;
 
 	nn2_ = std::make_unique<AnimationModel>();
 	nn2_->Create("title4.gltf");
 	nn2_->LoadAnimationFile("title4.gltf");
-	nn2_->transform.translate = { 4.5f,5.0f,0.0f };
+	nn2_->transform.translate = { 2.1f,1.0f,0.0f };
+	nn2_->transform.rotate.y = 3.14f;
 
 	factory_ = std::make_unique<AnimationModel>();
 	factory_->Create("title5.gltf");
 	factory_->LoadAnimationFile("title5.gltf");
-	factory_->transform.translate = { 0.0f,0.0f,0.0f };
+	factory_->transform.translate = { 2.1f,1.0f,0.0f };
+	factory_->transform.rotate.y = 3.14f;
 
 	ApplyGlobalVariables();
 
@@ -99,11 +106,11 @@ void GameScene::Update() {
 	
 #endif // _DEBUG
 
-	//ni_->AnimationUpdate();
-	//nn_->AnimationUpdate();
-	//ge_->AnimationUpdate();
-	//nn2_->AnimationUpdate();
-	//factory_->AnimationUpdate();
+	ni_->AnimationUpdate();
+	nn_->AnimationUpdate();
+	ge_->AnimationUpdate();
+	nn2_->AnimationUpdate();
+	factory_->AnimationUpdate();
 
 	skybox_->Update();
 	BlackFade();
@@ -115,11 +122,11 @@ void GameScene::Update() {
 void GameScene::Draw() {
 #pragma region 背景描画
 
-	//ni_->CSDispatch();
-	//nn_->CSDispatch();
-	//ge_->CSDispatch();
-	//nn2_->CSDispatch();
-	//factory_->CSDispatch();
+	ni_->CSDispatch();
+	nn_->CSDispatch();
+	ge_->CSDispatch();
+	nn2_->CSDispatch();
+	factory_->CSDispatch();
 
 	map_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
@@ -130,19 +137,18 @@ void GameScene::Draw() {
 	obj3dCommon->PreDraw();
 	dxcommon_->ClearDepthBuffer();
 	map_->FactoryDraw();
+	map_->TitleDraw();
 	dxcommon_->ClearDepthBuffer();
 
 	obj3dCommon->PreDraw();
 
 	//terrain->Draw();
 
-	title->Draw();
-	map_->Draw();
-	//ni_->Draw();
-	//nn_->Draw();
-	//ge_->Draw();
-	//nn2_->Draw();
-	//factory_->Draw();
+	ni_->Draw();
+	nn_->Draw();
+	ge_->Draw();
+	nn2_->Draw();
+	factory_->Draw();
 
 
 	ParticleManager::GetInstance()->Draw();
@@ -173,9 +179,6 @@ void GameScene::DebugGUI() {
 
 	if (ImGui::CollapsingHeader("terrain")) {
 		terrain->DebugGUI();
-	}
-	if (ImGui::CollapsingHeader("title")) {
-		title->DebugGUI();
 	}
 	if (ImGui::CollapsingHeader("ni")) {
 		ni_->DebugGUI();
@@ -229,7 +232,7 @@ void GameScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 #ifdef _DEBUG
-	if (Input::GetInstance()->TriggerKey(DIK_0)) {
+	if (Input::GetInstance()->PushKey(DIK_0) && Input::GetInstance()->TriggerKey(DIK_1)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}
