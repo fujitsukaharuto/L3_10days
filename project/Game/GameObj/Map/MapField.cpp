@@ -250,6 +250,7 @@ void MapField::BackDraw() {
 void MapField::FactoryDraw() {
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
+	subFrameTex_->Draw();
 	completeTex_->Draw();
 	if (mapSizeNum_ != 2) {
 		arrowLTex_->Draw();
@@ -267,22 +268,24 @@ void MapField::FactoryDraw() {
 	}
 	genderPanelTex_->Draw();
 
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				cells_[i][j]->Draw();
-				if (TypeMap_[i][j] == 1) {
-					typeCells_[i][j]->Draw();
+	if (frameMoveTime_ == 0.0f) {
+		for (size_t i = 0; i < cells_.size(); i++) {
+			for (size_t j = 0; j < cells_[i].size(); j++) {
+				if (cells_[i][j] && typeCells_[i][j]) {
+					cells_[i][j]->Draw();
+					if (TypeMap_[i][j] == 1) {
+						typeCells_[i][j]->Draw();
+					}
 				}
 			}
 		}
-	}
-	ArrangementDraw();
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				if (map_[i][j] >= 1) {
-					arrangementCells_[i][j]->Draw();
+		ArrangementDraw();
+		for (size_t i = 0; i < cells_.size(); i++) {
+			for (size_t j = 0; j < cells_[i].size(); j++) {
+				if (cells_[i][j] && typeCells_[i][j]) {
+					if (map_[i][j] >= 1) {
+						arrangementCells_[i][j]->Draw();
+					}
 				}
 			}
 		}
@@ -437,6 +440,10 @@ void MapField::UpdateSelectPanel() {
 				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 2) {
 					mapSizeNum_++;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+
+					frameMoveTime_ = 30.0f;
+					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					isSmallChange_ = true;
 				}
 			}
 		}
@@ -450,11 +457,15 @@ void MapField::UpdateSelectPanel() {
 				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 0) {
 					mapSizeNum_--;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+
+					frameMoveTime_ = 30.0f;
+					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 				}
 			}
 		}
 	}
 	ArrowUpdate();
+	FrameUpdate();
 	SelectMino();
 	//ReturenSelectMino();
 }
@@ -650,11 +661,25 @@ void MapField::FrameUpdate() {
 		frameMoveTime_ -= FPSKeeper::DeltaTime();
 		if (frameMoveTime_ <= 0.0f) {
 			frameMoveTime_ = 0.0f;
+			frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+			frameTex_->SetPos({ -290.0f, 400.0f,0.0f });
+			isSmallChange_ = false;
+			return;
 		}
 
-
+		float t = 1.0f - (frameMoveTime_ / 30.0f);
 		if (isSmallChange_) {
+			float mainPos = std::lerp(285.0f, 880.0f, t);
+			float subPos = std::lerp(-290.0f, 285.0f, t);
 
+			frameTex_->SetPos({ mainPos,400.0f,0.0f });
+			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
+		} else {
+			float mainPos = std::lerp(285.0f, -290.0f, t);
+			float subPos = std::lerp(880.0f, 285.0f, t);
+
+			frameTex_->SetPos({ mainPos,400.0f,0.0f });
+			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
 		}
 	}
 }
