@@ -360,10 +360,12 @@ void MapField::UpdateSelectPanel() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			minoButtonNum_ = 0;
-			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_) {
-					AddMino(selectTypes_[blockButtonNum_]);
-					return;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
 				}
 			}
 		}
