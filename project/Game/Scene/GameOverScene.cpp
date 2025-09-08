@@ -1,4 +1,4 @@
-#include "ResultScene.h"
+#include "GameOverScene.h"
 #include "ImGuiManager.h"
 #include "ModelManager.h"
 #include "GlobalVariables.h"
@@ -11,12 +11,12 @@
 
 
 
-ResultScene::ResultScene() {}
+GameOverScene::GameOverScene() {}
 
-ResultScene::~ResultScene() {
+GameOverScene::~GameOverScene() {
 }
 
-void ResultScene::Initialize() {
+void GameOverScene::Initialize() {
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
@@ -38,7 +38,11 @@ void ResultScene::Initialize() {
 
 	goTitle_ = std::make_unique<Sprite>();
 	goTitle_->Load("titleReturn.png");
-	goTitle_->SetPos({ 980.0f,-20.0f,0.0f });
+	goTitle_->SetPos({ 980.0f,0.0f,0.0f });
+
+	retry_ = std::make_unique<Sprite>();
+	retry_->Load("titleReturn.png");
+	retry_->SetPos({ 870.0f,-20.0f,0.0f });
 
 	report_ = std::make_unique<Sprite>();
 	report_->Load("clearReport.png");
@@ -58,7 +62,7 @@ void ResultScene::Initialize() {
 
 }
 
-void ResultScene::Update() {
+void GameOverScene::Update() {
 
 #ifdef _DEBUG
 
@@ -75,7 +79,7 @@ void ResultScene::Update() {
 	ParticleManager::GetInstance()->Update();
 }
 
-void ResultScene::Draw() {
+void GameOverScene::Draw() {
 
 #pragma region 背景描画
 
@@ -83,6 +87,7 @@ void ResultScene::Draw() {
 	frame_->Draw();
 	report_->Draw();
 	goTitle_->Draw();
+	retry_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
@@ -108,7 +113,7 @@ void ResultScene::Draw() {
 	ModelManager::GetInstance()->PickingDataCopy();
 }
 
-void ResultScene::DebugGUI() {
+void GameOverScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 
@@ -121,7 +126,7 @@ void ResultScene::DebugGUI() {
 #endif // _DEBUG
 }
 
-void ResultScene::ParticleDebugGUI() {
+void GameOverScene::ParticleDebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 
@@ -129,7 +134,7 @@ void ResultScene::ParticleDebugGUI() {
 #endif // _DEBUG
 }
 
-void ResultScene::BlackFade() {
+void GameOverScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
@@ -149,7 +154,7 @@ void ResultScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	Vector3 pos = { 980.0f,280.0f,0.0f };   // 中心座標
+	Vector3 pos = { 980.0f,300.0f,0.0f };   // 中心座標
 	Vector2 size = { 330.0f,80.0f }; // 幅・高さ
 	float halfW = size.x * 0.5f;
 	float halfH = size.y * 0.5f;
@@ -163,7 +168,7 @@ void ResultScene::BlackFade() {
 	}
 }
 
-void ResultScene::ApplyGlobalVariables() {
+void GameOverScene::ApplyGlobalVariables() {
 
 
 }
