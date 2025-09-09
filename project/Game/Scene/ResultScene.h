@@ -30,6 +30,8 @@ private:
 
 	std::unique_ptr<Sprite> cursorTex_;
 
+	float goTitleTime_ = 0.0f;
+
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
 	float blackLimmite = 20.0f;

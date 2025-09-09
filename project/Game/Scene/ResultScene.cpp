@@ -78,6 +78,33 @@ void ResultScene::Update() {
 
 	sphere->transform.rotate.y += 0.02f;
 
+	if (FPSKeeper::DeltaTime() < 3.0f) {
+		goTitleTime_ += FPSKeeper::DeltaTime();
+	}
+	if (goTitleTime_ < 90.0f) {
+		goTitleTime_ = std::clamp(goTitleTime_, 0.0f, 90.0f);
+
+		const float c4 = (2.0f * 3.14159265359f) / 3.0f; // 2π/3
+		float x = (goTitleTime_ / 90.0f);
+		float t = 0.0f;
+		if ((x / 40.0f) == 0.0f) {
+			t = 0.0f;
+		} else if (x == 1.0f) {
+			t = 1.0f;
+		} else {
+			t = powf(2.0f, -10.0f * x) * sinf((x * 10.0f - 0.75f) * c4) + 1.0f;
+		}
+		float posY = std::lerp(-60.0f, 280.0f, t);
+		goTitle_->SetPos({ 980.0f,posY,0.0f });
+		posY = std::lerp(-360.0f, -20.0f, t);
+		chain_->SetPos({ 980.0f,posY,0.0f });
+
+		if (goTitleTime_ == 90.0f) {
+			goTitle_->SetPos({ 980.0f,280.0f,0.0f });
+			chain_->SetPos({ 980.0f,-20.0f,0.0f });
+		}
+	}
+
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 	cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 
