@@ -38,7 +38,11 @@ void ResultScene::Initialize() {
 
 	goTitle_ = std::make_unique<Sprite>();
 	goTitle_->Load("titleReturn.png");
-	goTitle_->SetPos({ 980.0f,-20.0f,0.0f });
+	goTitle_->SetPos({ 980.0f,280.0f,0.0f });
+
+	chain_ = std::make_unique<Sprite>();
+	chain_->Load("chain.png");
+	chain_->SetPos({ 980.0f,-20.0f,0.0f });
 
 	report_ = std::make_unique<Sprite>();
 	report_->Load("clearReport.png");
@@ -55,6 +59,7 @@ void ResultScene::Initialize() {
 
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
+	cursorTex_->SetAnchor({ 0.25f,0.25f });
 
 }
 
@@ -82,6 +87,7 @@ void ResultScene::Draw() {
 	back_->Draw();
 	frame_->Draw();
 	report_->Draw();
+	chain_->Draw();
 	goTitle_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
@@ -149,7 +155,7 @@ void ResultScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	Vector3 pos = { 980.0f,280.0f,0.0f };   // 中心座標
+	Vector3 pos = goTitle_->GetPos();   // 中心座標
 	Vector2 size = { 330.0f,80.0f }; // 幅・高さ
 	float halfW = size.x * 0.5f;
 	float halfH = size.y * 0.5f;
@@ -160,6 +166,9 @@ void ResultScene::BlackFade() {
 				isChangeFase = true;
 			}
 		}
+		goTitle_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		goTitle_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
 }
 

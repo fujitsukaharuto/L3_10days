@@ -38,14 +38,22 @@ void GameOverScene::Initialize() {
 
 	goTitle_ = std::make_unique<Sprite>();
 	goTitle_->Load("titleReturn.png");
-	goTitle_->SetPos({ 980.0f,0.0f,0.0f });
+	goTitle_->SetPos({ 1050.0f,380.0f,0.0f });
 
 	retry_ = std::make_unique<Sprite>();
-	retry_->Load("titleReturn.png");
-	retry_->SetPos({ 870.0f,-20.0f,0.0f });
+	retry_->Load("tryAgain.png");
+	retry_->SetPos({ 820.0f,270.0f,0.0f });
+
+	chain_ = std::make_unique<Sprite>();
+	chain_->Load("chain.png");
+	chain_->SetPos({ 820.0f,-30.0f,0.0f });
+
+	chain2_ = std::make_unique<Sprite>();
+	chain2_->Load("chain.png");
+	chain2_->SetPos({ 1050.0f,80.0f,0.0f });
 
 	report_ = std::make_unique<Sprite>();
-	report_->Load("clearReport.png");
+	report_->Load("gameoverReport.png");
 	report_->SetAngle(0.38f);
 	report_->SetPos({ 180.0f,470.0f,0.0f });
 
@@ -59,6 +67,7 @@ void GameOverScene::Initialize() {
 
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
+	cursorTex_->SetAnchor({ 0.25f,0.25f });
 
 }
 
@@ -86,6 +95,8 @@ void GameOverScene::Draw() {
 	back_->Draw();
 	frame_->Draw();
 	report_->Draw();
+	chain_->Draw();
+	chain2_->Draw();
 	goTitle_->Draw();
 	retry_->Draw();
 	dxcommon_->ClearDepthBuffer();
@@ -142,7 +153,11 @@ void GameOverScene::BlackFade() {
 				blackTime = blackLimmite;
 			}
 		} else {
-			ChangeScene("GAME", 40.0f);
+			if (isRetry_) {
+				ChangeScene("TITLE", 40.0f);
+			} else {
+				ChangeScene("GAME", 40.0f);
+			}
 		}
 	} else {
 		if (blackTime > 0.0f) {
@@ -154,7 +169,7 @@ void GameOverScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	Vector3 pos = { 980.0f,300.0f,0.0f };   // 中心座標
+	Vector3 pos = goTitle_->GetPos();   // 中心座標
 	Vector2 size = { 330.0f,80.0f }; // 幅・高さ
 	float halfW = size.x * 0.5f;
 	float halfH = size.y * 0.5f;
@@ -165,6 +180,25 @@ void GameOverScene::BlackFade() {
 				isChangeFase = true;
 			}
 		}
+		goTitle_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		goTitle_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	}
+	pos = retry_->GetPos();   // 中心座標
+	size = { 330.0f,80.0f }; // 幅・高さ
+	halfW = size.x * 0.5f;
+	halfH = size.y * 0.5f;
+	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+		if (Input::GetInstance()->IsTriggerMouse(0)) {
+			if (blackTime == 0.0f) {
+				isChangeFase = true;
+				isRetry_ = true;
+			}
+		}
+		retry_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		retry_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
 }
 

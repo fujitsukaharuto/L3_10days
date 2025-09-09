@@ -137,6 +137,7 @@ private:
 	std::unique_ptr<Sprite> grabCursorTex_;
 	std::vector<std::unique_ptr<Sprite>> buttonTex_;
 	std::unique_ptr<Sprite> selectorTex_;
+	std::unique_ptr<Sprite> nowSelectorTex_;
 
 	int oldLine_ = 15;
 	int old_;
