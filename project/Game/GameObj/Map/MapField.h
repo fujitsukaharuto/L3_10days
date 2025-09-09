@@ -138,7 +138,8 @@ private:
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
 
-	std::unique_ptr<Sprite> panelTex_;
+	std::unique_ptr<Sprite> manPanelTex_;
+	std::unique_ptr<Sprite> womanPanelTex_;
 	std::unique_ptr<Sprite> genderPanelTex_;
 	std::unique_ptr<Sprite> frameTex_;
 	std::unique_ptr<Sprite> subFrameTex_;

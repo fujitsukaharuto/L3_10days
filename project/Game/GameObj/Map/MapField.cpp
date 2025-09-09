@@ -14,9 +14,12 @@ MapField::MapField() {}
 MapField::~MapField() {}
 
 void MapField::Initialize() {
-	panelTex_ = std::make_unique<Sprite>();
-	panelTex_->Load("blockBox.png");
-	panelTex_->SetPos({ 285.0f,102.5f,0.0f });
+	manPanelTex_ = std::make_unique<Sprite>();
+	manPanelTex_->Load("manFrame.png");
+	manPanelTex_->SetPos({ 140.0f,110.0f,0.0f });
+	womanPanelTex_ = std::make_unique<Sprite>();
+	womanPanelTex_->Load("womanFrame.png");
+	womanPanelTex_->SetPos({ 430.0f,110.0f,0.0f });
 	panelTexturePosY_ = 102.5f;
 
 	genderPanelTex_ = std::make_unique<Sprite>();
@@ -184,7 +187,8 @@ void MapField::TitleDraw() {
 	completeTex_->Draw();
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
-	panelTex_->Draw();
+	manPanelTex_->Draw();
+	womanPanelTex_->Draw();
 
 	genderPanelTex_->Draw();
 
@@ -229,7 +233,8 @@ void MapField::FactoryDraw() {
 		arrowRTex_->Draw();
 	}
 	mapSizeTex_->Draw();
-	panelTex_->Draw();
+	manPanelTex_->Draw();
+	womanPanelTex_->Draw();
 	selectorTex_->Draw();
 
 	genderPanelTex_->Draw();
@@ -337,8 +342,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		size = genderPanelTex_->GetSize();
 		halfW = size.x * 0.5f;
 		halfH = size.y * 0.5f;
-		Vector3 pos2 = panelTex_->GetPos();
-		Vector2 size2 = panelTex_->GetSize();
+		Vector3 pos2 = manPanelTex_->GetPos();
+		Vector2 size2 = manPanelTex_->GetSize();
 		float halfW2 = size.x * 0.5f;
 		float halfH2 = size.y * 0.5f;
 		if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
@@ -355,6 +360,10 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			manPanelTime_ -= FPSKeeper::DeltaTime();
 			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
+		pos2 = womanPanelTex_->GetPos();
+		size2 = womanPanelTex_->GetSize();
+		halfW2 = size.x * 0.5f;
+		halfH2 = size.y * 0.5f;
 		if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
 			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Woman))) {
 			if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
@@ -424,64 +433,28 @@ void MapField::SelectMino() {
 	float panelTime = 0.0f;
 	if (manPanelTime_ > 0.0f) panelTime = manPanelTime_;
 	if (womanPanelTime_ > 0.0f) panelTime = womanPanelTime_;
-	if (panelTime != 0.0f) {
-		float t = (panelTime / defaultSelectPanelTime_);
-		float posY = std::lerp(37.0f, panelTexturePosY_, t);
-		panelTex_->SetPos({ 285.0f,posY,0.0f });
-
-		posY = std::lerp(30.0f, 95.0f, t);
-		//for (int i = 0; i < selectTypes_.size(); i++) {
-		//	buttonTex_[int(selectTypes_[i])]->SetPos({ 185.0f, posY, 0.0f });
-		//}
-
-		if (minoButtonNum_ == 0) {
-			selectorTex_->SetPos({ 185.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 185.0f,posY,0.0f });
-		}
-		else if (minoButtonNum_ == 1) {
-			selectorTex_->SetPos({ 335.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 335.0f,posY,0.0f });
-		}
-		else if (minoButtonNum_ == 2) {
-			selectorTex_->SetPos({ 435.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,posY,0.0f });
-		}
-
-	}
-	else {
-		panelTex_->SetPos({ 285.0f,37.0f,0.0f });
-		//for (int i = 0; i < selectTypes_.size(); i++) {
-		//	buttonTex_[int(selectTypes_[i])]->SetPos({ 185.0f, 30.0f, 0.0f });
-		//}
-		if (minoButtonNum_ == 0) {
-			selectorTex_->SetPos({ 185.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 178.0f,49.0f });
-		}
-		else if (minoButtonNum_ == 1) {
-			selectorTex_->SetPos({ 335.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 94.0f,49.0f });
-		}
-		else if (minoButtonNum_ == 2) {
-			selectorTex_->SetPos({ 435.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 94.0f,49.0f });
-		}
+	if (minoButtonNum_ == 0) {
+		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 100.0f,110.0f,0.0f }); }
+		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 465.0f,110.0f,0.0f }); }
+	} else if (minoButtonNum_ == 1) {
+		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
+		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,85.0f,0.0f }); }
+	} else if (minoButtonNum_ == 2) {
+		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
+		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,146.0f,0.0f }); }
 	}
 
 	if (minoButtonNum_ == 0) {
-		selectorMaxSize_ = { 150.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 150.0f + 10.0f,40.0f + 10.0f };
+		selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
+		selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
+	} else if (minoButtonNum_ == 1) {
+		selectorMaxSize_ = { 63.0f + 30.0f,59.0f + 30.0f };
+		selectorMinSize_ = { 63.0f + 10.0f,59.0f + 10.0f };
+	} else if (minoButtonNum_ == 2) {
+		selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
+		selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
 	}
-	else if (minoButtonNum_ == 1) {
-		selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
-	}
-	else if (minoButtonNum_ == 2) {
-		selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
-	}
+
 	selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
 	selectorSizeTime_ = std::fmod(selectorSizeTime_, std::numbers::pi_v<float>);
 	// sin波で 0.0 ～ 1.0 に正規化
