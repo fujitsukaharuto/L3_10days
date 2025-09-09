@@ -123,8 +123,10 @@ private:
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
 
+	int preGender_ = 0;
 	int gender_ = 0;
 
+	int preMinoButtonNum_ = 0;
 	int minoButtonNum_ = 0;
 	int mapSizeNum_ = 2;
 	int blockButtonNum_ = 0;

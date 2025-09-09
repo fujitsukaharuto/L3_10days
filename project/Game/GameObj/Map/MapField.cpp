@@ -38,10 +38,15 @@ void MapField::Initialize() {
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
+	selectorTex_->SetPos({ 100.0f,110.0f, 0.0f });
+	selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
+	selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
 
 	nowSelectorTex_ = std::make_unique<Sprite>();
 	nowSelectorTex_->Load("white2x2.png");
 	nowSelectorTex_->SetColor({ 0.7f,0.7f,0.0f,0.6f });
+	nowSelectorTex_->SetPos({ 100.0f,110.0f,0.0f });
+	nowSelectorTex_->SetSize({ 102.0f,116.0f });
 
 	BackPanelTex_ = std::make_unique<Sprite>();
 	BackPanelTex_->Load("background.png");
@@ -234,8 +239,11 @@ void MapField::FactoryDraw() {
 	mapSizeTex_->Draw();
 	manPanelTex_->Draw();
 	womanPanelTex_->Draw();
-	selectorTex_->Draw();
-
+	if (haveControlMino_) {
+		nowSelectorTex_->Draw();
+	} else {
+		selectorTex_->Draw();
+	}
 	genderPanelTex_->Draw();
 
 	BackPanelTex_->Draw();
@@ -321,8 +329,10 @@ void MapField::UpdateSelectPanelUncontrolling() {
 
 	// パネルの選択
 	{
-		Vector3 pos = { 185.0f,95.0f,0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
-		Vector2 size = { 55,35.5f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
+		Vector3 pos{};
+		if (gender_ == int(GenderType::Man))   pos = { 100.0f,110.0f, 0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		if (gender_ == int(GenderType::Woman)) pos = { 465.0f,110.0f, 0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		Vector2 size = { 102.0f,116.0f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
@@ -338,6 +348,44 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 		}
+		if (gender_ == int(GenderType::Man))   pos = { 195.0f,85.0f, 0.0f };
+		if (gender_ == int(GenderType::Woman)) pos = { 370.0f,85.0f, 0.0f };
+		size = { 68.0f,64.0f };
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 1;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						controlMino_ = minoTables[0].minos[0].get();
+						// AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
+				}
+			}
+		}
+		if (gender_ == int(GenderType::Man))   pos = { 195.0f,146.0f, 0.0f };
+		if (gender_ == int(GenderType::Woman)) pos = { 370.0f,146.0f, 0.0f };
+		size = { 67.0f,45.0f };
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 2;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						controlMino_ = minoTables[0].minos[0].get();
+						// AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
+				}
+			}
+		}
+
+
 
 		// 性別決める
 		pos = genderPanelTex_->GetPos();
@@ -346,11 +394,11 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		halfH = size.y * 0.5f;
 		Vector3 pos2 = manPanelTex_->GetPos();
 		Vector2 size2 = manPanelTex_->GetSize();
-		float halfW2 = size.x * 0.5f;
-		float halfH2 = size.y * 0.5f;
+		float halfW2 = size2.x * 0.5f;
+		float halfH2 = size2.y * 0.5f;
 		if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Man))) {
-			if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2))) {
+			if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) || (mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2)) {
 				gender_ = int(GenderType::Man);
 			}
 			if (womanPanelTime_ <= 0.0f) {
@@ -364,11 +412,12 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		}
 		pos2 = womanPanelTex_->GetPos();
 		size2 = womanPanelTex_->GetSize();
-		halfW2 = size.x * 0.5f;
-		halfH2 = size.y * 0.5f;
+		halfW2 = size2.x * 0.5f;
+		halfH2 = size2.y * 0.5f;
 		if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Woman))) {
-			if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2))) {
+			if (/*(mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||*/
+				(mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2)) {
 				gender_ = int(GenderType::Woman);
 			}
 			if (manPanelTime_ <= 0.0f) {
@@ -435,43 +484,48 @@ void MapField::SelectMino() {
 	float panelTime = 0.0f;
 	if (manPanelTime_ > 0.0f) panelTime = manPanelTime_;
 	if (womanPanelTime_ > 0.0f) panelTime = womanPanelTime_;
-	if (minoButtonNum_ == 0) {
-		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 100.0f,110.0f,0.0f }); }
-		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 465.0f,110.0f,0.0f }); }
-	}
-	else if (minoButtonNum_ == 1) {
-		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
-		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,85.0f,0.0f }); }
-	}
-	else if (minoButtonNum_ == 2) {
-		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
-		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,146.0f,0.0f }); }
+	if (preMinoButtonNum_ != minoButtonNum_ || preGender_ != gender_) {
+		preMinoButtonNum_ = minoButtonNum_;
+		preGender_ = gender_;
+		if (minoButtonNum_ == 0) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 105.0f,110.0f,0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 102.0f,116.0f });
+		} else if (minoButtonNum_ == 1) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 68.0f,64.0f });
+		} else if (minoButtonNum_ == 2) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 376.5f,146.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 67.0f,45.0f });
+		}
+
+		if (minoButtonNum_ == 0) {
+			selectorMaxSize_ = { 95.0f + 30.0f,100.0f + 30.0f };
+			selectorMinSize_ = { 95.0f + 10.0f,100.0f + 10.0f };
+		} else if (minoButtonNum_ == 1) {
+			selectorMaxSize_ = { 63.0f + 30.0f,50.0f + 30.0f };
+			selectorMinSize_ = { 63.0f + 10.0f,50.0f + 10.0f };
+		} else if (minoButtonNum_ == 2) {
+			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
+		}
 	}
 
-	if (minoButtonNum_ == 0) {
-		selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
-		selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
+	if (!haveControlMino_) {
+		selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
+		selectorSizeTime_ = std::fmod(selectorSizeTime_, std::numbers::pi_v<float>);
+		// sin波で 0.0 ～ 1.0 に正規化
+		float t = (std::sin(selectorSizeTime_) + 1.0f) * 0.5f;
+		// 最小サイズと最大サイズを補間
+		Vector2 size;
+		size.x = selectorMinSize_.x + (selectorMaxSize_.x - selectorMinSize_.x) * t;
+		size.y = selectorMinSize_.y + (selectorMaxSize_.y - selectorMinSize_.y) * t;
+		// サイズを反映
+		selectorTex_->SetSize(size);
+		selectorDeleteSize_ = size;
 	}
-	else if (minoButtonNum_ == 1) {
-		selectorMaxSize_ = { 63.0f + 30.0f,59.0f + 30.0f };
-		selectorMinSize_ = { 63.0f + 10.0f,59.0f + 10.0f };
-	}
-	else if (minoButtonNum_ == 2) {
-		selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
-	}
-
-	selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
-	selectorSizeTime_ = std::fmod(selectorSizeTime_, std::numbers::pi_v<float>);
-	// sin波で 0.0 ～ 1.0 に正規化
-	float t = (std::sin(selectorSizeTime_) + 1.0f) * 0.5f;
-	// 最小サイズと最大サイズを補間
-	Vector2 size;
-	size.x = selectorMinSize_.x + (selectorMaxSize_.x - selectorMinSize_.x) * t;
-	size.y = selectorMinSize_.y + (selectorMaxSize_.y - selectorMinSize_.y) * t;
-	// サイズを反映
-	selectorTex_->SetSize(size);
-	selectorDeleteSize_ = size;
 }
 
 void MapField::UpdateControlMino() {
