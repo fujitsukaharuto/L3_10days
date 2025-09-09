@@ -47,6 +47,8 @@ public:
 
 	void Update()override;
 
+	void CSDispatch();
+
 	void Draw(Material* mate = nullptr, bool is = false)override;
 
 	void GetDamage(int32_t damage);

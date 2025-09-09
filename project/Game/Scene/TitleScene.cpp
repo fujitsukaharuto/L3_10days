@@ -22,7 +22,10 @@ void TitleScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
+#ifndef _DEBUG
 	MyWin::GetInstance()->SetDrawCursor(false);
+#endif // !_DEBUG
+
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
@@ -73,6 +76,12 @@ void TitleScene::Initialize() {
 
 	map_->SetFriendlyManager(friendlyManager_.get());
 
+	waveEditor_ = std::make_unique<WaveEditor>();
+	enemyTableEditor_ = std::make_unique<EnemyTableEditor>();
+
+	enemyManager_->SetWaveEditor(waveEditor_.get());
+	enemyManager_->SetEnemyTableEditor(enemyTableEditor_.get());
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -89,6 +98,9 @@ void TitleScene::Initialize() {
 #endif // _DEBUG
 
 	ParticleManager::Load(emit, "lightning");
+
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("gameBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void TitleScene::Update() {
@@ -114,21 +126,25 @@ void TitleScene::Update() {
 	// 
 	//　マネージャ更新
 	// 
-	friendlyManager_->Update();
-	enemyManager_->Update();
 
-	// 相手が死んでいた時にターゲットから外す処理
-	friendlyManager_->CheckIsTargetDead();
-	enemyManager_->CheckIsTargetDead();
+	if (!isEditorMode_) {
+		friendlyManager_->Update();
+		enemyManager_->Update();
+		// 相手が死んでいた時にターゲットから外す処理
+		friendlyManager_->CheckIsTargetDead();
+		enemyManager_->CheckIsTargetDead();
 
-	friendlyManager_->DeleteDeadObject();
-	enemyManager_->DeleteDeadObject();
+		friendlyManager_->DeleteDeadObject();
+		enemyManager_->DeleteDeadObject();
 
-	battleSystem_->Update();
+		battleSystem_->Update();
 
-	if (battleSystem_->CheckBattleOver()) {
-		isChangeFase = true;
-	}
+		if (battleSystem_->CheckBattleOver()) {
+			isChangeFase = true;
+		}
+	} 
+
+
 
 	//climber_->Up();
 
@@ -136,6 +152,9 @@ void TitleScene::Update() {
 }
 
 void TitleScene::Draw() {
+
+	friendlyManager_->CSDispatch();
+	enemyManager_->CSDispatch();
 
 #pragma region 背景描画
 
@@ -195,6 +214,9 @@ void TitleScene::DebugGUI() {
 	ImGui::Indent();
 	map_->DebugGUI();
 	friendlyManager_->DebugGUI();
+	waveEditor_->Draw();
+	enemyTableEditor_->Draw();
+	EditorModeSwitchUI();
 	ImGui::Unindent();
 #endif // _DEBUG
 }
@@ -250,6 +272,22 @@ void TitleScene::BlackFade() {
 		}
 	}
 #endif // _DEBUG
+}
+
+void TitleScene::EditorModeSwitchUI() {
+	ImGui::Begin("EditorModeSwitch");
+
+	if (!isEditorMode_) {
+		if (ImGui::Button("Enable")) {
+			isEditorMode_ = !isEditorMode_;
+		}
+	} else {
+		if (ImGui::Button("Disable")) {
+			isEditorMode_ = !isEditorMode_;
+		}
+	}
+
+	ImGui::End();
 }
 
 void TitleScene::ApplyGlobalVariables() {

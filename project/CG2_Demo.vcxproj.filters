@@ -300,6 +300,8 @@
     <ClCompile Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.cpp" />
     <ClCompile Include="Game\GameObj\BattleSystem\BattleSystem.cpp" />
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Game\Editor\WaveEditor\WaveEditor.cpp" />
+    <ClCompile Include="Game\Editor\EnemyTableEditor\EnemyTableEditor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -649,6 +651,8 @@
     <ClInclude Include="Game\GameObj\CharaManagers\FriendlyManager\FriendlyManager.h" />
     <ClInclude Include="Game\GameObj\BattleSystem\BattleSystem.h" />
     <ClInclude Include="Game\Scene\GameOverScene.h" />
+    <ClInclude Include="Game\Editor\WaveEditor\WaveEditor.h" />
+    <ClInclude Include="Game\Editor\EnemyTableEditor\EnemyTableEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

@@ -17,6 +17,8 @@ public:
 	void Update();
 	void CheckIsTargetDead();
 
+	void CSDispatch();
+
 	void Draw();
 
 	void DeleteDeadObject();

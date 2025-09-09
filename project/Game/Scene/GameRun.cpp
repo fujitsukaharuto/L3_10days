@@ -208,8 +208,25 @@ void GameRun::Initialize() {
 
 #pragma region サウンド読み込み
 
-	audioPlayer_->LoadWave("xxx.wav");
+	//audioPlayer_->LoadWave("xxx.wav");
 	audioPlayer_->LoadWave("mokugyo.wav");
+
+	audioPlayer_->LoadWave("titleBGM.wav");
+	audioPlayer_->LoadWave("gameBGM.wav");
+	audioPlayer_->LoadWave("winBGM.wav");
+	audioPlayer_->LoadWave("loseBGM.wav");
+	audioPlayer_->LoadWave("wait.wav");
+	audioPlayer_->LoadWave("grab.wav");
+	audioPlayer_->LoadWave("return.wav");
+	audioPlayer_->LoadWave("push.wav");
+	audioPlayer_->LoadWave("dontPush.wav");
+	audioPlayer_->LoadWave("machine.wav");
+	audioPlayer_->LoadWave("humanBorn.wav");
+	audioPlayer_->LoadWave("atack.wav");
+	audioPlayer_->LoadWave("recovery.wav");
+	audioPlayer_->LoadWave("die.wav");
+	audioPlayer_->LoadWave("break.wav");
+
 
 #pragma endregion
 

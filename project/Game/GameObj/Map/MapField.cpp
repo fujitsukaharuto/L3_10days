@@ -679,7 +679,7 @@ void MapField::CompleteArrangement() {
 	if (manBlocks < womanBlocks) {
 		CharaStatus status;
 		status.hp = maxBlocks;
-		status.name = "cube.obj";
+		status.name = "womanWalk.gltf";
 		status.power = womanBlocks;
 		status.gender = WOMAN;
 
@@ -691,7 +691,7 @@ void MapField::CompleteArrangement() {
 	else {
 		CharaStatus status;
 		status.hp = maxBlocks;
-		status.name = "cube.obj";
+		status.name = "womanWalk.gltf";
 		status.power = manBlocks;
 		status.gender = MAN;
 

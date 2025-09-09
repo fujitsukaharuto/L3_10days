@@ -20,7 +20,10 @@ void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
 
+#ifndef _DEBUG
 	MyWin::GetInstance()->SetDrawCursor(false);
+#endif // !_DEBUG
+
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
@@ -95,6 +98,9 @@ void GameScene::Initialize() {
 	ApplyGlobalVariables();
 
 	cMane_ = std::make_unique<CollisionManager>();
+
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("titleBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void GameScene::Update() {
@@ -108,7 +114,7 @@ void GameScene::Update() {
 	map_->TitleUpdate();
 
 #ifdef _DEBUG
-	
+
 #endif // _DEBUG
 
 	ni_->AnimationUpdate();
@@ -237,12 +243,17 @@ void GameScene::BlackFade() {
 		}
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
-#ifdef _DEBUG
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}
 	}
+#ifdef _DEBUG
+	/*if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		if (blackTime == 0.0f) {
+			isChangeFase = true;
+		}
+	}*/
 #endif // _DEBUG
 }
 
@@ -251,11 +262,11 @@ void GameScene::LoadSceneLevelData(const std::string& name) {
 	for (const auto& objJson : sceneData_["objects"]) {
 		if (objJson.contains("objectType")) {
 			if (objJson["objectType"] == "Normal") {
-				
+
 			} else if (objJson["objectType"] == "Player") {
-				
+
 			} else if (objJson["objectType"] == "Boss") {
-				
+
 			}
 		}
 	}

@@ -172,3 +172,11 @@ void AudioPlayer::SoundStopWave(SoundData& soundData) {
 	}
 	soundData.pSourceVoices.clear();
 }
+
+void AudioPlayer::AllSoundStop() {
+	for (auto& [key, Sound] : container_) {
+		if (!Sound.pSourceVoices.empty()) {
+			SoundStopWave(Sound);
+		}
+	}
+}
