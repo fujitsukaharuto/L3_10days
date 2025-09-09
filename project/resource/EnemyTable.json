@@ -1,28 +1,3 @@
 {
-    "enemies": [
-        {
-            "gender": "MAN",
-            "hp": 10,
-            "name": "NONAME",
-            "power": 10
-        },
-        {
-            "gender": "MAN",
-            "hp": 10,
-            "name": "NONAME",
-            "power": 10
-        },
-        {
-            "gender": "MAN",
-            "hp": 10,
-            "name": "NONAME",
-            "power": 10
-        },
-        {
-            "gender": "MAN",
-            "hp": 10,
-            "name": "NONAME",
-            "power": 10
-        }
-    ]
+    "enemies": []
 }

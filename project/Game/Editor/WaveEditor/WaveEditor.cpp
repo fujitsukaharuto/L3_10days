@@ -13,7 +13,7 @@ WaveEditor::WaveEditor() {
 }
 
 void WaveEditor::Draw() {
-#ifdef DEBUG
+#ifdef _DEBUG
 
 	ImGui::Begin("WaveEditor");
 
