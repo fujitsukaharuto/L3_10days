@@ -457,11 +457,13 @@ void MapField::SelectMino() {
 			selectorTex_->SetPos({ 185.0f,30.0f, 0.0f });
 			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
 			nowSelectorTex_->SetSize({ 178.0f,49.0f });
-		} else if (minoButtonNum_ == 1) {
+		}
+		else if (minoButtonNum_ == 1) {
 			selectorTex_->SetPos({ 335.0f,30.0f, 0.0f });
 			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
 			nowSelectorTex_->SetSize({ 94.0f,49.0f });
-		} else if (minoButtonNum_ == 2) {
+		}
+		else if (minoButtonNum_ == 2) {
 			selectorTex_->SetPos({ 435.0f,30.0f, 0.0f });
 			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
 			nowSelectorTex_->SetSize({ 94.0f,49.0f });
@@ -587,23 +589,16 @@ void MapField::MoveControlMino() {
 	}
 
 	cellNum_ = nextCell;
-
-	//controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f,0.0f };
 }
 
 void MapField::CellSet() {
-	if (!controlMino_) return;
-
-	if (controlMino_) {
-		if (!ArrangementCheck()) {
-			return;
-		}
+	if (CanArrangement()) {
 		controlMino_->Update();
 		RemoveControlMino();
 	}
 }
 
-bool MapField::ArrangementCheck() {
+bool MapField::CanArrangement() {
 	if (!controlMino_) {
 		return false;
 	}
@@ -692,23 +687,13 @@ void MapField::CompleteArragement() {
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
 	i32 xIndex = static_cast<i32>((position.x - cellsPos_.x) / cellsSize_);
 	i32 yIndex = static_cast<i32>((position.y - cellsPos_.y) / cellsSize_);
-	return { xIndex, yIndex };
+	return { yIndex, xIndex };
 }
 
 void MapField::RemoveControlMino() {
 	auto& blocks = controlMino_->GetBlocks();
 
 	Vector4 color = controlMino_->GetGender() == GenderType::Man ? Vector4(0.0f, 0.5f, 1.0f, 1.0f) : Vector4(1.0f, 0.5f, 0.8f, 1.0f);
-
-	for (auto& block : blocks) {
-		Vector3 position = block->sprite->GetPos();
-
-		auto [xIndex, yIndex] = CalcCellIndex(position);
-		if (xIndex >= 0 && xIndex < kMapWidth_ && yIndex >= 0 && yIndex < kMapHeight_) {
-			cellsData_[yIndex][xIndex]->genderType = controlMino_->GetGender();
-			cellsData_[yIndex][xIndex]->block->SetColor(color);
-		}
-	}
 
 	// 設置したやつをマップに反映
 	for (auto& block : blocks) {
@@ -724,6 +709,28 @@ void MapField::RemoveControlMino() {
 }
 
 void MapField::CellSpriteSetColor() {
+	auto& blocks = controlMino_->GetBlocks();
+	for (auto& block : blocks) {
+		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
+
+		// 範囲外
+		if (row < 0 || row >= kMapHeight_ || column < 0 || column >= kMapWidth_) {
+			continue;
+		}
+		// 既に配置されている
+		auto& cell = cellsData_[row][column];
+		if (cell->genderType != GenderType::None) {
+			block->sprite->SetColor({ 1.0f,0.0f,0.0f,0.8f });
+		}
+		else {
+			if (controlMino_->GetGender() == GenderType::Man) {
+				block->sprite->SetColor({ 0,0,1,0.6f });
+			}
+			else if (controlMino_->GetGender() == GenderType::Woman) {
+				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
+		}
+	}
 }
 
 void MapField::InitCells() {

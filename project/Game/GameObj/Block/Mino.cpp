@@ -116,7 +116,7 @@ void Mino::OnSelectedTable() {
 }
 
 void Mino::AdjustPosition(MapField* const mapField, i32 mouseRow, i32 mouseColumn) {
-	auto cellPos = mapField->GetCellPosition();
+	const Vector2& cellPos = mapField->GetCellPosition();
 
 	mouseRow = std::clamp(mouseRow, -minRow, static_cast<i32>(mapField->GetMapHeight() - 1 - maxRow));
 	mouseColumn = std::clamp(mouseColumn, -minColumn, static_cast<i32>(mapField->GetMapHeight() - 1 - maxColumn));

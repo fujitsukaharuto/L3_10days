@@ -50,7 +50,7 @@ public:
 
 	void MoveControlMino();
 	void CellSet();
-	bool ArrangementCheck(); // マウスで置く際のチェック用
+	bool CanArrangement(); // マウスで置く際のチェック用
 
 	void CompleteArragement();
 
