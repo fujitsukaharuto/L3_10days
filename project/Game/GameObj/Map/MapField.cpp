@@ -588,7 +588,7 @@ void MapField::MoveControlMino() {
 
 	cellNum_ = nextCell;
 
-	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f,0.0f };
+	//controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f,0.0f };
 }
 
 void MapField::CellSet() {

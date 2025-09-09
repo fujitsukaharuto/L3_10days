@@ -119,9 +119,9 @@ void Mino::AdjustPosition(MapField* const mapField, i32 mouseRow, i32 mouseColum
 	auto cellPos = mapField->GetCellPosition();
 
 	mouseRow = std::clamp(mouseRow, -minRow, static_cast<i32>(mapField->GetMapHeight() - 1 - maxRow));
-	mouseColumn = std::clamp(mouseRow, -minColumn, static_cast<i32>(mapField->GetMapHeight() - 1 - maxColumn));
+	mouseColumn = std::clamp(mouseColumn, -minColumn, static_cast<i32>(mapField->GetMapHeight() - 1 - maxColumn));
 
-	transform.translate = { mouseRow * mapField->GetCellSize() + cellPos.x, mouseColumn * mapField->GetCellSize() + cellPos.y, 0.0f };
+	transform.translate = { mouseColumn * mapField->GetCellSize() + cellPos.x, mouseRow * mapField->GetCellSize() + cellPos.y, 0.0f };
 
 	Update();
 }
