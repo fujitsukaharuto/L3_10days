@@ -29,6 +29,9 @@ public:
 
 	void SetEne(EnemyManager* ene);
 
+	void Win();
+
+	bool GetIsWin();
 private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
 
@@ -38,6 +41,9 @@ private:
 	// 沸く位置の乱数用変数
 	float maxPopRangeZ_ = -5.0f;
 	float minPopRangeZ_ = -25.0f;
+
+	// 勝利フラグ
+	bool isWin_ = false;
 
 private:
 	EnemyManager* ene_;

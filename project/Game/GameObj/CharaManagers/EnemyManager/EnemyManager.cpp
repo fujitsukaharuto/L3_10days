@@ -62,3 +62,11 @@ const std::vector<std::unique_ptr<Enemy>>& EnemyManager::GetEnemies() {
 void EnemyManager::SetFri(FriendlyManager* fri) {
 	fri_ = fri;
 }
+
+void EnemyManager::Win() {
+	isWin_ = true;
+}
+
+bool EnemyManager::GetIsWin() {
+	return isWin_;
+}

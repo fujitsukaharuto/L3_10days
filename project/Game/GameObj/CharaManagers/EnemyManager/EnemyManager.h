@@ -28,6 +28,10 @@ public:
 
 	void SetFri(FriendlyManager* fri);
 
+	void Win();
+
+	bool GetIsWin();
+
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
@@ -41,6 +45,8 @@ private:
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;
 	float enemyPopTimer_ = 0.0f;
+
+	bool isWin_ = false;
 
 private:
 	FriendlyManager* fri_;

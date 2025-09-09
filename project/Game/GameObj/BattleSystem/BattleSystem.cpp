@@ -17,4 +17,11 @@ void BattleSystem::Update() {
 
 void BattleSystem::CheckBattleOver() {
 
+	if (friendlyManager_->GetIsWin()) {
+
+	}
+
+	if (enemyManager_->GetIsWin()) {
+	
+	}
 }
