@@ -1,5 +1,7 @@
 #include "Mino.h"
 
+#include <algorithm>
+
 #include "Game/GameObj/Map/MapField.h"
 
 #undef min
@@ -18,16 +20,13 @@ void Mino::Load(const nlohmann::json& minoJson, MapField* const mapField) {
 
 		if (gender_ == GenderType::Man) {
 			color = { 0,0,1,0.6f };
-		}
-		else if (gender_ == GenderType::Woman) {
+		} else if (gender_ == GenderType::Woman) {
 			color = { 1.0f,0.08f,0.58f,0.6f };
-		}
-		else {
+		} else {
 			color = { 1.0f,1.0f,1.0f,0.0f };
 		}
 
-	}
-	else {
+	} else {
 		gender_ = GenderType::None;
 	}
 
@@ -116,13 +115,13 @@ void Mino::OnSelectedTable() {
 	numUseRest = numMaxUse;
 }
 
-void Mino::AdjustPosition(MapField* const mapField, i32 rowSize, i32 colSize) {
-	auto [rowI, colI] = mapField->CalcCellIndex(transform.translate);
+void Mino::AdjustPosition(MapField* const mapField, i32 mouseRow, i32 mouseColumn) {
+	auto cellPos = mapField->GetCellPosition();
 
-	rowI = std::clamp(rowI, -minRow, rowSize - 1 - maxRow);
-	colI = std::clamp(colI, -minColumn, colSize - 1 - maxColumn);
+	mouseRow = std::clamp(mouseRow, -minRow, static_cast<i32>(mapField->GetMapHeight() - 1 - maxRow));
+	mouseColumn = std::clamp(mouseRow, -minColumn, static_cast<i32>(mapField->GetMapHeight() - 1 - maxColumn));
 
-	transform.translate = { colI * mapField->GetCellSize(), rowI * mapField->GetCellSize(), 0.0f };
+	transform.translate = { mouseRow * mapField->GetCellSize() + cellPos.x, mouseColumn * mapField->GetCellSize() + cellPos.y, 0.0f };
 
 	Update();
 }

@@ -43,7 +43,7 @@
                 0.0,
                 0.0
             ],
-            "GenderType": 0,
+            "GenderType": 1,
             "Name": "A",
             "NumMaxUse": 1
         },
@@ -90,7 +90,7 @@
                 0.0,
                 0.0
             ],
-            "GenderType": 0,
+            "GenderType": 2,
             "Name": "B",
             "NumMaxUse": 1
         },
@@ -137,7 +137,7 @@
                 0.0,
                 0.0
             ],
-            "GenderType": 0,
+            "GenderType": 2,
             "Name": "C",
             "NumMaxUse": 1
         }

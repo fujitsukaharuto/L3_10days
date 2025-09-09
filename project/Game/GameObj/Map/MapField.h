@@ -65,6 +65,8 @@ public:
 
 	void SetFriendlyManager(FriendlyManager* const friendlyManager) { friendlyManager_ = friendlyManager; }
 
+	const Vector2& GetCellPosition() const { return cellsPos_; }
+
 private:
 	void RemoveControlMino();
 	void CellSpriteSetColor();

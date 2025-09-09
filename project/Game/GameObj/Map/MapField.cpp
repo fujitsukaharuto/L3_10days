@@ -36,6 +36,10 @@ void MapField::Initialize() {
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
 
+	nowSelectorTex_ = std::make_unique<Sprite>();
+	nowSelectorTex_->Load("white2x2.png");
+	nowSelectorTex_->SetColor({ 0.7f,0.7f,0.0f,0.6f });
+
 	BackPanelTex_ = std::make_unique<Sprite>();
 	BackPanelTex_->Load("background.png");
 	BackPanelTex_->SetPos({ 925.0f,360.0f,0.0f });
@@ -310,7 +314,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 
 	// パネルの選択
 	{
-		Vector3 pos = {};//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		Vector3 pos = { 185.0f,95.0f,0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
 		Vector2 size = { 55,35.5f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
@@ -320,6 +324,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
+						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
 						return;
 					}
@@ -431,9 +436,11 @@ void MapField::SelectMino() {
 
 		if (minoButtonNum_ == 0) {
 			selectorTex_->SetPos({ 185.0f,posY, 0.0f });
+			nowSelectorTex_->SetPos({ 185.0f,posY,0.0f });
 		}
 		else if (minoButtonNum_ == 1) {
 			selectorTex_->SetPos({ 335.0f,posY, 0.0f });
+			nowSelectorTex_->SetPos({ 335.0f,posY,0.0f });
 		}
 		else if (minoButtonNum_ == 2) {
 			selectorTex_->SetPos({ 435.0f,posY, 0.0f });
@@ -448,11 +455,13 @@ void MapField::SelectMino() {
 		//}
 		if (minoButtonNum_ == 0) {
 			selectorTex_->SetPos({ 185.0f,30.0f, 0.0f });
-		}
-		else if (minoButtonNum_ == 1) {
+			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
+			nowSelectorTex_->SetSize({ 178.0f,49.0f });
+		} else if (minoButtonNum_ == 1) {
 			selectorTex_->SetPos({ 335.0f,30.0f, 0.0f });
-		}
-		else if (minoButtonNum_ == 2) {
+			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
+			nowSelectorTex_->SetSize({ 94.0f,49.0f });
+		} else if (minoButtonNum_ == 2) {
 			selectorTex_->SetPos({ 435.0f,30.0f, 0.0f });
 			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
 			nowSelectorTex_->SetSize({ 94.0f,49.0f });
@@ -494,7 +503,7 @@ void MapField::UpdateControlMino() {
 		CellSet();
 		return;
 	}
-	RemoveControlMino();
+	//RemoveControlMino();
 
 }
 
