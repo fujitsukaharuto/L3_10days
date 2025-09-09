@@ -84,10 +84,11 @@ void MapField::Initialize() {
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
-	InitCells();
-
 	LoadMinoTables();
 
+	moldManager.load();
+	
+	InitCells();
 	// Sound
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
@@ -770,21 +771,37 @@ void MapField::CompleteArrangement() {
 	maxB_.push_back(maxBlocks);
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
+	
+	RandomizeTable();
+	ResetMold();
+}
 
-	// 再度初期化
-	for (auto& row : cellsData_) {
-		for (auto& cell : row) {
-			cell->genderType = GenderType::None;
-			cell->isRequired = false;
-		}
-	}
-	blockButtonNum_ = Random::GetInt(0, 6);
-
+void MapField::RandomizeTable() {
 	// テーブルの選択
 	tableIndex = Random::GetInt(0, (int)minoTables.size() - 1);
 	useMinoIndex = std::nullopt;
 	for (auto& tableMino : minoTables[tableIndex].minos) {
 		tableMino->OnSelectedTable();
+	}
+}
+
+void MapField::ResetMold() {
+	// セルの選択
+	auto& mold = moldManager.random_select(minoTables[tableIndex].friendlyType);
+	// 書き込み&再度初期化
+	for (i32 rowI = 0; rowI < kMapHeight_; ++rowI) {
+		for (i32 colI = 0; colI < kMapWidth_; ++colI) {
+			auto& cell = cellsData_[rowI][colI];
+			cell->genderType = GenderType::None;
+			cell->isRequired = mold[rowI][colI];
+
+			if (cell->isRequired) {
+				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
+			}
+			else {
+				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
+			}
+		}
 	}
 }
 
@@ -843,24 +860,6 @@ void MapField::CellSpriteSetColor() {
 }
 
 void MapField::InitCells() {
-	const std::vector<std::vector<bool>> requiresMap = {
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-		{0,0,0,0,1,1,1,1,1,1,1,0,0,0,0},
-		{0,0,0,0,1,0,1,1,1,0,1,0,0,0,0},
-		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
-		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
-		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
-		{0,0,0,0,0,1,1,0,1,1,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
 	cellsPos_ = { 158.0f,280.0f };
 
 	Vector2 cellSize = { cellsSize_,cellsSize_ };
@@ -871,7 +870,7 @@ void MapField::InitCells() {
 		for (i32 j = 0; std::unique_ptr<CellData>& cell : row) {
 			cell = std::make_unique<CellData>();
 			cell->genderType = GenderType::None;
-			cell->isRequired = requiresMap[i][j];
+			cell->isRequired = false;
 
 			Vector3 cellPosition = { cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i)*cellsSize_), 0 };
 
@@ -891,17 +890,14 @@ void MapField::InitCells() {
 			cell->required->Load("white2x2.png");
 			cell->required->SetPos(cellPosition);
 			cell->required->SetSize(cellSize);
-			if (cell->isRequired) {
-				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			}
-			else {
-				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
-			}
 
 			++j;
 		}
 		++i;
 	}
+
+	RandomizeTable();
+	ResetMold();
 }
 
 void MapField::LoadMinoTables() {

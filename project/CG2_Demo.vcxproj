@@ -219,6 +219,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Scene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\SceneFactory.cpp" />
     <ClCompile Include="Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\GameObj\Map\HumanMoldManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
     <ClCompile Include="Game\Editor\MinoEditor.cpp" />
@@ -349,6 +350,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\TestBaseObj.h" />
     <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
     <ClInclude Include="Game\Editor\MinoEditor.h" />
+    <ClInclude Include="Game\GameObj\Map\HumanMoldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="externals\DirectXTex\DirectXTex_Desktop_2022_Win10.vcxproj">
