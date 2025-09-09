@@ -241,6 +241,10 @@ void MapField::FactoryDraw() {
 
 	BackPanelTex_->Draw();
 
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->DrawButton();
+	}
+
 	if (frameMoveTime_ == 0.0f) {
 		DrawCells();
 	}
@@ -311,7 +315,6 @@ void MapField::UpdateSelectPanel() {
 }
 
 void MapField::UpdateSelectPanelControlling() {
-	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 }
 
 void MapField::UpdateSelectPanelUncontrolling() {
@@ -436,10 +439,12 @@ void MapField::SelectMino() {
 	if (minoButtonNum_ == 0) {
 		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 100.0f,110.0f,0.0f }); }
 		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,110.0f, 0.0f }); nowSelectorTex_->SetPos({ 465.0f,110.0f,0.0f }); }
-	} else if (minoButtonNum_ == 1) {
+	}
+	else if (minoButtonNum_ == 1) {
 		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
 		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,85.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,85.0f,0.0f }); }
-	} else if (minoButtonNum_ == 2) {
+	}
+	else if (minoButtonNum_ == 2) {
 		if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
 		if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 370.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 370.0f,146.0f,0.0f }); }
 	}
@@ -447,10 +452,12 @@ void MapField::SelectMino() {
 	if (minoButtonNum_ == 0) {
 		selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
 		selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
-	} else if (minoButtonNum_ == 1) {
+	}
+	else if (minoButtonNum_ == 1) {
 		selectorMaxSize_ = { 63.0f + 30.0f,59.0f + 30.0f };
 		selectorMinSize_ = { 63.0f + 10.0f,59.0f + 10.0f };
-	} else if (minoButtonNum_ == 2) {
+	}
+	else if (minoButtonNum_ == 2) {
 		selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
 		selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
 	}
@@ -655,6 +662,13 @@ void MapField::CompleteArrangement() {
 		}
 	}
 	blockButtonNum_ = Random::GetInt(0, 6);
+
+	// テーブルの選択
+	tableIndex = Random::GetInt(0, (int)minoTables.size() - 1);
+	useMinoIndex = std::nullopt;
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->OnSelectedTable();
+	}
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
@@ -666,7 +680,9 @@ std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
 void MapField::RemoveControlMino() {
 	auto& blocks = controlMino_->GetBlocks();
 
-	Vector4 color = controlMino_->GetGender() == GenderType::Man ? Vector4(0.0f, 0.5f, 1.0f, 1.0f) : Vector4(1.0f, 0.5f, 0.8f, 1.0f);
+	Vector4 color = controlMino_->GetGender() == GenderType::Man ?
+		Vector4(0.0f, 0.0f, 1.0f, 0.6f) :
+		Vector4(1.0f, 0.08f, 0.58f, 0.6f);
 
 	// 設置したやつをマップに反映
 	for (auto& block : blocks) {
@@ -677,6 +693,9 @@ void MapField::RemoveControlMino() {
 		cell->genderType = controlMino_->GetGender();
 		cell->block->SetColor(color);
 	}
+
+	// ミノの消費カウント
+	controlMino_->OnUsedMino();
 
 	controlMino_ = nullptr;
 }
@@ -800,5 +819,15 @@ void MapField::LoadMinoTables() {
 			// ブロック数が異なる場合、ブロック数の多い方を優先
 			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
 		});
+
+		// ボタン位置の設定
+		if (table.minos.size() == 6) {
+			table.minos[0]->SetupButtonPosition({ 95,119,0 });
+			table.minos[1]->SetupButtonPosition({ 193,77,0 });
+			table.minos[2]->SetupButtonPosition({ 193,155,0 });
+			table.minos[3]->SetupButtonPosition({ 460,119,0 });
+			table.minos[4]->SetupButtonPosition({ 370,77,0 });
+			table.minos[5]->SetupButtonPosition({ 370,155,0 });
+		}
 	}
 }

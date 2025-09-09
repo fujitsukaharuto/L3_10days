@@ -59,7 +59,7 @@ public:
 	Trans& GetTransform();
 	const Trans& GetTransform() const;
 
-	void SetButtonPosition(const Vector3& pos) { buttonPosition = pos; }
+	void SetupButtonPosition(const Vector3& pos);
 
 private:
 	Trans transform;

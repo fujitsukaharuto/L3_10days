@@ -82,8 +82,6 @@ void Mino::Update() {
 	for (auto& block : blocks_) {
 		block->sprite->SetPos(transform.translate + block->offset);
 		block->sprite->SetScale({ transform.scale.x,transform.scale.y });
-
-		block->buttonTexture->SetPos(buttonPosition + block->offset);
 	}
 }
 
@@ -132,4 +130,11 @@ Trans& Mino::GetTransform() {
 
 const Trans& Mino::GetTransform() const {
 	return transform;
+}
+
+void Mino::SetupButtonPosition(const Vector3& pos) {
+	buttonPosition = pos;
+	for (auto& block : blocks_) {
+		block->buttonTexture->SetPos(buttonPosition + block->offset);
+	}
 }

@@ -3,10 +3,10 @@
         {
             "Blocks": [
                 [
+                    1,
+                    1,
+                    1,
                     0,
-                    1,
-                    1,
-                    1,
                     0
                 ],
                 [
@@ -14,28 +14,28 @@
                     0,
                     0,
                     0,
-                    1
+                    0
                 ],
                 [
-                    1,
-                    1,
-                    1,
-                    1,
-                    1
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
                 ],
                 [
-                    1,
                     0,
                     0,
                     0,
-                    1
+                    0,
+                    0
                 ],
                 [
-                    1,
                     0,
                     0,
                     0,
-                    1
+                    0,
+                    0
                 ]
             ],
             "Color": [
@@ -44,20 +44,20 @@
                 0.0
             ],
             "GenderType": 1,
-            "Name": "A",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
             "Blocks": [
                 [
                     1,
-                    0,
+                    1,
                     0,
                     0,
                     0
                 ],
                 [
-                    1,
+                    0,
                     0,
                     0,
                     0,
@@ -91,7 +91,7 @@
                 0.0
             ],
             "GenderType": 1,
-            "Name": "C",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
@@ -145,14 +145,7 @@
             "Blocks": [
                 [
                     1,
-                    0,
-                    0,
-                    0,
-                    0
-                ],
-                [
                     1,
-                    0,
                     0,
                     0,
                     0
@@ -160,6 +153,13 @@
                 [
                     1,
                     1,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
                     0,
                     0,
                     0
@@ -185,7 +185,7 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "L",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
@@ -232,7 +232,7 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "MiniF",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
@@ -279,10 +279,10 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "MF",
+            "Name": "NewMino",
             "NumMaxUse": 1
         }
     ],
-    "Name": "Pattern1",
+    "Name": "NewPattern",
     "Type": 0
 }
