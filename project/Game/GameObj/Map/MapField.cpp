@@ -89,6 +89,10 @@ void MapField::Initialize() {
 	moldManager.load();
 	
 	InitCells();
+
+	// テーブルと鋳型をランダムに決定
+	RandomizeTable();
+	ResetMold();
 	// Sound
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
@@ -157,6 +161,23 @@ void MapField::TitleInit() {
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
+	const std::vector<std::vector<bool>> mold = {
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,1,1,1,1,1,1,1,0,0,0,0},
+		{0,0,0,0,1,0,1,1,1,0,1,0,0,0,0},
+		{0,0,0,0,0,0,1,1,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
+		{0,0,0,0,0,0,1,0,1,0,0,0,0,0,0},
+		{0,0,0,0,0,1,1,0,1,1,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	};
 
 	for (i32 rowI = 0; auto& row : cellsData_) {
 		for (i32 colI = 0; auto& cell : row) {
@@ -166,6 +187,13 @@ void MapField::TitleInit() {
 			}
 			else if (cell->genderType == GenderType::Woman) {
 				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
+			cell->isRequired = mold[rowI][colI];
+			if (cell->isRequired) {
+				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
+			}
+			else {
+				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 			++colI;
 		}
@@ -895,9 +923,6 @@ void MapField::InitCells() {
 		}
 		++i;
 	}
-
-	RandomizeTable();
-	ResetMold();
 }
 
 void MapField::LoadMinoTables() {
