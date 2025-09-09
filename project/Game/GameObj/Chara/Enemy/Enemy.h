@@ -2,7 +2,6 @@
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
-
 /// <summary>
 /// 敵キャラ
 /// </summary>
@@ -15,5 +14,6 @@ public:
 
 	void Search()override;
 
-
+private:
+	float winXPos_ = 19.0f;
 };

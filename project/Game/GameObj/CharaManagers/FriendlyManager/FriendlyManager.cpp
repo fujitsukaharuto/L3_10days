@@ -66,3 +66,11 @@ const std::vector<std::unique_ptr<Friendly>>& FriendlyManager::GetFriendlies() {
 void FriendlyManager::SetEne(EnemyManager* ene) {
 	ene_ = ene;
 }
+
+void FriendlyManager::Win() {
+	isWin_ = true;
+}
+
+bool FriendlyManager::GetIsWin() {
+	return isWin_;
+}
