@@ -83,6 +83,7 @@ void MapField::Update() {
 	else {
 		haveControlMino_ = false;
 	}
+
 	UpdateControlMino();
 	UpdateSelectPanel();
 }
@@ -178,12 +179,7 @@ void MapField::TitleDraw() {
 	enemyFactoryTex_->Draw();
 	mapSizeTex_->Draw();
 	panelTex_->Draw();
-	//selectorTex_->Draw();
-	//for (int i = 0; i < buttonTex_.size(); i++) {
-	//	if (blockButtonNum_ == i) {
-	//		buttonTex_[i]->Draw();
-	//	}
-	//}
+
 	genderPanelTex_->Draw();
 }
 
@@ -231,9 +227,15 @@ void MapField::FactoryDraw() {
 
 	BackPanelTex_->Draw();
 
+	
+
 	if (frameMoveTime_ == 0.0f) {
 		CellBackgroundDraw();
 		CellRequiredSpriteDraw();
+
+		if(controlMino_) {
+			controlMino_->DrawBlocks();
+		}
 	}
 }
 
@@ -731,6 +733,14 @@ void MapField::LoadMinoTables() {
 
 			newMino->Initialize();
 			newMino->Load(minoJson, this);
+
+			if (newMino->GetGender() == GenderType::Man) {
+				++table.numManMino;
+			}
+			else {
+				++table.numWomanMino;
+			}
+
 			table.minos.emplace_back(std::move(newMino));
 		}
 

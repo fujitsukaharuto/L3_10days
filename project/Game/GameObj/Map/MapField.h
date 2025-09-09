@@ -83,6 +83,9 @@ private:
 	struct MinoTable {
 		i32 friendlyType;
 
+		i32 numManMino;
+		i32 numWomanMino;
+
 		std::vector<std::unique_ptr<Mino>> minos;
 	};
 
