@@ -184,6 +184,8 @@ void GameOverScene::BlackFade() {
 		if (Input::GetInstance()->IsTriggerMouse(0)) {
 			if (blackTime == 0.0f) {
 				isChangeFase = true;
+				SoundData& soundData1 = audioPlayer_->SoundLoadWave("push.wav");
+				audioPlayer_->SoundPlayWave(soundData1);
 			}
 		}
 		goTitle_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
@@ -200,6 +202,8 @@ void GameOverScene::BlackFade() {
 			if (blackTime == 0.0f) {
 				isChangeFase = true;
 				isRetry_ = true;
+				SoundData& soundData1 = audioPlayer_->SoundLoadWave("push.wav");
+				audioPlayer_->SoundPlayWave(soundData1);
 			}
 		}
 		retry_->SetColor({ 0.4f,0.4f,0.4f,1.0f });

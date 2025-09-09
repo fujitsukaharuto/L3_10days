@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Engine/Model/Sprite.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 #include "Game/GameObj/Block/Mino.h"
 
@@ -156,6 +157,7 @@ private:
 	std::unique_ptr<Sprite> frameTex_;
 	std::unique_ptr<Sprite> subFrameTex_;
 	std::unique_ptr<Sprite> completeTex_;
+	std::unique_ptr<Sprite> titleCompleteTex_;
 
 	std::unique_ptr<Sprite> mapSizeTex_;
 	std::unique_ptr<Sprite> arrowLTex_;
@@ -180,4 +182,9 @@ private:
 	HumanMoldManager moldManager;
 
 	FriendlyManager* friendlyManager_ = nullptr;
+
+	// Sound
+	SoundData* push;
+	SoundData* grab;
+	SoundData* returnWav;
 };

@@ -34,13 +34,13 @@ void MapField::Initialize() {
 	completeTex_ = std::make_unique<Sprite>();
 	completeTex_->Load("completed.png");
 	completeTex_->SetPos({ 285.0f, 660.0f,0.0f });
-
+	
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
-	selectorTex_->SetPos({ 100.0f,110.0f, 0.0f });
-	selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
-	selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
+	selectorTex_->SetPos({ 100.0f,120.0f, 0.0f });
+	selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
+	selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
 
 	nowSelectorTex_ = std::make_unique<Sprite>();
 	nowSelectorTex_->Load("white2x2.png");
@@ -89,6 +89,10 @@ void MapField::Initialize() {
 	moldManager.load();
 	
 	InitCells();
+	// Sound
+	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
+	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
+	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
 }
 
 void MapField::Update() {
@@ -167,9 +171,11 @@ void MapField::TitleInit() {
 		}
 		++rowI;
 	}
-
-	completeTex_->SetAnchor({ 0.5f, 1.0f });
-	completeTex_->SetPos({ 285.0f, 710.0f,0.0f });
+	titleCompleteTex_ = std::make_unique<Sprite>();
+	titleCompleteTex_->Load("titleCompleted.png");
+	titleCompleteTex_->SetPos({ 285.0f, 660.0f,0.0f });
+	titleCompleteTex_->SetAnchor({ 0.5f, 1.0f });
+	titleCompleteTex_->SetPos({ 285.0f, 710.0f,0.0f });
 
 }
 
@@ -190,8 +196,8 @@ void MapField::TitleUpdateSelectPanel() {
 	{
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		// 完了を押す
-		Vector3 pos = completeTex_->GetPos();
-		Vector2 size = completeTex_->GetSize();
+		Vector3 pos = titleCompleteTex_->GetPos();
+		Vector2 size = titleCompleteTex_->GetSize();
 		r32 halfW = size.x * 0.5f;
 		r32 halfH = size.y;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
@@ -200,11 +206,12 @@ void MapField::TitleUpdateSelectPanel() {
 				if (!controlMino_) {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
-			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
+			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
 		} else {
-			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			titleCompleteTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 
 		if (isTitleToGame_) {
@@ -220,7 +227,7 @@ void MapField::TitleUpdateSelectPanel() {
 		Vector2 size;
 		size.x = 250.0f + (280.0f - 250.0f) * t;
 		size.y = 100.0f + (80.0f - 100.0f) * t;
-		completeTex_->SetSize({ size.x ,size.y });
+		titleCompleteTex_->SetSize({ size.x ,size.y });
 	}
 
 	//SelectMino();
@@ -238,7 +245,7 @@ void MapField::TitleDraw() {
 
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
-	completeTex_->Draw();
+	titleCompleteTex_->Draw();
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
 	manPanelTex_->Draw();
@@ -357,6 +364,7 @@ void MapField::UpdateSelectPanel() {
 		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 			if (!controlMino_) {
 				CompleteArrangement();
+				AudioPlayer::GetInstance()->SoundPlayWave(*push);
 			}
 		}
 		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -396,6 +404,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -414,6 +423,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -432,6 +442,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -501,6 +512,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
 					isSmallChange_ = true;
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -523,6 +535,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
 					isSmallChange_ = false;
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -545,8 +558,8 @@ void MapField::SelectMino() {
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 102.0f,116.0f });
 		} else if (minoButtonNum_ == 1) {
-			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
-			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 68.0f,64.0f });
 		} else if (minoButtonNum_ == 2) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
@@ -555,11 +568,11 @@ void MapField::SelectMino() {
 		}
 
 		if (minoButtonNum_ == 0) {
-			selectorMaxSize_ = { 95.0f + 30.0f,100.0f + 30.0f };
-			selectorMinSize_ = { 95.0f + 10.0f,100.0f + 10.0f };
+			selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
+			selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
 		} else if (minoButtonNum_ == 1) {
-			selectorMaxSize_ = { 63.0f + 30.0f,50.0f + 30.0f };
-			selectorMinSize_ = { 63.0f + 10.0f,50.0f + 10.0f };
+			selectorMaxSize_ = { 63.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 63.0f + 10.0f,40.0f + 10.0f };
 		} else if (minoButtonNum_ == 2) {
 			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
@@ -589,6 +602,7 @@ void MapField::UpdateControlMino() {
 	controlMino_->Update();
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
+		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
 }
