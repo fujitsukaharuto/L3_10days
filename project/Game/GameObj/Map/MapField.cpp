@@ -38,9 +38,9 @@ void MapField::Initialize() {
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
-	selectorTex_->SetPos({ 100.0f,110.0f, 0.0f });
-	selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
-	selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
+	selectorTex_->SetPos({ 100.0f,120.0f, 0.0f });
+	selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
+	selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
 
 	nowSelectorTex_ = std::make_unique<Sprite>();
 	nowSelectorTex_->Load("white2x2.png");
@@ -557,8 +557,8 @@ void MapField::SelectMino() {
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 102.0f,116.0f });
 		} else if (minoButtonNum_ == 1) {
-			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
-			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 68.0f,64.0f });
 		} else if (minoButtonNum_ == 2) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
@@ -567,11 +567,11 @@ void MapField::SelectMino() {
 		}
 
 		if (minoButtonNum_ == 0) {
-			selectorMaxSize_ = { 95.0f + 30.0f,100.0f + 30.0f };
-			selectorMinSize_ = { 95.0f + 10.0f,100.0f + 10.0f };
+			selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
+			selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
 		} else if (minoButtonNum_ == 1) {
-			selectorMaxSize_ = { 63.0f + 30.0f,50.0f + 30.0f };
-			selectorMinSize_ = { 63.0f + 10.0f,50.0f + 10.0f };
+			selectorMaxSize_ = { 63.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 63.0f + 10.0f,40.0f + 10.0f };
 		} else if (minoButtonNum_ == 2) {
 			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
