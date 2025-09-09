@@ -169,7 +169,6 @@ void MapField::TitleUpdate() {
 	else {
 		haveControlMino_ = false;
 	}
-	//UpdateControlMino();
 	TitleUpdateSelectPanel();
 }
 
@@ -485,8 +484,6 @@ void MapField::UpdateControlMino() {
 		CellSet();
 		return;
 	}
-	//RemoveControlMino();
-
 }
 
 void MapField::ArrowUpdate() {
@@ -822,12 +819,12 @@ void MapField::LoadMinoTables() {
 
 		// ボタン位置の設定
 		if (table.minos.size() == 6) {
-			table.minos[0]->SetupButtonPosition({ 95,119,0 });
-			table.minos[1]->SetupButtonPosition({ 193,77,0 });
-			table.minos[2]->SetupButtonPosition({ 193,155,0 });
-			table.minos[3]->SetupButtonPosition({ 460,119,0 });
-			table.minos[4]->SetupButtonPosition({ 370,77,0 });
-			table.minos[5]->SetupButtonPosition({ 370,155,0 });
+			table.minos[0]->SetupButtonPosition({ 105,119,0 });
+			table.minos[1]->SetupButtonPosition({ 193,92,0 });
+			table.minos[2]->SetupButtonPosition({ 193,148,0 });
+			table.minos[3]->SetupButtonPosition({ 470,119,0 });
+			table.minos[4]->SetupButtonPosition({ 372,92,0 });
+			table.minos[5]->SetupButtonPosition({ 372,148,0 });
 		}
 	}
 }
