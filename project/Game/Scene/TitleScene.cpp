@@ -154,12 +154,7 @@ void TitleScene::Draw() {
 
 	obj3dCommon->PreDraw();
 
-
-	//b1_->Draw();
-	//b2_->Draw();
-
 	map_->Draw();
-	//climber_->Draw();
 
 	friendlyManager_->Draw();
 	enemyManager_->Draw();

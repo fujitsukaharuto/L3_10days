@@ -37,6 +37,10 @@ public:
 	void CellRequiredSpriteDraw();
 
 	void UpdateSelectPanel();
+
+	void UpdateSelectPanelControlling();
+	void UpdateSelectPanelUncontrolling();
+
 	void SelectMino();
 	void AddMino();
 	void UpdateControlMino();
@@ -58,6 +62,8 @@ public:
 	std::pair<i32, i32> CalcCellIndex(const Vector3& position) const;
 
 	float GetCellSize() const { return cellsSize_; }
+
+	void SetFriendlyManager(FriendlyManager* const friendlyManager) { friendlyManager_ = friendlyManager; }
 
 private:
 	void RemoveControlMino();
@@ -147,7 +153,7 @@ private:
 	std::unique_ptr<Sprite> factoryBackPanelTex_;
 	std::unique_ptr<Sprite> cursorTex_;
 	std::unique_ptr<Sprite> grabCursorTex_;
-	// std::vector<std::unique_ptr<Sprite>> buttonTex_; // ミノ側に持たせる
+
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
 
@@ -155,4 +161,6 @@ private:
 
 	Vector2 cellsPos_; // セルの左下の位置
 	float cellsSize_ = 18.0f; // セル一つの大きさ
+
+	FriendlyManager* friendlyManager_ = nullptr;
 };

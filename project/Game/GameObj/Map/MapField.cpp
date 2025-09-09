@@ -204,6 +204,7 @@ void MapField::BackDraw() {
 }
 
 void MapField::FactoryDraw() {
+	// 
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	subFrameTex_->Draw();
@@ -222,15 +223,8 @@ void MapField::FactoryDraw() {
 
 	BackPanelTex_->Draw();
 
-	
-
 	if (frameMoveTime_ == 0.0f) {
-		CellBackgroundDraw();
-		CellRequiredSpriteDraw();
-
-		if(controlMino_) {
-			controlMino_->DrawBlocks();
-		}
+		DrawCells();
 	}
 }
 
@@ -267,71 +261,18 @@ void MapField::CellRequiredSpriteDraw() {
 
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
-		return;
+		UpdateSelectPanelControlling();
 	}
+	else {
+		UpdateSelectPanelUncontrolling();
+	}
+
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-
-	// blockどれつかむか
-	Vector3 pos = {};//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
-	Vector2 size = { 55,35.5f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
-	float halfW = size.x * 0.5f;
-	float halfH = size.y * 0.5f;
-	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-		minoButtonNum_ = 0;
-		if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
-			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_) {
-					// AddMino(selectTypes_[blockButtonNum_]);
-					return;
-				}
-			}
-		}
-	}
-
-	// 性別決める
-	pos = genderPanelTex_->GetPos();
-	size = genderPanelTex_->GetSize();
-	halfW = size.x * 0.5f;
-	halfH = size.y * 0.5f;
-	Vector3 pos2 = panelTex_->GetPos();
-	Vector2 size2 = panelTex_->GetSize();
-	float halfW2 = size.x * 0.5f;
-	float halfH2 = size.y * 0.5f;
-	if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-		((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Man))) {
-		if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
-			gender_ = int(GenderType::Man);
-		}
-		if (womanPanelTime_ <= 0.0f) {
-			manPanelTime_ += FPSKeeper::DeltaTime();
-			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
-		}
-	}
-	else {
-		manPanelTime_ -= FPSKeeper::DeltaTime();
-		manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
-	}
-	if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-		((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Woman))) {
-		if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
-			gender_ = int(GenderType::Woman);
-		}
-		if (manPanelTime_ <= 0.0f) {
-			womanPanelTime_ += FPSKeeper::DeltaTime();
-			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
-		}
-	}
-	else {
-		womanPanelTime_ -= FPSKeeper::DeltaTime();
-		womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
-	}
-
 	// 完了を押す
-	pos = completeTex_->GetPos();
-	size = completeTex_->GetSize();
-	halfW = size.x * 0.5f;
-	halfH = size.y * 0.5f;
+	Vector3 pos = completeTex_->GetPos();
+	Vector2 size = completeTex_->GetSize();
+	r32 halfW = size.x * 0.5f;
+	r32 halfH = size.y * 0.5f;
 	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
@@ -340,46 +281,129 @@ void MapField::UpdateSelectPanel() {
 			}
 		}
 	}
-	// マップサイズの変更
-	pos = arrowLTex_->GetPos();
-	size = arrowLTex_->GetSize();
-	halfW = size.x * 0.5f;
-	halfH = size.y * 0.5f;
-	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-			if (!controlMino_ && /*minos_.size() == 0 && */mapSizeNum_ != 2) {
-				mapSizeNum_++;
-				mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
-				frameMoveTime_ = 30.0f;
-				frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
-				subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
-				isSmallChange_ = true;
-			}
-		}
-	}
-	pos = arrowRTex_->GetPos();
-	size = arrowRTex_->GetSize();
-	halfW = size.x * 0.5f;
-	halfH = size.y * 0.5f;
-	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-			if (!controlMino_ && /*minos_.size() == 0 && */ mapSizeNum_ != 0) {
-				mapSizeNum_--;
-				mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
-
-				frameMoveTime_ = 30.0f;
-				frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
-				subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
-				isSmallChange_ = false;
-			}
-		}
-	}
+	// 矢印の選択
 	ArrowUpdate();
+
+	// 背景の枠の移動
 	FrameUpdate();
+
+	// 選択中のアニメーション
 	SelectMino();
+}
+
+void MapField::UpdateSelectPanelControlling() {
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+}
+
+void MapField::UpdateSelectPanelUncontrolling() {
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+
+	// パネルの選択
+	{
+		Vector3 pos = {};//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		Vector2 size = { 55,35.5f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 0;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						// AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
+				}
+			}
+		}
+
+		// 性別決める
+		pos = genderPanelTex_->GetPos();
+		size = genderPanelTex_->GetSize();
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		Vector3 pos2 = panelTex_->GetPos();
+		Vector2 size2 = panelTex_->GetSize();
+		float halfW2 = size.x * 0.5f;
+		float halfH2 = size.y * 0.5f;
+		if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Man))) {
+			if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
+				gender_ = int(GenderType::Man);
+			}
+			if (womanPanelTime_ <= 0.0f) {
+				manPanelTime_ += FPSKeeper::DeltaTime();
+				manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
+			}
+		}
+		else {
+			manPanelTime_ -= FPSKeeper::DeltaTime();
+			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
+		}
+		if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Woman))) {
+			if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
+				gender_ = int(GenderType::Woman);
+			}
+			if (manPanelTime_ <= 0.0f) {
+				womanPanelTime_ += FPSKeeper::DeltaTime();
+				womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
+			}
+		}
+		else {
+			womanPanelTime_ -= FPSKeeper::DeltaTime();
+			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
+		}
+	}
+
+	{
+		// マップサイズの変更
+		Vector3 pos = arrowLTex_->GetPos();
+		Vector2 size = arrowLTex_->GetSize();
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_ && /*minos_.size() == 0 && */mapSizeNum_ != 2) {
+					mapSizeNum_++;
+					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+
+					frameMoveTime_ = 30.0f;
+					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
+					isSmallChange_ = true;
+				}
+			}
+			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		}
+		else {
+			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+		pos = arrowRTex_->GetPos();
+		size = arrowRTex_->GetSize();
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_ && /*minos_.size() == 0 && */ mapSizeNum_ != 0) {
+					mapSizeNum_--;
+					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+
+					frameMoveTime_ = 30.0f;
+					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
+					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
+					isSmallChange_ = false;
+				}
+			}
+			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
+		}
+		else {
+			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+	}
 }
 
 void MapField::SelectMino() {
@@ -619,7 +643,8 @@ void MapField::CompleteArragement() {
 		if (friendlyManager_) {
 			friendlyManager_->AddFriendly(status);
 		}
-	} else {
+	}
+	else {
 		CharaStatus status;
 		status.hp = maxBlocks;
 		status.name = "cube.obj";
