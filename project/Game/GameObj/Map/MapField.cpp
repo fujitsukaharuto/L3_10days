@@ -34,7 +34,7 @@ void MapField::Initialize() {
 	completeTex_ = std::make_unique<Sprite>();
 	completeTex_->Load("completed.png");
 	completeTex_->SetPos({ 285.0f, 660.0f,0.0f });
-
+	
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
@@ -170,9 +170,11 @@ void MapField::TitleInit() {
 		}
 		++rowI;
 	}
-
-	completeTex_->SetAnchor({ 0.5f, 1.0f });
-	completeTex_->SetPos({ 285.0f, 710.0f,0.0f });
+	titleCompleteTex_ = std::make_unique<Sprite>();
+	titleCompleteTex_->Load("titleCompleted.png");
+	titleCompleteTex_->SetPos({ 285.0f, 660.0f,0.0f });
+	titleCompleteTex_->SetAnchor({ 0.5f, 1.0f });
+	titleCompleteTex_->SetPos({ 285.0f, 710.0f,0.0f });
 
 }
 
@@ -193,8 +195,8 @@ void MapField::TitleUpdateSelectPanel() {
 	{
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		// 完了を押す
-		Vector3 pos = completeTex_->GetPos();
-		Vector2 size = completeTex_->GetSize();
+		Vector3 pos = titleCompleteTex_->GetPos();
+		Vector2 size = titleCompleteTex_->GetSize();
 		r32 halfW = size.x * 0.5f;
 		r32 halfH = size.y;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
@@ -206,9 +208,9 @@ void MapField::TitleUpdateSelectPanel() {
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
-			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
+			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
 		} else {
-			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			titleCompleteTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 
 		if (isTitleToGame_) {
@@ -224,7 +226,7 @@ void MapField::TitleUpdateSelectPanel() {
 		Vector2 size;
 		size.x = 250.0f + (280.0f - 250.0f) * t;
 		size.y = 100.0f + (80.0f - 100.0f) * t;
-		completeTex_->SetSize({ size.x ,size.y });
+		titleCompleteTex_->SetSize({ size.x ,size.y });
 	}
 
 	//SelectMino();
@@ -242,7 +244,7 @@ void MapField::TitleDraw() {
 
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
-	completeTex_->Draw();
+	titleCompleteTex_->Draw();
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
 	manPanelTex_->Draw();
