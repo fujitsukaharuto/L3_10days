@@ -302,6 +302,7 @@
     <ClCompile Include="Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Game\Editor\WaveEditor\WaveEditor.cpp" />
     <ClCompile Include="Game\Editor\EnemyTableEditor\EnemyTableEditor.cpp" />
+    <ClCompile Include="Game\GameObj\Map\HumanMoldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -653,6 +654,7 @@
     <ClInclude Include="Game\Scene\GameOverScene.h" />
     <ClInclude Include="Game\Editor\WaveEditor\WaveEditor.h" />
     <ClInclude Include="Game\Editor\EnemyTableEditor\EnemyTableEditor.h" />
+    <ClInclude Include="Game\GameObj\Map\HumanMoldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">

@@ -7,6 +7,8 @@
 
 #include "Game/GameObj/Block/Mino.h"
 
+#include "HumanMoldManager.h"
+
 class CollisionManager;
 class Climber;
 class FriendlyManager;
@@ -55,6 +57,9 @@ public:
 
 	void CompleteArrangement();
 
+	void RandomizeTable();
+	void ResetMold();
+
 public:
 	// TODO : 定数にする
 	size_t GetMapHeight() const { return 15; }
@@ -92,7 +97,7 @@ private:
 	/// 1テーブルあたりのミノデータ
 	/// </summary>
 	struct MinoTable {
-		i32 friendlyType;
+		MoldType friendlyType;
 
 		i32 numManMino;
 		i32 numWomanMino;
@@ -171,6 +176,8 @@ private:
 
 	Vector2 cellsPos_; // セルの左下の位置
 	float cellsSize_ = 18.0f; // セル一つの大きさ
+
+	HumanMoldManager moldManager;
 
 	FriendlyManager* friendlyManager_ = nullptr;
 };
