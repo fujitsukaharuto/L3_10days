@@ -1,11 +1,10 @@
 #pragma once
-#include "Game/OriginGameObject.h"
-#include "ImGuiManager/ImGuiManager.h"
-#include <numbers>
-#include "Game/Collider/BaseCollider.h"
-#include "Game/Collider/AABBCollider.h"
-#include "Model/Line3dDrawer.h"
+
+#include <memory>
+#include <vector>
+
 #include "Engine/Model/Sprite.h"
+
 #include "Game/GameObj/Block/Mino.h"
 
 class CollisionManager;
@@ -25,6 +24,8 @@ public:
 	void TitleUpdate();
 	void TitleUpdateSelectPanel();
 	void TitleDraw();
+
+	void DrawCells();
 
 	void BackDraw();
 	void FactoryDraw();
@@ -54,12 +55,15 @@ public:
 
 	std::pair<i32, i32> CalcCellIndex(const Vector3& position) const;
 
+	float GetCellSize() const { return cellsSize_; }
+
 private:
 	void RemoveControlMino();
 	void CellSpriteSetColor();
 
 	void InitCells();
-	void GenderColor();
+
+	void LoadMinoTables();
 
 private:
 	/// <summary>
@@ -77,6 +81,8 @@ private:
 	/// 1テーブルあたりのミノデータ
 	/// </summary>
 	struct MinoTable {
+		i32 friendlyType;
+
 		std::vector<std::unique_ptr<Mino>> minos;
 	};
 
@@ -84,19 +90,20 @@ private:
 	bool haveControlMino_ = false;
 	bool isSmallChange_ = false;
 
-	const uint32_t kMapWidth_ = 15;
-	const uint32_t kMapHeight_ = 15;
+	const i32 kMapWidth_ = 15;
+	const i32 kMapHeight_ = 15;
 
-	std::vector<std::vector<CellData>> cellsData_;
+	std::vector<std::vector<std::unique_ptr<CellData>>> cellsData_;
 
 	std::vector<MinoTable> minoTables;
 
 	Vector2 cellNum_;
 
-	std::unique_ptr<Mino> controlMino_;
+	Mino* controlMino_;
 
 	// この３つはデバッグ表示用
 	// これは何…
+	// 多分男ブロックと音場ブロックの累積をメモってる
 	std::vector<int> maxB_;
 	std::vector<int> manB_;
 	std::vector<int> womanB_;

@@ -1,14 +1,12 @@
 #pragma once
 
-#include <Engine/Math/Matrix/MatrixCalculation.h>
+#include <memory>
+#include <vector>
 
-#include "Game/OriginGameObject.h"
-#include "ImGuiManager/ImGuiManager.h"
-#include <numbers>
-#include "Game/Collider/BaseCollider.h"
-#include "Game/Collider/AABBCollider.h"
-#include "Model/Line3dDrawer.h"
-#include "Game/GameObj/Block/BaseBlock.h"
+#include <Engine/Math/Matrix/MatrixCalculation.h>
+#include <Engine/Model/Sprite.h>
+
+#include <json.hpp>
 
 enum class GenderType {
 	None = 0,
@@ -16,28 +14,44 @@ enum class GenderType {
 	Woman = 2,
 };
 
-class CollisionManager;
+class MapField;
 
 class Mino {
 public:
-	Mino();
-	~Mino();
+	struct Block {
+		Vector3 offset;
+		std::unique_ptr<Sprite> sprite;
+		std::unique_ptr<Sprite> buttonTexture;
+	};
+
+public:
+	Mino() = default;
+	~Mino() = default;
 
 	void Initialize();
+
+	void Load(const nlohmann::json& minoJson, MapField* const mapField);
+
 	void Update();
-	void Draw();
+
+	void DrawBlocks();
+
+	void DrawButton();
+
 	void DebugGUI();
 
-	void DrawLine();
+	void OnUsedMino();
 
-	void InitBlock(GenderType gender);
+	void OnSelectedTable();
+
+	void AdjustPosition(MapField* const mapField, i32 rowSize, i32 colSize);
 
 	//========================================================================*/
 	//* Getter
-	const std::vector<std::unique_ptr<BaseBlock>>& GetBlocks() const {
+	const std::vector<std::unique_ptr<Block>>& GetBlocks() const {
 		return blocks_;
 	}
-	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() {
+	std::vector<std::unique_ptr<Block>>& GetBlock() {
 		return blocks_;
 	}
 	GenderType GetGender() { return gender_; }
@@ -45,11 +59,22 @@ public:
 	Trans& GetTransform();
 	const Trans& GetTransform() const;
 
+	void SetButtonPosition(const Vector3& pos) { buttonPosition = pos; }
+
 private:
 	Trans transform;
 
+	Vector3 buttonPosition;
+
 	GenderType gender_;
 
-	std::vector<std::unique_ptr<BaseBlock>> blocks_;
-	std::vector<std::unique_ptr<Sprite>> buttonTextures;
+	i32 minRow;
+	i32 minColumn;
+	i32 maxRow;
+	i32 maxColumn;
+
+	std::vector<std::unique_ptr<Block>> blocks_;
+
+	i32 numMaxUse;
+	i32 numUseRest;
 };

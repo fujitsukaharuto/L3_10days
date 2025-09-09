@@ -284,9 +284,6 @@
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Block\BaseBlock.cpp">
-      <Filter>Game\GameObj\Block</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObj\Map\MapField.cpp">
       <Filter>Game\GameObj\Map</Filter>
     </ClCompile>
@@ -633,9 +630,6 @@
     </ClInclude>
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObj\Block\BaseBlock.h">
-      <Filter>Game\GameObj\Block</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObj\Map\MapField.h">
       <Filter>Game\GameObj\Map</Filter>
