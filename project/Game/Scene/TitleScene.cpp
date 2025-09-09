@@ -90,6 +90,10 @@ void TitleScene::Initialize() {
 
 	map_->SetFriendlyManager(friendlyManager_.get());
 
+	waveEditor_ = std::make_unique<WaveEditor>();
+	enemyTableEditor_ = std::make_unique<EnemyTableEditor>();
+
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -220,6 +224,8 @@ void TitleScene::DebugGUI() {
 	map_->DebugGUI();
 	climber_->DebugGUI();
 	friendlyManager_->DebugGUI();
+	waveEditor_->Draw();
+	enemyTableEditor_->Draw();
 	ImGui::Unindent();
 #endif // _DEBUG
 }
