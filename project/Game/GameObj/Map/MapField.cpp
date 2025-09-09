@@ -535,7 +535,7 @@ void MapField::MoveControlMino() {
 	CellSpriteSetColor();
 
 	// controlMinoを範囲外に出ないようにする
-	controlMino_->AdjustPosition(this, gridSize, gridSize);
+	controlMino_->AdjustPosition(this, cellY, cellX);
 
 	// チェック
 	for (auto& block : controlMino_->GetBlocks()) {
