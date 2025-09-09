@@ -47,4 +47,5 @@ void BaseScene::ParticleGroupDebugGUI() {
 void BaseScene::ChangeScene(const std::string& sceneName, float extraTime) {
 	sceneManager_->ChangeScene(sceneName, extraTime);
 	CommandManager::GetInstance()->Reset();
+	audioPlayer_->AllSoundStop();
 }

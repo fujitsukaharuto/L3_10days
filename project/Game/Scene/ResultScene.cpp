@@ -61,6 +61,8 @@ void ResultScene::Initialize() {
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
 
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("winBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void ResultScene::Update() {

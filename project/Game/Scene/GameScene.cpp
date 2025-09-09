@@ -99,6 +99,9 @@ void GameScene::Initialize() {
 	ApplyGlobalVariables();
 
 	cMane_ = std::make_unique<CollisionManager>();
+
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("titleBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void GameScene::Update() {

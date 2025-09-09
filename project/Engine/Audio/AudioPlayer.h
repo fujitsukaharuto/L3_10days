@@ -87,6 +87,8 @@ public:
 	/// <param name="soundData">停止するSoundData</param>
 	void SoundStopWave(SoundData& soundData);
 
+	void AllSoundStop();
+
 private:
 
 	Microsoft::WRL::ComPtr<IXAudio2> xAudio2_;

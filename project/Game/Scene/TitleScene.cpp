@@ -115,6 +115,9 @@ void TitleScene::Initialize() {
 #endif // _DEBUG
 
 	ParticleManager::Load(emit, "lightning");
+
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("gameBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void TitleScene::Update() {
