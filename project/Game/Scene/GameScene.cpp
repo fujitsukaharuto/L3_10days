@@ -238,12 +238,17 @@ void GameScene::BlackFade() {
 		}
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
-#ifdef _DEBUG
 	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}
 	}
+#ifdef _DEBUG
+	/*if (Input::GetInstance()->PushKey(DIK_SPACE)) {
+		if (blackTime == 0.0f) {
+			isChangeFase = true;
+		}
+	}*/
 #endif // _DEBUG
 }
 

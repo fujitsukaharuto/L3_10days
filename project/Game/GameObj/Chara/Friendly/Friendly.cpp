@@ -30,7 +30,7 @@ void Friendly::Search() {
 			if (!enemy->GetIsAlive())continue;
 
 			// 敵の座標を取得
-			const Vector3 pos = enemy->GetModel()->GetWorldPos();
+			const Vector3 pos = enemy->GetAnimModel()->GetWorldPos();
 
 			// 敵との距離ベクトル
 			Vector3 diff = pos - collider.pos;
@@ -62,7 +62,7 @@ void Friendly::Search() {
 			if (friendly->GetStatus().hp == friendly->GetStatus().maxHp) continue;
 
 			// 目標の座標を取得
-			const Vector3 pos = friendly->GetModel()->GetWorldPos();
+			const Vector3 pos = friendly->GetAnimModel()->GetWorldPos();
 
 			// 同じ場合はターゲットにしない
 			if (pos == collider.pos)return;

@@ -14,7 +14,7 @@ void EnemyManager::Update() {
 		// TODO:ポップテーブルから沸きの設定をおこなえるようにする
 		CharaStatus status;
 		status.hp = 10;
-		status.name = "cube.obj";
+		status.name = "womanWalk.gltf";
 		status.power = 2;
 		status.gender = MAN;
 
@@ -30,6 +30,12 @@ void EnemyManager::Update() {
 void EnemyManager::CheckIsTargetDead() {
 	for (auto& obj : enemies_) {
 		obj->CheckIsTargetDead();
+	}
+}
+
+void EnemyManager::CSDispatch() {
+	for (auto& obj : enemies_) {
+		obj->CSDispatch();
 	}
 }
 

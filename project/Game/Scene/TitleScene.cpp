@@ -160,6 +160,9 @@ void TitleScene::Update() {
 
 void TitleScene::Draw() {
 
+	friendlyManager_->CSDispatch();
+	enemyManager_->CSDispatch();
+
 #pragma region 背景描画
 
 	map_->BackDraw();

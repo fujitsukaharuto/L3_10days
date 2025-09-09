@@ -12,6 +12,8 @@ EnemyTableEditor::EnemyTableEditor() {
 }
 
 void EnemyTableEditor::Draw() {
+#ifdef _DEBUG
+
 	ImGui::Begin("EnemyTableEditor");
 
 	// 敵の追加ボタン
@@ -62,6 +64,7 @@ void EnemyTableEditor::Draw() {
 	}
 
 	ImGui::End();
+#endif // _DEBUG
 }
 
 std::vector<EnemyData> EnemyTableEditor::GetTable() {

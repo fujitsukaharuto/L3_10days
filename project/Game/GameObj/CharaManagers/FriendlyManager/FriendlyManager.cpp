@@ -18,6 +18,12 @@ void FriendlyManager::CheckIsTargetDead() {
 	}
 }
 
+void FriendlyManager::CSDispatch() {
+	for (auto& obj : friendlies_) {
+		obj->CSDispatch();
+	}
+}
+
 void FriendlyManager::Draw() {
 	for (auto& obj : friendlies_) {
 		obj->Draw();

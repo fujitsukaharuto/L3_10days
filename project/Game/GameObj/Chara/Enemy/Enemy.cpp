@@ -5,7 +5,6 @@
 
 Enemy::Enemy(const CharaStatus& status, const Vector3& popPos)
 	:BaseChara(status, popPos) {
-	OriginGameObject::GetModel()->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 	moveDir_ = { -1.0f,0.0f,0.0f };
 	state_ = State::Search;
 }
@@ -14,7 +13,7 @@ void Enemy::Update() {
 	BaseChara::Update();
 
 	// 勝利判定確認
-	if (OriginGameObject::GetModel()->GetWorldPos().x < winXPos_) {
+	if (OriginGameObject::GetAnimModel()->GetWorldPos().x < winXPos_) {
 		ene_->Win();
 	}
 }
@@ -31,7 +30,7 @@ void Enemy::Search() {
 			if (!friendly->GetIsAlive())continue;
 
 			// 敵の座標を取得
-			const Vector3 pos = friendly->GetModel()->GetWorldPos();
+			const Vector3 pos = friendly->GetAnimModel()->GetWorldPos();
 
 			// 敵との距離ベクトル
 			Vector3 diff = pos - collider.pos;
@@ -63,7 +62,7 @@ void Enemy::Search() {
 			if (enemy->GetStatus().hp == enemy->GetStatus().maxHp) continue;
 
 			// 目標の座標を取得
-			const Vector3 pos = enemy->GetModel()->GetWorldPos();
+			const Vector3 pos = enemy->GetAnimModel()->GetWorldPos();
 
 			// 同じ場合はターゲットにしない
 			if (pos == collider.pos)return;
