@@ -1,24 +1,39 @@
 #include "EnemyManager.h"
-
+#include "Game/Editor/WaveEditor/WaveEditor.h"
+#include "Game/Editor/EnemyTableEditor/EnemyTableEditor.h"
 #include "Random/Random.h"
 
-EnemyManager::EnemyManager() {}
+EnemyManager::EnemyManager() {
+
+}
+
+void EnemyManager::Initialzie() {
+}
 
 void EnemyManager::Update() {
+	if (we_->GetData().empty()) return;
+	if (ete_->GetTable().empty())return;
+
+	WaveData currentWaveData = we_->GetData()[currentWave_];
 	// 敵のポップ処理
-	if (enemyPopTimer_ < kEnemyPopCoolTime_) {
+	if (enemyPopTimer_ < currentWaveData.enemyPopCoolTime_) {
 		enemyPopTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
 	} else {
-		enemyPopTimer_ = 0.0f;
 
-		// TODO:ポップテーブルから沸きの設定をおこなえるようにする
 		CharaStatus status;
-		status.hp = 10;
-		status.name = "womanWalk.gltf";
-		status.power = 2;
-		status.gender = MAN;
+		EnemyData data = ete_->GetTable()[currentWaveData.enemyPopCycle_[enemyPopCount_]];
+		status.gender = data.gender;
+		status.hp = data.hp;
+		status.maxHp = data.hp;
+		status.power = data.power;
+		status.name = data.name;
 
 		AddEnemy(status);
+		enemyPopTimer_ = 0.0f;
+		enemyPopCount_++;
+		if (enemyPopCount_ == currentWaveData.enemyPopCycle_.size()) {
+			enemyPopCount_ = 0;
+		}
 	}
 
 	for (auto& obj : enemies_) {
@@ -69,8 +84,20 @@ void EnemyManager::SetFri(FriendlyManager* fri) {
 	fri_ = fri;
 }
 
+void EnemyManager::SetWaveEditor(WaveEditor* waveEditor) {
+	we_ = waveEditor;
+}
+
+void EnemyManager::SetEnemyTableEditor(EnemyTableEditor* enemyTableEditor) {
+	ete_ = enemyTableEditor;
+}
+
 void EnemyManager::Win() {
 	isWin_ = true;
+}
+
+void EnemyManager::AddWave() {
+	currentWave_++;
 }
 
 bool EnemyManager::GetIsWin() {

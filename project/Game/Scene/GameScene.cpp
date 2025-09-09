@@ -20,7 +20,10 @@ void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
 
+#ifndef _DEBUG
 	MyWin::GetInstance()->SetDrawCursor(false);
+#endif // !_DEBUG
+
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
@@ -109,7 +112,7 @@ void GameScene::Update() {
 	map_->TitleUpdate();
 
 #ifdef _DEBUG
-	
+
 #endif // _DEBUG
 
 	ni_->AnimationUpdate();
@@ -257,11 +260,11 @@ void GameScene::LoadSceneLevelData(const std::string& name) {
 	for (const auto& objJson : sceneData_["objects"]) {
 		if (objJson.contains("objectType")) {
 			if (objJson["objectType"] == "Normal") {
-				
+
 			} else if (objJson["objectType"] == "Player") {
-				
+
 			} else if (objJson["objectType"] == "Boss") {
-				
+
 			}
 		}
 	}

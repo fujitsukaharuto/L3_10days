@@ -19,7 +19,7 @@
 #include "Game/Editor/UsableMinoEditor.h"
 #endif
 
-class TitleScene:public BaseScene {
+class TitleScene :public BaseScene {
 public:
 	TitleScene();
 	~TitleScene();
@@ -33,7 +33,7 @@ public:
 	void BlackFade();
 
 private:
-
+	void EditorModeSwitchUI();
 	void ApplyGlobalVariables();//値読み込みテスト用今度Objectクラス作って継承で使えるようにする
 
 	std::unique_ptr<Object3dCommon> obj3dCommon = nullptr;
@@ -65,6 +65,8 @@ private:
 
 	// 敵テーブル作成エディタ
 	std::unique_ptr<EnemyTableEditor> enemyTableEditor_;
+
+	bool isEditorMode_ = false;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
