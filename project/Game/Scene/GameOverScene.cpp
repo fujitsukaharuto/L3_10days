@@ -69,6 +69,8 @@ void GameOverScene::Initialize() {
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
 
+	SoundData& soundData1 = audioPlayer_->SoundLoadWave("loseBGM.wav");
+	audioPlayer_->SoundLoop(soundData1);
 }
 
 void GameOverScene::Update() {
