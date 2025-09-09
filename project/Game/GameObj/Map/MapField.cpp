@@ -50,6 +50,10 @@ void MapField::Initialize() {
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
 
+	nowSelectorTex_ = std::make_unique<Sprite>();
+	nowSelectorTex_->Load("white2x2.png");
+	nowSelectorTex_->SetColor({ 0.7f,0.7f,0.0f,0.6f });
+
 	for (int i = 0; i < 7; i++) {
 		BlockType type = BlockType::L;
 		if (i == 1) type = BlockType::T;
