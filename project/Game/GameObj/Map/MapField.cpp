@@ -87,6 +87,11 @@ void MapField::Initialize() {
 	InitCells();
 
 	LoadMinoTables();
+
+	// Sound
+	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
+	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
+	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
 }
 
 void MapField::Update() {
@@ -198,6 +203,7 @@ void MapField::TitleUpdateSelectPanel() {
 				if (!controlMino_) {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
 			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -355,6 +361,7 @@ void MapField::UpdateSelectPanel() {
 		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 			if (!controlMino_) {
 				CompleteArrangement();
+				AudioPlayer::GetInstance()->SoundPlayWave(*push);
 			}
 		}
 		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -394,6 +401,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -412,6 +420,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -430,6 +439,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					if (!controlMino_) {
 						controlMino_ = minoTables[0].minos[0].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
+						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
 				}
@@ -499,6 +509,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
 					isSmallChange_ = true;
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -521,6 +532,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
 					isSmallChange_ = false;
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -587,6 +599,7 @@ void MapField::UpdateControlMino() {
 	controlMino_->Update();
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
+		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
 }

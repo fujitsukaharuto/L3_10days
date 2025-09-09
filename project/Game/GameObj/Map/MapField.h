@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Engine/Model/Sprite.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 #include "Game/GameObj/Block/Mino.h"
 
@@ -173,4 +174,9 @@ private:
 	float cellsSize_ = 18.0f; // セル一つの大きさ
 
 	FriendlyManager* friendlyManager_ = nullptr;
+
+	// Sound
+	SoundData* push;
+	SoundData* grab;
+	SoundData* returnWav;
 };
