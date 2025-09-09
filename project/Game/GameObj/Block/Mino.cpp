@@ -20,13 +20,16 @@ void Mino::Load(const nlohmann::json& minoJson, MapField* const mapField) {
 
 		if (gender_ == GenderType::Man) {
 			color = { 0,0,1,0.6f };
-		} else if (gender_ == GenderType::Woman) {
+		}
+		else if (gender_ == GenderType::Woman) {
 			color = { 1.0f,0.08f,0.58f,0.6f };
-		} else {
+		}
+		else {
 			color = { 1.0f,1.0f,1.0f,0.0f };
 		}
 
-	} else {
+	}
+	else {
 		gender_ = GenderType::None;
 	}
 
@@ -82,8 +85,6 @@ void Mino::Update() {
 	for (auto& block : blocks_) {
 		block->sprite->SetPos(transform.translate + block->offset);
 		block->sprite->SetScale({ transform.scale.x,transform.scale.y });
-
-		block->buttonTexture->SetPos(buttonPosition + block->offset);
 	}
 }
 
@@ -132,4 +133,12 @@ Trans& Mino::GetTransform() {
 
 const Trans& Mino::GetTransform() const {
 	return transform;
+}
+
+void Mino::SetupButtonPosition(const Vector3& pos) {
+	buttonPosition = pos - Vector3{ maxColumn * 0.5f * 18.0f, maxRow * 0.5f * 18.0f, 0.0f };
+
+	for (auto& block : blocks_) {
+		block->buttonTexture->SetPos(buttonPosition + block->offset);
+	}
 }

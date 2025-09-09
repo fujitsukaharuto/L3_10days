@@ -174,7 +174,6 @@ void MapField::TitleUpdate() {
 	else {
 		haveControlMino_ = false;
 	}
-	//UpdateControlMino();
 	TitleUpdateSelectPanel();
 }
 
@@ -249,6 +248,10 @@ void MapField::FactoryDraw() {
 
 	BackPanelTex_->Draw();
 
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->DrawButton();
+	}
+
 	if (frameMoveTime_ == 0.0f) {
 		DrawCells();
 	}
@@ -319,7 +322,6 @@ void MapField::UpdateSelectPanel() {
 }
 
 void MapField::UpdateSelectPanelControlling() {
-	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 }
 
 void MapField::UpdateSelectPanelUncontrolling() {
@@ -536,8 +538,6 @@ void MapField::UpdateControlMino() {
 		CellSet();
 		return;
 	}
-	//RemoveControlMino();
-
 }
 
 void MapField::ArrowUpdate() {
@@ -713,6 +713,13 @@ void MapField::CompleteArrangement() {
 		}
 	}
 	blockButtonNum_ = Random::GetInt(0, 6);
+
+	// テーブルの選択
+	tableIndex = Random::GetInt(0, (int)minoTables.size() - 1);
+	useMinoIndex = std::nullopt;
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->OnSelectedTable();
+	}
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
@@ -724,7 +731,9 @@ std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
 void MapField::RemoveControlMino() {
 	auto& blocks = controlMino_->GetBlocks();
 
-	Vector4 color = controlMino_->GetGender() == GenderType::Man ? Vector4(0.0f, 0.5f, 1.0f, 1.0f) : Vector4(1.0f, 0.5f, 0.8f, 1.0f);
+	Vector4 color = controlMino_->GetGender() == GenderType::Man ?
+		Vector4(0.0f, 0.0f, 1.0f, 0.6f) :
+		Vector4(1.0f, 0.08f, 0.58f, 0.6f);
 
 	// 設置したやつをマップに反映
 	for (auto& block : blocks) {
@@ -735,6 +744,9 @@ void MapField::RemoveControlMino() {
 		cell->genderType = controlMino_->GetGender();
 		cell->block->SetColor(color);
 	}
+
+	// ミノの消費カウント
+	controlMino_->OnUsedMino();
 
 	controlMino_ = nullptr;
 }
@@ -858,5 +870,15 @@ void MapField::LoadMinoTables() {
 			// ブロック数が異なる場合、ブロック数の多い方を優先
 			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
 		});
+
+		// ボタン位置の設定
+		if (table.minos.size() == 6) {
+			table.minos[0]->SetupButtonPosition({ 105,119,0 });
+			table.minos[1]->SetupButtonPosition({ 193,92,0 });
+			table.minos[2]->SetupButtonPosition({ 193,148,0 });
+			table.minos[3]->SetupButtonPosition({ 470,119,0 });
+			table.minos[4]->SetupButtonPosition({ 372,92,0 });
+			table.minos[5]->SetupButtonPosition({ 372,148,0 });
+		}
 	}
 }
