@@ -7,6 +7,9 @@
 
 class FriendlyManager;
 
+class WaveEditor;
+class EnemyTableEditor;
+
 /// <summary>
 /// 敵マネージャ
 /// </summary>
@@ -15,8 +18,11 @@ public:
 	EnemyManager();
 	~EnemyManager() = default;
 
+	void Initialzie();
 	void Update();
 	void CheckIsTargetDead();
+
+	void CSDispatch();
 
 	void DeleteDeadObject();
 
@@ -27,8 +33,11 @@ public:
 	const std::vector<std::unique_ptr<Enemy>>& GetEnemies();
 
 	void SetFri(FriendlyManager* fri);
+	void SetWaveEditor(WaveEditor* waveEditor);
+	void SetEnemyTableEditor(EnemyTableEditor* enemyTableEditor);
 
 	void Win();
+	void AddWave();
 
 	bool GetIsWin();
 
@@ -43,12 +52,16 @@ private:
 	float minPopRangeZ_ = -25.0f;
 
 	// 敵の沸くクールタイム
-	const float kEnemyPopCoolTime_ = 5.0f;
 	float enemyPopTimer_ = 0.0f;
+
+	int32_t enemyPopCount_ = 0;
 
 	bool isWin_ = false;
 
+	int32_t currentWave_ = 0;
+
 private:
 	FriendlyManager* fri_;
-
+	EnemyTableEditor* ete_;
+	WaveEditor* we_;
 };
