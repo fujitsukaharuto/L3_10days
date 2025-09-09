@@ -10,18 +10,17 @@ BattleSystem::BattleSystem(FriendlyManager* fmPtr, EnemyManager* emPtr) {
 
 void BattleSystem::Update() {
 
-
-	// 終了判定
-	CheckBattleOver();
 }
 
-void BattleSystem::CheckBattleOver() {
+bool BattleSystem::CheckBattleOver() {
 
 	if (friendlyManager_->GetIsWin()) {
-
+		return true;
 	}
 
 	if (enemyManager_->GetIsWin()) {
-	
+		return true;
 	}
+
+	return false;
 }

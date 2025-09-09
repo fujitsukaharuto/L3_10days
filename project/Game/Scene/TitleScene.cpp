@@ -145,6 +145,10 @@ void TitleScene::Update() {
 
 	battleSystem_->Update();
 
+	if (battleSystem_->CheckBattleOver()) {
+		isChangeFase = true;
+	}
+
 	//climber_->Up();
 
 	ParticleManager::GetInstance()->Update();

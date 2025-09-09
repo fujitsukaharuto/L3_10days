@@ -17,9 +17,8 @@ public:
 	void Update();
 	void Draw();
 
-private:
 	// 戦闘終了判定を取る
-	void CheckBattleOver();
+	bool CheckBattleOver();
 
 private:
 

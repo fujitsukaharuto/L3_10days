@@ -11,7 +11,7 @@ public:
 	~Friendly()override = default;
 
 	void Update()override;
-
+	
 	void Search()override;
 
 private:
