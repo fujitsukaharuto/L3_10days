@@ -2,6 +2,7 @@
 
 #include "Engine/Input/Input.h"
 #include "Engine//Math/Random/Random.h"
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 
 #include "Engine/Editor/JsonSerializer.h"
 
@@ -167,17 +168,11 @@ void MapField::TitleUpdateSelectPanel() {
 }
 
 void MapField::TitleDraw() {
+	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
-	//completeTex_->Draw();
-	if (mapSizeNum_ != 2) {
-		arrowLTex_->Draw();
-	}
-	if (mapSizeNum_ != 0) {
-		arrowRTex_->Draw();
-	}
+	completeTex_->Draw();
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
-	mapSizeTex_->Draw();
 	panelTex_->Draw();
 
 	genderPanelTex_->Draw();
@@ -409,6 +404,7 @@ void MapField::SelectMino() {
 		}
 		else if (minoButtonNum_ == 2) {
 			selectorTex_->SetPos({ 435.0f,posY, 0.0f });
+			nowSelectorTex_->SetPos({ 435.0f,posY,0.0f });
 		}
 
 	}
@@ -425,6 +421,8 @@ void MapField::SelectMino() {
 		}
 		else if (minoButtonNum_ == 2) {
 			selectorTex_->SetPos({ 435.0f,30.0f, 0.0f });
+			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
+			nowSelectorTex_->SetSize({ 94.0f,49.0f });
 		}
 	}
 
@@ -606,6 +604,33 @@ void MapField::CompleteArragement() {
 		}
 	}
 	int maxBlocks = manBlocks + womanBlocks;
+
+	// 人間生成処理
+
+	// 女ブロックの方が多い
+	if (manBlocks < womanBlocks) {
+		CharaStatus status;
+		status.hp = maxBlocks;
+		status.name = "cube.obj";
+		status.power = womanBlocks;
+		status.gender = WOMAN;
+
+		// 自軍発車
+		if (friendlyManager_) {
+			friendlyManager_->AddFriendly(status);
+		}
+	} else {
+		CharaStatus status;
+		status.hp = maxBlocks;
+		status.name = "cube.obj";
+		status.power = manBlocks;
+		status.gender = MAN;
+
+		// 自軍発車
+		if (friendlyManager_) {
+			friendlyManager_->AddFriendly(status);
+		}
+	}
 
 	maxB_.push_back(maxBlocks);
 	manB_.push_back(manBlocks);

@@ -1,4 +1,4 @@
-#include "ResultScene.h"
+#include "GameOverScene.h"
 #include "ImGuiManager.h"
 #include "ModelManager.h"
 #include "GlobalVariables.h"
@@ -11,12 +11,12 @@
 
 
 
-ResultScene::ResultScene() {}
+GameOverScene::GameOverScene() {}
 
-ResultScene::~ResultScene() {
+GameOverScene::~GameOverScene() {
 }
 
-void ResultScene::Initialize() {
+void GameOverScene::Initialize() {
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
@@ -38,14 +38,22 @@ void ResultScene::Initialize() {
 
 	goTitle_ = std::make_unique<Sprite>();
 	goTitle_->Load("titleReturn.png");
-	goTitle_->SetPos({ 980.0f,280.0f,0.0f });
+	goTitle_->SetPos({ 1050.0f,380.0f,0.0f });
+
+	retry_ = std::make_unique<Sprite>();
+	retry_->Load("tryAgain.png");
+	retry_->SetPos({ 820.0f,270.0f,0.0f });
 
 	chain_ = std::make_unique<Sprite>();
 	chain_->Load("chain.png");
-	chain_->SetPos({ 980.0f,-20.0f,0.0f });
+	chain_->SetPos({ 820.0f,-30.0f,0.0f });
+
+	chain2_ = std::make_unique<Sprite>();
+	chain2_->Load("chain.png");
+	chain2_->SetPos({ 1050.0f,80.0f,0.0f });
 
 	report_ = std::make_unique<Sprite>();
-	report_->Load("clearReport.png");
+	report_->Load("gameoverReport.png");
 	report_->SetAngle(0.38f);
 	report_->SetPos({ 180.0f,470.0f,0.0f });
 
@@ -63,7 +71,7 @@ void ResultScene::Initialize() {
 
 }
 
-void ResultScene::Update() {
+void GameOverScene::Update() {
 
 #ifdef _DEBUG
 
@@ -80,7 +88,7 @@ void ResultScene::Update() {
 	ParticleManager::GetInstance()->Update();
 }
 
-void ResultScene::Draw() {
+void GameOverScene::Draw() {
 
 #pragma region 背景描画
 
@@ -88,7 +96,9 @@ void ResultScene::Draw() {
 	frame_->Draw();
 	report_->Draw();
 	chain_->Draw();
+	chain2_->Draw();
 	goTitle_->Draw();
+	retry_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
@@ -114,7 +124,7 @@ void ResultScene::Draw() {
 	ModelManager::GetInstance()->PickingDataCopy();
 }
 
-void ResultScene::DebugGUI() {
+void GameOverScene::DebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 
@@ -127,7 +137,7 @@ void ResultScene::DebugGUI() {
 #endif // _DEBUG
 }
 
-void ResultScene::ParticleDebugGUI() {
+void GameOverScene::ParticleDebugGUI() {
 #ifdef _DEBUG
 	ImGui::Indent();
 
@@ -135,7 +145,7 @@ void ResultScene::ParticleDebugGUI() {
 #endif // _DEBUG
 }
 
-void ResultScene::BlackFade() {
+void GameOverScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
@@ -143,7 +153,11 @@ void ResultScene::BlackFade() {
 				blackTime = blackLimmite;
 			}
 		} else {
-			ChangeScene("GAME", 40.0f);
+			if (isRetry_) {
+				ChangeScene("TITLE", 40.0f);
+			} else {
+				ChangeScene("GAME", 40.0f);
+			}
 		}
 	} else {
 		if (blackTime > 0.0f) {
@@ -170,9 +184,25 @@ void ResultScene::BlackFade() {
 	} else {
 		goTitle_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
+	pos = retry_->GetPos();   // 中心座標
+	size = { 330.0f,80.0f }; // 幅・高さ
+	halfW = size.x * 0.5f;
+	halfH = size.y * 0.5f;
+	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+		if (Input::GetInstance()->IsTriggerMouse(0)) {
+			if (blackTime == 0.0f) {
+				isChangeFase = true;
+				isRetry_ = true;
+			}
+		}
+		retry_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		retry_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	}
 }
 
-void ResultScene::ApplyGlobalVariables() {
+void GameOverScene::ApplyGlobalVariables() {
 
 
 }

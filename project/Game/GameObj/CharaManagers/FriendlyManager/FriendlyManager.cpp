@@ -36,6 +36,7 @@ void FriendlyManager::AddFriendly(const CharaStatus& status) {
 	popPosition_.z = posZ;
 	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>(status, popPosition_);
 	newObj->SetEne(ene_);
+	newObj->SetFri(this);
 	friendlies_.push_back(std::move(newObj));
 }
 
@@ -47,11 +48,11 @@ void FriendlyManager::DebugGUI() {
 		status.name = "cube.obj";
 		status.power = 2;
 		if (ImGui::Button("PopFriendlyMEN")) {
-			status.gender = MEN;
+			status.gender = MAN;
 			AddFriendly(status);
 		}
 		if (ImGui::Button("PopFriendlyWOMEN")) {
-			status.gender = WOMEN;
+			status.gender = WOMAN;
 			AddFriendly(status);
 		}
 	}
@@ -64,4 +65,12 @@ const std::vector<std::unique_ptr<Friendly>>& FriendlyManager::GetFriendlies() {
 
 void FriendlyManager::SetEne(EnemyManager* ene) {
 	ene_ = ene;
+}
+
+void FriendlyManager::Win() {
+	isWin_ = true;
+}
+
+bool FriendlyManager::GetIsWin() {
+	return isWin_;
 }

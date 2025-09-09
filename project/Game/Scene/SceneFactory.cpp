@@ -2,6 +2,7 @@
 #include "Game/Scene/TitleScene.h"
 #include "Game/Scene/GameScene.h"
 #include "Game/Scene/ResultScene.h"
+#include "Game/Scene/GameOverScene.h"
 #include "Game/Scene/ParticleDebugScene.h"
 #include "Game/Scene/FightScene.h"
 
@@ -25,8 +26,8 @@ BaseScene* SceneFactory::CreateScene(const std::string& sceneName) {
 
 	} else if (sceneName == "PARTICLEDEBUG") {
 		newScene = new ParticleDebugScene();
-	} else if (sceneName == "FIGHT") {
-
+	} else if (sceneName == "GAMEOVER") {
+		newScene = new GameOverScene();
 	}
 
 	return newScene;

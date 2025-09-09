@@ -16,7 +16,7 @@ void EnemyManager::Update() {
 		status.hp = 10;
 		status.name = "cube.obj";
 		status.power = 2;
-		status.gender = MEN;
+		status.gender = MAN;
 
 		AddEnemy(status);
 	}
@@ -51,6 +51,7 @@ void EnemyManager::AddEnemy(const CharaStatus& status) {
 	popPosition_.z = posZ;
 	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, popPosition_);
 	newObj->SetFri(fri_);
+	newObj->SetEne(this);
 	enemies_.push_back(std::move(newObj));
 }
 
@@ -60,4 +61,12 @@ const std::vector<std::unique_ptr<Enemy>>& EnemyManager::GetEnemies() {
 
 void EnemyManager::SetFri(FriendlyManager* fri) {
 	fri_ = fri;
+}
+
+void EnemyManager::Win() {
+	isWin_ = true;
+}
+
+bool EnemyManager::GetIsWin() {
+	return isWin_;
 }

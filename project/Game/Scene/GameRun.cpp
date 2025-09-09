@@ -31,10 +31,10 @@ void GameRun::Initialize() {
 	textureManager_->Load("boal16x16.png");
 	textureManager_->Load("title.png");
 	textureManager_->Load("title_png.png");
-	textureManager_->Load("clear_beta.png");
-	textureManager_->Load("gameover_beta.png");
-	textureManager_->Load("spaceKey.png");
-	textureManager_->Load("key_beta.png");
+	//textureManager_->Load("clear_beta.png");
+	//textureManager_->Load("gameover_beta.png");
+	//textureManager_->Load("spaceKey.png");
+	//textureManager_->Load("key_beta.png");
 	textureManager_->Load("SquareFrame.png");
 	textureManager_->Load("FX12_Lightning_01.png");
 
@@ -49,6 +49,20 @@ void GameRun::Initialize() {
 	textureManager_->Load("frameSize.png");
 	textureManager_->Load("enemyFactory.png");
 	textureManager_->Load("myFactory.png");
+	textureManager_->Load("Mino1.png");
+	textureManager_->Load("Mino2.png");
+	textureManager_->Load("Mino3.png");
+	textureManager_->Load("Mino4.png");
+	textureManager_->Load("Mino5.png");
+	textureManager_->Load("Mino6.png");
+	textureManager_->Load("Mino7.png");
+	textureManager_->Load("clearReport.png");
+	textureManager_->Load("gameoverReport.png");
+	textureManager_->Load("resultBackground.png");
+	textureManager_->Load("resultFrame.png");
+	textureManager_->Load("titleReturn.png");
+	textureManager_->Load("tryAgain.png");
+	textureManager_->Load("chain.png");
 
 
 #pragma endregion
@@ -63,13 +77,13 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("terrain.obj");
 	modelManager_->LoadOBJ("skydome.obj");
 	modelManager_->LoadOBJ("lightning.obj");
-	modelManager_->LoadOBJ("playerModel.obj");
-	modelManager_->LoadOBJ("boss.obj");
-	modelManager_->LoadOBJ("bossWaveWall.obj");
-	modelManager_->LoadOBJ("Star.obj");
-	modelManager_->LoadOBJ("player.obj");
-	modelManager_->LoadOBJ("Boss_Arrow.obj");
-	modelManager_->LoadOBJ("title.obj");
+	//modelManager_->LoadOBJ("playerModel.obj");
+	//modelManager_->LoadOBJ("boss.obj");
+	//modelManager_->LoadOBJ("bossWaveWall.obj");
+	//modelManager_->LoadOBJ("Star.obj");
+	//modelManager_->LoadOBJ("player.obj");
+	//modelManager_->LoadOBJ("Boss_Arrow.obj");
+	//modelManager_->LoadOBJ("title.obj");
 	modelManager_->LoadGLTF("title1.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
@@ -208,7 +222,7 @@ void GameRun::Initialize() {
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_->SetFactory(sceneFactory_.get());
-	sceneManager_->StartScene("TITLE");
+	sceneManager_->StartScene("GAME");
 }
 
 void GameRun::Finalize() {

@@ -2,10 +2,10 @@
 #include "Scene/BaseScene.h"
 
 
-class ResultScene :public BaseScene {
+class GameOverScene :public BaseScene {
 public:
-	ResultScene();
-	~ResultScene();
+	GameOverScene();
+	~GameOverScene();
 
 	void Initialize()override;
 	void Update()override;
@@ -24,11 +24,16 @@ private:
 
 	std::unique_ptr<Sprite> report_;
 	std::unique_ptr<Sprite> goTitle_;
+	std::unique_ptr<Sprite> retry_;
 	std::unique_ptr<Sprite> frame_;
 	std::unique_ptr<Sprite> back_;
+
 	std::unique_ptr<Sprite> chain_;
+	std::unique_ptr<Sprite> chain2_;
 
 	std::unique_ptr<Sprite> cursorTex_;
+
+	bool isRetry_ = false;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;

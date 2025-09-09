@@ -28,11 +28,15 @@ public:
 
 	void SetFri(FriendlyManager* fri);
 
+	void Win();
+
+	bool GetIsWin();
+
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	// 敵の沸く座標
-	Vector3 popPosition_ = { 60.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 50.0f,10.0f,0.0f };
 
 	// 沸く位置の乱数用変数
 	float maxPopRangeZ_ = -5.0f;
@@ -41,6 +45,8 @@ private:
 	// 敵の沸くクールタイム
 	const float kEnemyPopCoolTime_ = 5.0f;
 	float enemyPopTimer_ = 0.0f;
+
+	bool isWin_ = false;
 
 private:
 	FriendlyManager* fri_;

@@ -2,9 +2,6 @@
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
-
-class EnemyManager;
-
 /// <summary>
 /// 友軍
 /// </summary>
@@ -14,11 +11,9 @@ public:
 	~Friendly()override = default;
 
 	void Update()override;
-
+	
 	void Search()override;
 
-	void SetEne(EnemyManager* ene);
-
 private:
-	EnemyManager* ene_;
+	float winXPos_ = 50.0f;
 };

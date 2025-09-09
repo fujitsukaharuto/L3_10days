@@ -4,6 +4,7 @@
 #include "FPSKeeper.h"
 #include "Game/GameObj/FollowCamera.h"
 #include "Engine/Model/ModelManager.h"
+#include "Engine/Light/LightManager.h"
 
 #include "Particle/ParticleManager.h"
 #include "Scene/SceneManager.h"
@@ -19,7 +20,12 @@ void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
 
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 0.0f, -8.0f };
+	MyWin::GetInstance()->SetDrawCursor(false);
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
 
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
@@ -59,31 +65,31 @@ void GameScene::Initialize() {
 	ni_ = std::make_unique<AnimationModel>();
 	ni_->Create("title1.gltf");
 	ni_->LoadAnimationFile("title1.gltf");
-	ni_->transform.translate = { 2.1f,1.0f,0.0f };
+	ni_->transform.translate = { 22.1f,29.0f,-62.0f };
 	ni_->transform.rotate.y = 3.14f;
 
 	nn_ = std::make_unique<AnimationModel>();
 	nn_->Create("title2.gltf");
 	nn_->LoadAnimationFile("title2.gltf");
-	nn_->transform.translate = { 2.1f,1.0f,0.0f };
+	nn_->transform.translate = { 22.1f,29.0f,-62.0f };
 	nn_->transform.rotate.y = 3.14f;
 
 	ge_ = std::make_unique<AnimationModel>();
 	ge_->Create("title3.gltf");
 	ge_->LoadAnimationFile("title3.gltf");
-	ge_->transform.translate = { 2.1f,1.0f,0.0f };
+	ge_->transform.translate = { 22.1f,29.0f,-62.0f };
 	ge_->transform.rotate.y = 3.14f;
 
 	nn2_ = std::make_unique<AnimationModel>();
 	nn2_->Create("title4.gltf");
 	nn2_->LoadAnimationFile("title4.gltf");
-	nn2_->transform.translate = { 2.1f,1.0f,0.0f };
+	nn2_->transform.translate = { 22.1f,29.0f,-62.0f };
 	nn2_->transform.rotate.y = 3.14f;
 
 	factory_ = std::make_unique<AnimationModel>();
 	factory_->Create("title5.gltf");
 	factory_->LoadAnimationFile("title5.gltf");
-	factory_->transform.translate = { 2.1f,1.0f,0.0f };
+	factory_->transform.translate = { 22.1f,29.0f,-62.0f };
 	factory_->transform.rotate.y = 3.14f;
 
 	ApplyGlobalVariables();
@@ -135,14 +141,12 @@ void GameScene::Draw() {
 #pragma region 3Dオブジェクト
 	obj3dCommon->PreDraw();
 	dxcommon_->ClearDepthBuffer();
-	map_->FactoryDraw();
 	map_->TitleDraw();
 	dxcommon_->ClearDepthBuffer();
 
 	obj3dCommon->PreDraw();
 
-	//terrain->Draw();
-
+	//title->Draw();
 	ni_->Draw();
 	nn_->Draw();
 	ge_->Draw();
@@ -179,6 +183,9 @@ void GameScene::DebugGUI() {
 	if (ImGui::CollapsingHeader("terrain")) {
 		terrain->DebugGUI();
 	}
+	/*if (ImGui::CollapsingHeader("title")) {
+		title->DebugGUI();
+	}*/
 	if (ImGui::CollapsingHeader("ni")) {
 		ni_->DebugGUI();
 	}
@@ -218,7 +225,7 @@ void GameScene::BlackFade() {
 			if (isBackTitle_) {
 				ChangeScene("TITLE", 40.0f);
 			} else {
-				ChangeScene("RESULT", 40.0f);
+				ChangeScene("TITLE", 40.0f);
 			}
 		}
 	} else {
@@ -231,7 +238,7 @@ void GameScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 #ifdef _DEBUG
-	if (Input::GetInstance()->PushKey(DIK_0) && Input::GetInstance()->TriggerKey(DIK_1)) {
+	if (Input::GetInstance()->PushKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}

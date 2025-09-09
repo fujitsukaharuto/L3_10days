@@ -2,8 +2,6 @@
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
 
-class FriendlyManager;
-
 /// <summary>
 /// 敵キャラ
 /// </summary>
@@ -16,8 +14,6 @@ public:
 
 	void Search()override;
 
-	void SetFri(FriendlyManager* fri);
-
 private:
-	FriendlyManager* fri_;
+	float winXPos_ = 19.0f;
 };

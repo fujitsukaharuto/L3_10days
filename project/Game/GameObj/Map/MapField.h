@@ -9,6 +9,8 @@
 
 class CollisionManager;
 class Climber;
+class FriendlyManager;
+
 
 class MapField {
 public:
@@ -147,6 +149,7 @@ private:
 	std::unique_ptr<Sprite> grabCursorTex_;
 	// std::vector<std::unique_ptr<Sprite>> buttonTex_; // ミノ側に持たせる
 	std::unique_ptr<Sprite> selectorTex_;
+	std::unique_ptr<Sprite> nowSelectorTex_;
 
 	float nextSpace_ = 10.0f;
 

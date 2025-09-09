@@ -71,6 +71,8 @@ void TitleScene::Initialize() {
 		enemyManager_.get()
 	);
 
+	map_->SetFriendlyManager(friendlyManager_.get());
+
 	/*cube_ = std::make_unique<AnimationModel>();
 	cube_->Create("T_boss.gltf");
 	cube_->LoadAnimationFile("T_boss.gltf");
@@ -123,6 +125,10 @@ void TitleScene::Update() {
 	enemyManager_->DeleteDeadObject();
 
 	battleSystem_->Update();
+
+	if (battleSystem_->CheckBattleOver()) {
+		isChangeFase = true;
+	}
 
 	//climber_->Up();
 
@@ -215,7 +221,7 @@ void TitleScene::BlackFade() {
 			}
 		} else {
 			if (!isParticleDebugScene_) {
-				ChangeScene("GAME", 40.0f);
+				ChangeScene("RESULT", 40.0f);
 			} else {
 				ChangeScene("PARTICLEDEBUG", 40.0f);
 			}

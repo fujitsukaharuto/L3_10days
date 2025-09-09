@@ -6,8 +6,8 @@
 #include "Game/Collider/AABBCollider.h"
 
 enum Gender {
-	MEN,
-	WOMEN
+	MAN,
+	WOMAN
 };
 
 enum class Tag {
@@ -26,6 +26,7 @@ struct CharaStatus {
 	Gender gender;
 	uint32_t power;
 	int32_t hp;
+	int32_t maxHp;
 };
 
 struct SearchCollider {
@@ -33,10 +34,13 @@ struct SearchCollider {
 	float radius;
 };
 
+class EnemyManager;
+class FriendlyManager;
+
 /// <summary>
 /// 敵キャラ
 /// </summary>
-class BaseChara : public OriginGameObject {
+class BaseChara: public OriginGameObject {
 public:
 	BaseChara(const CharaStatus& status, const Vector3& popPos);
 	virtual ~BaseChara()override = default;
@@ -54,6 +58,9 @@ public:
 	bool GetIsAlive()const;
 	CharaStatus GetStatus();
 	void SetTarget(BaseChara* target);
+
+	void SetEne(EnemyManager* ene);
+	void SetFri(FriendlyManager* fri);
 
 protected:
 	virtual void Search() {};
@@ -86,9 +93,6 @@ protected:
 	// 状態
 	State state_;
 
-	// 最大HP
-	int32_t maxHp_;
-
 	// 戦闘距離
 	float fightRange_ = 3.0f;
 
@@ -96,4 +100,7 @@ protected:
 	const float kActionCoolTime_ = 3.0f;
 	float actionCoolTimer_ = 0.0f;
 
+
+	EnemyManager* ene_;
+	FriendlyManager* fri_;
 };
