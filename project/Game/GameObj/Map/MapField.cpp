@@ -165,6 +165,10 @@ void MapField::TitleInit() {
 		}
 		++rowI;
 	}
+
+	completeTex_->SetAnchor({ 0.5f, 1.0f });
+	completeTex_->SetPos({ 285.0f, 710.0f,0.0f });
+
 }
 
 void MapField::TitleUpdate() {
@@ -180,7 +184,51 @@ void MapField::TitleUpdate() {
 void MapField::TitleUpdateSelectPanel() {
 	if (!controlMino_) {
 	}
-	SelectMino();
+
+	{
+		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+		// 完了を押す
+		Vector3 pos = completeTex_->GetPos();
+		Vector2 size = completeTex_->GetSize();
+		r32 halfW = size.x * 0.5f;
+		r32 halfH = size.y;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					isTitleToGame_ = true;
+					//CompleteArrangement();
+				}
+			}
+			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
+		} else {
+			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+
+		if (isTitleToGame_) {
+			titleToGameTime_ -= FPSKeeper::DeltaTime();
+		}
+	}
+
+	{
+		arrowMoveTime_ += FPSKeeper::DeltaTime() * 0.1f;
+		arrowMoveTime_ = std::fmod(arrowMoveTime_, std::numbers::pi_v<float>);
+		// sin波で 0.0 ～ 1.0 に正規化
+		float t = std::abs((sinf(arrowMoveTime_) + 1.0f) * 0.5f);
+		Vector2 size;
+		size.x = 250.0f + (280.0f - 250.0f) * t;
+		size.y = 100.0f + (80.0f - 100.0f) * t;
+		completeTex_->SetSize({ size.x ,size.y });
+	}
+
+	//SelectMino();
+}
+
+bool MapField::TitleToGame() {
+	if (titleToGameTime_ <= 0.0f) {
+		return true;
+	}
+	return false;
 }
 
 void MapField::TitleDraw() {
@@ -309,6 +357,9 @@ void MapField::UpdateSelectPanel() {
 				CompleteArrangement();
 			}
 		}
+		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
+	} else {
+		completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
 
 	// 矢印の選択

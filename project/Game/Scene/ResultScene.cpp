@@ -60,6 +60,8 @@ void ResultScene::Initialize() {
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("winBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
@@ -149,7 +151,9 @@ void ResultScene::BlackFade() {
 		}
 	} else {
 		if (blackTime > 0.0f) {
-			blackTime -= FPSKeeper::DeltaTime();
+			if (FPSKeeper::DeltaTime() < 3.0f) {
+				blackTime -= FPSKeeper::DeltaTime();
+			}
 			if (blackTime <= 0.0f) {
 				blackTime = 0.0f;
 			}

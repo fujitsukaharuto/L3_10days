@@ -25,6 +25,7 @@ public:
 	void TitleInit();
 	void TitleUpdate();
 	void TitleUpdateSelectPanel();
+	bool TitleToGame();
 	void TitleDraw();
 
 	void DrawCells();
@@ -102,6 +103,7 @@ private:
 private:
 	bool haveControlMino_ = false;
 	bool isSmallChange_ = false;
+	bool isTitleToGame_ = false;
 
 	const i32 kMapWidth_ = 15;
 	const i32 kMapHeight_ = 15;
@@ -138,6 +140,7 @@ private:
 	float selectorSizeTime_;
 	float arrowMoveTime_;
 	float frameMoveTime_;
+	float titleToGameTime_ = 90.0f;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
