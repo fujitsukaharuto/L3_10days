@@ -206,8 +206,8 @@ void GameRun::Initialize() {
 
 #pragma region サウンド読み込み
 
-	audioPlayer_->LoadWave("xxx.wav");
-	audioPlayer_->LoadWave("mokugyo.wav");
+	//audioPlayer_->LoadWave("xxx.wav");
+	//audioPlayer_->LoadWave("mokugyo.wav");
 
 #pragma endregion
 
