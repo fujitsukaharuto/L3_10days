@@ -31,10 +31,10 @@ void GameRun::Initialize() {
 	textureManager_->Load("boal16x16.png");
 	textureManager_->Load("title.png");
 	textureManager_->Load("title_png.png");
-	textureManager_->Load("clear_beta.png");
-	textureManager_->Load("gameover_beta.png");
-	textureManager_->Load("spaceKey.png");
-	textureManager_->Load("key_beta.png");
+	//textureManager_->Load("clear_beta.png");
+	//textureManager_->Load("gameover_beta.png");
+	//textureManager_->Load("spaceKey.png");
+	//textureManager_->Load("key_beta.png");
 	textureManager_->Load("SquareFrame.png");
 	textureManager_->Load("FX12_Lightning_01.png");
 
@@ -77,13 +77,13 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("terrain.obj");
 	modelManager_->LoadOBJ("skydome.obj");
 	modelManager_->LoadOBJ("lightning.obj");
-	modelManager_->LoadOBJ("playerModel.obj");
-	modelManager_->LoadOBJ("boss.obj");
-	modelManager_->LoadOBJ("bossWaveWall.obj");
-	modelManager_->LoadOBJ("Star.obj");
-	modelManager_->LoadOBJ("player.obj");
-	modelManager_->LoadOBJ("Boss_Arrow.obj");
-	modelManager_->LoadOBJ("title.obj");
+	//modelManager_->LoadOBJ("playerModel.obj");
+	//modelManager_->LoadOBJ("boss.obj");
+	//modelManager_->LoadOBJ("bossWaveWall.obj");
+	//modelManager_->LoadOBJ("Star.obj");
+	//modelManager_->LoadOBJ("player.obj");
+	//modelManager_->LoadOBJ("Boss_Arrow.obj");
+	//modelManager_->LoadOBJ("title.obj");
 	modelManager_->LoadGLTF("title1.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
 	modelManager_->LoadGLTF("title2.gltf");
