@@ -38,11 +38,19 @@ void GameOverScene::Initialize() {
 
 	goTitle_ = std::make_unique<Sprite>();
 	goTitle_->Load("titleReturn.png");
-	goTitle_->SetPos({ 1050.0f,80.0f,0.0f });
+	goTitle_->SetPos({ 1050.0f,380.0f,0.0f });
 
 	retry_ = std::make_unique<Sprite>();
 	retry_->Load("tryAgain.png");
-	retry_->SetPos({ 820.0f,-30.0f,0.0f });
+	retry_->SetPos({ 820.0f,270.0f,0.0f });
+
+	chain_ = std::make_unique<Sprite>();
+	chain_->Load("chain.png");
+	chain_->SetPos({ 820.0f,-30.0f,0.0f });
+
+	chain2_ = std::make_unique<Sprite>();
+	chain2_->Load("chain.png");
+	chain2_->SetPos({ 1050.0f,80.0f,0.0f });
 
 	report_ = std::make_unique<Sprite>();
 	report_->Load("gameoverReport.png");
@@ -87,6 +95,8 @@ void GameOverScene::Draw() {
 	back_->Draw();
 	frame_->Draw();
 	report_->Draw();
+	chain_->Draw();
+	chain2_->Draw();
 	goTitle_->Draw();
 	retry_->Draw();
 	dxcommon_->ClearDepthBuffer();
@@ -159,7 +169,7 @@ void GameOverScene::BlackFade() {
 	}
 	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	Vector3 pos = { 1050.0f,380.0f,0.0f };   // 中心座標
+	Vector3 pos = goTitle_->GetPos();   // 中心座標
 	Vector2 size = { 330.0f,80.0f }; // 幅・高さ
 	float halfW = size.x * 0.5f;
 	float halfH = size.y * 0.5f;
@@ -170,8 +180,11 @@ void GameOverScene::BlackFade() {
 				isChangeFase = true;
 			}
 		}
+		goTitle_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		goTitle_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
-	pos = { 820.0f,270.0f,0.0f };   // 中心座標
+	pos = retry_->GetPos();   // 中心座標
 	size = { 330.0f,80.0f }; // 幅・高さ
 	halfW = size.x * 0.5f;
 	halfH = size.y * 0.5f;
@@ -183,6 +196,9 @@ void GameOverScene::BlackFade() {
 				isRetry_ = true;
 			}
 		}
+		retry_->SetColor({ 0.4f,0.4f,0.4f,1.0f });
+	} else {
+		retry_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
 }
 

@@ -26,6 +26,7 @@ private:
 	std::unique_ptr<Sprite> goTitle_;
 	std::unique_ptr<Sprite> frame_;
 	std::unique_ptr<Sprite> back_;
+	std::unique_ptr<Sprite> chain_;
 
 	std::unique_ptr<Sprite> cursorTex_;
 

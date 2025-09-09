@@ -237,7 +237,7 @@ void TitleScene::BlackFade() {
 			}
 		} else {
 			if (!isParticleDebugScene_) {
-				ChangeScene("GAMEOVER", 40.0f);
+				ChangeScene("RESULT", 40.0f);
 			} else {
 				ChangeScene("PARTICLEDEBUG", 40.0f);
 			}
