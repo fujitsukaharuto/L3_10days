@@ -20,6 +20,7 @@ void GameScene::Initialize() {
 
 	//GlobalVariables* globalvariables = GlobalVariables::GetInstance();
 
+	MyWin::GetInstance()->SetDrawCursor(false);
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
