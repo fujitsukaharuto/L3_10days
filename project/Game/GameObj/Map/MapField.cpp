@@ -1,7 +1,7 @@
 #include "MapField.h"
 
-#include "Engine/Input/Input.h"
 #include "Engine//Math/Random/Random.h"
+#include "Engine/Input/Input.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 
 #include "Engine/Editor/JsonSerializer.h"
@@ -143,10 +143,15 @@ void MapField::TitleInit() {
 	for (i32 rowI = 0; auto& row : cellsData_) {
 		for (i32 colI = 0; auto& cell : row) {
 			cell->genderType = (GenderType)map_[rowI][colI];
-			if (cell->genderType == GenderType::Woman) {
-				cell->required->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			if (cell->genderType == GenderType::Man) {
+				cell->block->SetColor({ 0,0,1,0.6f });
 			}
+			else if (cell->genderType == GenderType::Woman) {
+				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
+			++colI;
 		}
+		++rowI;
 	}
 }
 
@@ -168,6 +173,8 @@ void MapField::TitleUpdateSelectPanel() {
 }
 
 void MapField::TitleDraw() {
+	BackPanelTex_->Draw();
+
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	completeTex_->Draw();
@@ -176,6 +183,8 @@ void MapField::TitleDraw() {
 	panelTex_->Draw();
 
 	genderPanelTex_->Draw();
+
+	DrawCells();
 }
 
 void MapField::DrawCells() {

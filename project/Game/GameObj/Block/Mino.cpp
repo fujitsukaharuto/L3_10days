@@ -6,7 +6,7 @@
 #undef max
 
 void Mino::Initialize() {
-	transform.scale = { 1.0f,1.0f,1.0f };
+	transform.scale = { 1.0f, 1.0f, 1.0f };
 	buttonPosition = { 0.0f,0.0f,0.0f };
 }
 
@@ -17,10 +17,10 @@ void Mino::Load(const nlohmann::json& minoJson, MapField* const mapField) {
 		gender_ = static_cast<GenderType>(minoJson["GenderType"]);
 
 		if (gender_ == GenderType::Man) {
-			color = { 0.0f,0.5f,1.0f,1.0f };
+			color = { 0,0,1,0.6f };
 		}
 		else if (gender_ == GenderType::Woman) {
-			color = { 1.0f,0.5f,0.8f,1.0f };
+			color = { 1.0f,0.08f,0.58f,0.6f };
 		}
 		else {
 			color = { 1.0f,1.0f,1.0f,0.0f };
@@ -31,7 +31,7 @@ void Mino::Load(const nlohmann::json& minoJson, MapField* const mapField) {
 		gender_ = GenderType::None;
 	}
 
-	if(minoJson.contains("NumMaxUse") && minoJson["NumMaxUse"].is_number()) {
+	if (minoJson.contains("NumMaxUse") && minoJson["NumMaxUse"].is_number()) {
 		numMaxUse = minoJson["NumMaxUse"];
 		numUseRest = numMaxUse;
 	}
@@ -83,7 +83,7 @@ void Mino::Update() {
 	for (auto& block : blocks_) {
 		block->sprite->SetPos(transform.translate + block->offset);
 		block->sprite->SetScale({ transform.scale.x,transform.scale.y });
-	
+
 		block->buttonTexture->SetPos(buttonPosition + block->offset);
 	}
 }
