@@ -102,7 +102,7 @@ void MapField::DebugGUI() {
 #ifdef _DEBUG
 	if (ImGui::CollapsingHeader("MapField")) {
 		if (ImGui::Button("Complete")) {
-			CompleteArragement();
+			CompleteArrangement();
 		}
 		for (int i = 0; i < maxB_.size(); i++) {
 			ImGui::Text("Max : %d", maxB_[i]); ImGui::SameLine();
@@ -290,7 +290,7 @@ void MapField::UpdateSelectPanel() {
 		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 			if (!controlMino_) {
-				CompleteArragement();
+				CompleteArrangement();
 			}
 		}
 	}
@@ -621,7 +621,7 @@ bool MapField::CanArrangement() {
 	return true;
 }
 
-void MapField::CompleteArragement() {
+void MapField::CompleteArrangement() {
 	if (controlMino_) return;
 	int manBlocks = 0;
 	int womanBlocks = 0;

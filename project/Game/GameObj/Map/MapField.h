@@ -52,7 +52,7 @@ public:
 	void CellSet();
 	bool CanArrangement(); // マウスで置く際のチェック用
 
-	void CompleteArragement();
+	void CompleteArrangement();
 
 public:
 	// TODO : 定数にする
