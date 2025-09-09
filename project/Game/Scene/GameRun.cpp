@@ -63,6 +63,8 @@ void GameRun::Initialize() {
 	textureManager_->Load("titleReturn.png");
 	textureManager_->Load("tryAgain.png");
 	textureManager_->Load("chain.png");
+	textureManager_->Load("manFrame.png");
+	textureManager_->Load("womanFrame.png");
 
 
 #pragma endregion

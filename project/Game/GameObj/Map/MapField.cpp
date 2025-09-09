@@ -1,36 +1,25 @@
 #include "MapField.h"
 
-#include "Game/GameObj/Climber/Climber.h"
-#include "Game/Collider/CollisionManager.h"
 #include "Engine//Math/Random/Random.h"
+#include "Engine/Input/Input.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 
+#include "Engine/Editor/JsonSerializer.h"
+
+#undef min
+#undef max
 
 MapField::MapField() {}
 
 MapField::~MapField() {}
 
 void MapField::Initialize() {
-
-	map_ = std::vector(15, std::vector<int>(kMapWidth_));
-
-	panelTex_ = std::make_unique<Sprite>();
-	panelTex_->Load("blockBox.png");
-	panelTex_->SetPos({ 285.0f,102.5f,0.0f });
-	for (int i = 0; i < 7; i++) {
-		std::unique_ptr<Sprite> button;
-		button = std::make_unique<Sprite>();
-		if (i == 0) { button->Load("Mino1.png"); }
-		if (i == 1) { button->Load("Mino2.png"); }
-		if (i == 2) { button->Load("Mino3.png"); }
-		if (i == 3) { button->Load("Mino4.png"); }
-		if (i == 4) { button->Load("Mino5.png"); }
-		if (i == 5) { button->Load("Mino6.png"); }
-		if (i == 6) { button->Load("Mino7.png"); }
-		button->SetSize({ 36.0f,36.0f });
-		button->SetPos({ 185.0f,95.0f,0.0f });
-		buttonTex_.push_back(std::move(button));
-	}
+	manPanelTex_ = std::make_unique<Sprite>();
+	manPanelTex_->Load("manFrame.png");
+	manPanelTex_->SetPos({ 140.0f,110.0f,0.0f });
+	womanPanelTex_ = std::make_unique<Sprite>();
+	womanPanelTex_->Load("womanFrame.png");
+	womanPanelTex_->SetPos({ 430.0f,110.0f,0.0f });
 	panelTexturePosY_ = 102.5f;
 
 	genderPanelTex_ = std::make_unique<Sprite>();
@@ -49,21 +38,16 @@ void MapField::Initialize() {
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
+	selectorTex_->SetPos({ 100.0f,110.0f, 0.0f });
+	selectorMaxSize_ = { 95.0f + 30.0f,110.0f + 30.0f };
+	selectorMinSize_ = { 95.0f + 10.0f,110.0f + 10.0f };
 
 	nowSelectorTex_ = std::make_unique<Sprite>();
 	nowSelectorTex_->Load("white2x2.png");
 	nowSelectorTex_->SetColor({ 0.7f,0.7f,0.0f,0.6f });
+	nowSelectorTex_->SetPos({ 100.0f,110.0f,0.0f });
+	nowSelectorTex_->SetSize({ 102.0f,116.0f });
 
-	for (int i = 0; i < 7; i++) {
-		BlockType type = BlockType::L;
-		if (i == 1) type = BlockType::T;
-		if (i == 2) type = BlockType::S;
-		if (i == 3) type = BlockType::Z;
-		if (i == 4) type = BlockType::O;
-		if (i == 5) type = BlockType::J;
-		if (i == 6) type = BlockType::I;
-		selectTypes_.push_back(type);
-	}
 	BackPanelTex_ = std::make_unique<Sprite>();
 	BackPanelTex_->Load("background.png");
 	BackPanelTex_->SetPos({ 925.0f,360.0f,0.0f });
@@ -101,34 +85,23 @@ void MapField::Initialize() {
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
 	InitCells();
+
+	LoadMinoTables();
 }
 
 void MapField::Update() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
+
 	UpdateControlMino();
 	UpdateSelectPanel();
-
-	for (auto& mino : minos_) {
-		mino->Update();
-	}
-
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
-	if (controlMino_) {
-		/*controlMino_->Draw();
-		if (futureMino_ && canQuickDrop_) {
-			futureMino_->DrawLine();
-		}*/
-	}
-	/*for (auto& mino : minos_) {
-		mino->Draw();
-	}*/
-
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
 }
@@ -137,7 +110,7 @@ void MapField::DebugGUI() {
 #ifdef _DEBUG
 	if (ImGui::CollapsingHeader("MapField")) {
 		if (ImGui::Button("Complete")) {
-			CompleteArragement();
+			CompleteArrangement();
 		}
 		for (int i = 0; i < maxB_.size(); i++) {
 			ImGui::Text("Max : %d", maxB_[i]); ImGui::SameLine();
@@ -161,7 +134,7 @@ void MapField::DebugGUI() {
 }
 
 void MapField::TitleInit() {
-	map_ = {
+	std::vector<std::vector<i32>> map_ = {
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -178,24 +151,29 @@ void MapField::TitleInit() {
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				if (map_[i][j] == 2) {
-					arrangementCells_[i][j]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				}
+
+	for (i32 rowI = 0; auto& row : cellsData_) {
+		for (i32 colI = 0; auto& cell : row) {
+			cell->genderType = (GenderType)map_[rowI][colI];
+			if (cell->genderType == GenderType::Man) {
+				cell->block->SetColor({ 0,0,1,0.6f });
 			}
+			else if (cell->genderType == GenderType::Woman) {
+				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
+			++colI;
 		}
+		++rowI;
 	}
 }
 
 void MapField::TitleUpdate() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
-	//UpdateControlMino();
 	TitleUpdateSelectPanel();
 }
 
@@ -206,44 +184,40 @@ void MapField::TitleUpdateSelectPanel() {
 }
 
 void MapField::TitleDraw() {
+	BackPanelTex_->Draw();
+
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	completeTex_->Draw();
 	factoryTex_->Draw();
 	enemyFactoryTex_->Draw();
-	panelTex_->Draw();
-	//selectorTex_->Draw();
-	for (int i = 0; i < buttonTex_.size(); i++) {
-		if (blockButtonNum_ == i) {
-			buttonTex_[i]->Draw();
-		}
-	}
+	manPanelTex_->Draw();
+	womanPanelTex_->Draw();
+
 	genderPanelTex_->Draw();
 
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				cells_[i][j]->Draw();
-				if (TypeMap_[i][j] == 1) {
-					typeCells_[i][j]->Draw();
-				}
-			}
-		}
-	}
-	ArrangementDraw();
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (cells_[i][j] && typeCells_[i][j]) {
-				if (map_[i][j] >= 1) {
-					arrangementCells_[i][j]->Draw();
-				}
-			}
-		}
-	}
-	BackPanelTex_->Draw();
+	DrawCells();
+}
 
-	factoryTex_->Draw();
-	enemyFactoryTex_->Draw();
+void MapField::DrawCells() {
+	// 背景セル
+	CellBackgroundDraw();
+	// 人形セル
+	CellRequiredSpriteDraw();
+
+	// 配置済みセル
+	for (auto& rows : cellsData_) {
+		for (auto& cell : rows) {
+			if (cell->block) {
+				cell->block->Draw();
+			}
+		}
+	}
+
+	// 操作中のミノ
+	if (controlMino_) {
+		controlMino_->DrawBlocks();
+	}
 }
 
 void MapField::BackDraw() {
@@ -251,6 +225,7 @@ void MapField::BackDraw() {
 }
 
 void MapField::FactoryDraw() {
+	// 
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	subFrameTex_->Draw();
@@ -262,43 +237,24 @@ void MapField::FactoryDraw() {
 		arrowRTex_->Draw();
 	}
 	mapSizeTex_->Draw();
-	panelTex_->Draw();
+	manPanelTex_->Draw();
+	womanPanelTex_->Draw();
 	if (haveControlMino_) {
 		nowSelectorTex_->Draw();
 	} else {
 		selectorTex_->Draw();
 	}
-	for (int i = 0; i < buttonTex_.size(); i++) {
-		if (blockButtonNum_ == i) {
-			buttonTex_[i]->Draw();
-		}
-	}
 	genderPanelTex_->Draw();
 
-	if (frameMoveTime_ == 0.0f) {
-		for (size_t i = 0; i < cells_.size(); i++) {
-			for (size_t j = 0; j < cells_[i].size(); j++) {
-				if (cells_[i][j] && typeCells_[i][j]) {
-					cells_[i][j]->Draw();
-					if (TypeMap_[i][j] == 1) {
-						typeCells_[i][j]->Draw();
-					}
-				}
-			}
-		}
-		ArrangementDraw();
-		for (size_t i = 0; i < cells_.size(); i++) {
-			for (size_t j = 0; j < cells_[i].size(); j++) {
-				if (cells_[i][j] && typeCells_[i][j]) {
-					if (map_[i][j] >= 1) {
-						arrangementCells_[i][j]->Draw();
-					}
-				}
-			}
-		}
+	BackPanelTex_->Draw();
+
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->DrawButton();
 	}
 
-	BackPanelTex_->Draw();
+	if (frameMoveTime_ == 0.0f) {
+		DrawCells();
+	}
 }
 
 void MapField::CursorDraw() {
@@ -306,70 +262,77 @@ void MapField::CursorDraw() {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		grabCursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		grabCursorTex_->Draw();
-	} else {
+	}
+	else {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		cursorTex_->Draw();
 	}
 }
 
-void MapField::ArrangementDraw() {
-	if (!controlMino_) return;
-	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 2.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1.0f)]->Draw();
-		break;
-	case BlockType::T:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1.0f)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1.0f)]->Draw();
-		break;
-	case BlockType::S:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1.0f)]->Draw();
-		break;
-	case BlockType::Z:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x - 1.0f)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1.0f)]->Draw();
-		break;
-	case BlockType::O:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1.0f)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)]->Draw();
-		break;
-	case BlockType::J:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 2.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1.0f)]->Draw();
-		break;
-	case BlockType::I:
-		arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 1.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 2.0f)][int(cellNum_.x)]->Draw();
-		arrangementCells_[int(cellNum_.y - 3.0f)][int(cellNum_.x)]->Draw();
-		break;
-	default:
-		break;
+void MapField::CellBackgroundDraw() {
+	for (auto& rows : cellsData_) {
+		for (auto& cell : rows) {
+			cell->background->Draw();
+		}
+	}
+}
+
+void MapField::CellRequiredSpriteDraw() {
+	for (auto& rows : cellsData_) {
+		for (auto& cell : rows) {
+			if (cell->isRequired) {
+				cell->required->Draw();
+			}
+		}
 	}
 }
 
 void MapField::UpdateSelectPanel() {
-	if (!controlMino_) {
-		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	if (controlMino_) {
+		UpdateSelectPanelControlling();
+	}
+	else {
+		UpdateSelectPanelUncontrolling();
+	}
 
-		// blockどれつかむか
-		Vector3 pos = buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
-		Vector2 size = buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	// 完了を押す
+	Vector3 pos = completeTex_->GetPos();
+	Vector2 size = completeTex_->GetSize();
+	r32 halfW = size.x * 0.5f;
+	r32 halfH = size.y * 0.5f;
+	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+			if (!controlMino_) {
+				CompleteArrangement();
+			}
+		}
+	}
+
+	// 矢印の選択
+	ArrowUpdate();
+
+	// 背景の枠の移動
+	FrameUpdate();
+
+	// 選択中のアニメーション
+	SelectMino();
+}
+
+void MapField::UpdateSelectPanelControlling() {
+}
+
+void MapField::UpdateSelectPanelUncontrolling() {
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+
+	// パネルの選択
+	{
+		Vector3 pos{};
+		if (gender_ == int(GenderType::Man))   pos = { 100.0f,110.0f, 0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		if (gender_ == int(GenderType::Woman)) pos = { 465.0f,110.0f, 0.0f };//buttonTex_[blockButtonNum_]->GetPos();   // 中心座標
+		Vector2 size = { 102.0f,116.0f }; //buttonTex_[blockButtonNum_]->GetSize(); // 幅・高さ
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
@@ -378,78 +341,106 @@ void MapField::UpdateSelectPanel() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						AddMino(selectTypes_[blockButtonNum_]);
+						controlMino_ = minoTables[0].minos[0].get();
+						// AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
+				}
+			}
+		}
+		if (gender_ == int(GenderType::Man))   pos = { 195.0f,85.0f, 0.0f };
+		if (gender_ == int(GenderType::Woman)) pos = { 370.0f,85.0f, 0.0f };
+		size = { 68.0f,64.0f };
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 1;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						controlMino_ = minoTables[0].minos[0].get();
+						// AddMino(selectTypes_[blockButtonNum_]);
+						return;
+					}
+				}
+			}
+		}
+		if (gender_ == int(GenderType::Man))   pos = { 195.0f,146.0f, 0.0f };
+		if (gender_ == int(GenderType::Woman)) pos = { 370.0f,146.0f, 0.0f };
+		size = { 67.0f,45.0f };
+		halfW = size.x * 0.5f;
+		halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			minoButtonNum_ = 2;
+			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
+				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+					if (!controlMino_) {
+						controlMino_ = minoTables[0].minos[0].get();
+						// AddMino(selectTypes_[blockButtonNum_]);
 						return;
 					}
 				}
 			}
 		}
 
+
+
 		// 性別決める
 		pos = genderPanelTex_->GetPos();
 		size = genderPanelTex_->GetSize();
 		halfW = size.x * 0.5f;
 		halfH = size.y * 0.5f;
-		Vector3 pos2 = panelTex_->GetPos();
-		Vector2 size2 = panelTex_->GetSize();
-		float halfW2 = size.x * 0.5f;
-		float halfH2 = size.y * 0.5f;
-		if (!haveControlMino_) {
-			if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-				((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Man))) {
-				if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
-					gender_ = int(GenderType::Man);
-					GenderColor();
-				}
-				if (womanPanelTime_ <= 0.0f) {
-					manPanelTime_ += FPSKeeper::DeltaTime();
-					manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
-				}
-			} else {
-				manPanelTime_ -= FPSKeeper::DeltaTime();
+		Vector3 pos2 = manPanelTex_->GetPos();
+		Vector2 size2 = manPanelTex_->GetSize();
+		float halfW2 = size2.x * 0.5f;
+		float halfH2 = size2.y * 0.5f;
+		if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2))) {
+			if ((mouse.x >= pos.x - halfW && mouse.x <= pos.x && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) || (mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2)) {
+				gender_ = int(GenderType::Man);
+			}
+			if (womanPanelTime_ <= 0.0f) {
+				manPanelTime_ += FPSKeeper::DeltaTime();
 				manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-			if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
-				((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2) && gender_ == int(GenderType::Woman))) {
-				if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH)) {
-					gender_ = int(GenderType::Woman);
-					GenderColor();
-				}
-				if (manPanelTime_ <= 0.0f) {
-					womanPanelTime_ += FPSKeeper::DeltaTime();
-					womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
-				}
-			} else {
-				womanPanelTime_ -= FPSKeeper::DeltaTime();
+		}
+		else {
+			manPanelTime_ -= FPSKeeper::DeltaTime();
+			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
+		}
+		pos2 = womanPanelTex_->GetPos();
+		size2 = womanPanelTex_->GetSize();
+		halfW2 = size2.x * 0.5f;
+		halfH2 = size2.y * 0.5f;
+		if ((mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||
+			((mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2))) {
+			if (/*(mouse.x >= pos.x && mouse.x <= pos.x + halfW && mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) ||*/
+				(mouse.x >= pos2.x - halfW2 && mouse.x <= pos2.x + halfW2 && mouse.y >= pos2.y - halfH2 && mouse.y <= pos2.y + halfH2)) {
+				gender_ = int(GenderType::Woman);
+			}
+			if (manPanelTime_ <= 0.0f) {
+				womanPanelTime_ += FPSKeeper::DeltaTime();
 				womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
 		}
-		// 完了を押す
-		pos = completeTex_->GetPos();
-		size = completeTex_->GetSize();
-		halfW = size.x * 0.5f;
-		halfH = size.y * 0.5f;
-		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_) {
-					CompleteArragement();
-
-				}
-			}
-			completeTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-		} else {
-			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		else {
+			womanPanelTime_ -= FPSKeeper::DeltaTime();
+			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
+	}
+
+	{
 		// マップサイズの変更
-		pos = arrowLTex_->GetPos();
-		size = arrowLTex_->GetSize();
-		halfW = size.x * 0.5f;
-		halfH = size.y * 0.5f;
+		Vector3 pos = arrowLTex_->GetPos();
+		Vector2 size = arrowLTex_->GetSize();
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 2) {
+				if (!controlMino_ && /*minos_.size() == 0 && */mapSizeNum_ != 2) {
 					mapSizeNum_++;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
@@ -460,7 +451,8 @@ void MapField::UpdateSelectPanel() {
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
@@ -470,7 +462,7 @@ void MapField::UpdateSelectPanel() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_ && minos_.size() == 0 && mapSizeNum_ != 0) {
+				if (!controlMino_ && /*minos_.size() == 0 && */ mapSizeNum_ != 0) {
 					mapSizeNum_--;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
@@ -481,185 +473,63 @@ void MapField::UpdateSelectPanel() {
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
-	ArrowUpdate();
-	FrameUpdate();
-	SelectMino();
-	//ReturenSelectMino();
 }
 
 void MapField::SelectMino() {
 	float panelTime = 0.0f;
 	if (manPanelTime_ > 0.0f) panelTime = manPanelTime_;
 	if (womanPanelTime_ > 0.0f) panelTime = womanPanelTime_;
-	if (panelTime != 0.0f) {
-		float t = (panelTime / defaultSelectPanelTime_);
-		float posY = std::lerp(37.0f, panelTexturePosY_, t);
-		panelTex_->SetPos({ 285.0f,posY,0.0f });
-
-		posY = std::lerp(30.0f, 95.0f, t);
-		for (int i = 0; i < selectTypes_.size(); i++) {
-			buttonTex_[int(selectTypes_[i])]->SetPos({ 185.0f, posY, 0.0f });
+	if (preMinoButtonNum_ != minoButtonNum_ || preGender_ != gender_) {
+		preMinoButtonNum_ = minoButtonNum_;
+		preGender_ = gender_;
+		if (minoButtonNum_ == 0) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 105.0f,110.0f,0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 102.0f,116.0f });
+		} else if (minoButtonNum_ == 1) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,90.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 68.0f,64.0f });
+		} else if (minoButtonNum_ == 2) {
+			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
+			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 376.5f,146.0f,0.0f }); }
+			nowSelectorTex_->SetSize({ 67.0f,45.0f });
 		}
 
 		if (minoButtonNum_ == 0) {
-			selectorTex_->SetPos({ 185.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 185.0f,posY,0.0f });
-			nowSelectorTex_->SetSize({ 175.0f,47.0f });
+			selectorMaxSize_ = { 95.0f + 30.0f,100.0f + 30.0f };
+			selectorMinSize_ = { 95.0f + 10.0f,100.0f + 10.0f };
 		} else if (minoButtonNum_ == 1) {
-			selectorTex_->SetPos({ 335.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 335.0f,posY,0.0f });
+			selectorMaxSize_ = { 63.0f + 30.0f,50.0f + 30.0f };
+			selectorMinSize_ = { 63.0f + 10.0f,50.0f + 10.0f };
 		} else if (minoButtonNum_ == 2) {
-			selectorTex_->SetPos({ 435.0f,posY, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,posY,0.0f });
-		}
-
-	} else {
-		panelTex_->SetPos({ 285.0f,37.0f,0.0f });
-		for (int i = 0; i < selectTypes_.size(); i++) {
-			buttonTex_[int(selectTypes_[i])]->SetPos({ 185.0f, 30.0f, 0.0f });
-		}
-		if (minoButtonNum_ == 0) {
-			selectorTex_->SetPos({ 185.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 178.0f,49.0f });
-		} else if (minoButtonNum_ == 1) {
-			selectorTex_->SetPos({ 335.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 94.0f,49.0f });
-		} else if (minoButtonNum_ == 2) {
-			selectorTex_->SetPos({ 435.0f,30.0f, 0.0f });
-			nowSelectorTex_->SetPos({ 435.0f,30.0f,0.0f });
-			nowSelectorTex_->SetSize({ 94.0f,49.0f });
+			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
+			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
 		}
 	}
 
-	if (minoButtonNum_ == 0) {
-		selectorMaxSize_ = { 150.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 150.0f + 10.0f,40.0f + 10.0f };
-	} else if (minoButtonNum_ == 1) {
-		selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
-	} else if (minoButtonNum_ == 2) {
-		selectorMaxSize_ = { 50.0f + 30.0f,40.0f + 30.0f };
-		selectorMinSize_ = { 50.0f + 10.0f,40.0f + 10.0f };
+	if (!haveControlMino_) {
+		selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
+		selectorSizeTime_ = std::fmod(selectorSizeTime_, std::numbers::pi_v<float>);
+		// sin波で 0.0 ～ 1.0 に正規化
+		float t = (std::sin(selectorSizeTime_) + 1.0f) * 0.5f;
+		// 最小サイズと最大サイズを補間
+		Vector2 size;
+		size.x = selectorMinSize_.x + (selectorMaxSize_.x - selectorMinSize_.x) * t;
+		size.y = selectorMinSize_.y + (selectorMaxSize_.y - selectorMinSize_.y) * t;
+		// サイズを反映
+		selectorTex_->SetSize(size);
+		selectorDeleteSize_ = size;
 	}
-	selectorSizeTime_ += FPSKeeper::DeltaTime() * 0.25f;
-	selectorSizeTime_ = fmodf(selectorSizeTime_, std::numbers::pi_v<float>);
-	// sin波で 0.0 ～ 1.0 に正規化
-	float t = (sinf(selectorSizeTime_) + 1.0f) * 0.5f;
-	// 最小サイズと最大サイズを補間
-	Vector2 size;
-	size.x = selectorMinSize_.x + (selectorMaxSize_.x - selectorMinSize_.x) * t;
-	size.y = selectorMinSize_.y + (selectorMaxSize_.y - selectorMinSize_.y) * t;
-	// サイズを反映
-	selectorTex_->SetSize(size);
-	selectorDeleteSize_ = size;
-}
-
-void MapField::ReturenSelectMino() {
-	/*if (controlMino_) {
-		float panelTime = 0.0f;
-		if (manPanelTime_ > 0.0f) panelTime = manPanelTime_;
-		if (womanPanelTime_ > 0.0f) panelTime = womanPanelTime_;
-		if (panelTime != 0.0f) {
-			float t = 1.0f - (selectPanelTime_ / defaultSelectPanelTime_);
-			float posY = std::lerp(panelTexturePosY_, -200.0f, t);
-			panelTex_->SetPos({ 320.0f,posY,0.0f });
-
-			float space = 570.0f / float(selectTypes_.size());
-			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
-			for (int i = 0; i < selectTypes_.size(); i++) {
-				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
-
-				float x = startX + i * space;
-				buttonTex_[int(selectTypes_[i])]->SetPos({ x, posY, 0.0f });
-			}
-
-			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, posY, 0.0f });
-			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
-			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
-			selectorTex_->SetSize(selectorDeleteSize_);
-		} else {
-			panelTex_->SetPos({ 320.0f,-200.0f,0.0f });
-
-			float space = 570.0f / float(selectTypes_.size());
-			float startX = 320.0f - (space * (float(selectTypes_.size()) - 1.0f)) / 2.0f;
-			for (int i = 0; i < selectTypes_.size(); i++) {
-				buttonTex_[int(selectTypes_[i])]->SetSize({ (panelSize_.x / float(selectTypes_.size())) * 0.8f ,panelSize_.y * 0.8f });
-				float x = startX + i * space;
-				buttonTex_[int(selectTypes_[i])]->SetPos({ x, -200.0f, 0.0f });
-			}
-
-			float x = startX + float(minoButtonNum_) * space;
-			selectorTex_->SetPos({ x, -200.0f, 0.0f });
-			selectorDeleteSize_.x = std::lerp(selectorDeleteSize_.x, 10.0f, 0.01f);
-			selectorDeleteSize_.y = std::lerp(selectorDeleteSize_.y, 10.0f, 0.01f);
-			selectorTex_->SetSize(selectorDeleteSize_);
-		}
-	}*/
-}
-
-void MapField::AddMino(BlockType type) {
-	if (controlMino_) return;
-	switch (type) {
-	case BlockType::L:
-		cellNum_ = { 4.0f, 2.0f };
-		break;
-	case BlockType::T:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::S:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::Z:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::O:
-		cellNum_ = { 4.0f, 1.0f };
-		break;
-	case BlockType::J:
-		cellNum_ = { 4.0f, 2.0f };
-		break;
-	case BlockType::I:
-		cellNum_ = { 4.0f, 3.0f };
-		break;
-	default:
-		break;
-	}
-	//if (map_[int(cellNum_.y)][int(cellNum_.x)] == 1) return;
-	std::unique_ptr<Mino> mino;
-	mino = std::make_unique<Mino>();
-	mino->Initialize();
-	mino->SetCollisionMana(cMana_);
-	mino->InitBlock(type, GenderType(gender_));
-
-	controlMino_ = std::move(mino);
-	float oldDistance = GetOldDistance();
-	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-
-	futureMino_ = std::make_unique<Mino>();
-	futureMino_->Initialize();
-	futureMino_->InitBlock(type, GenderType(gender_));
-	futureMino_->GetTransform().translate = { (cellNum_.x) * 2.0f,(15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-	FutureMinoUpdate();
-
-	//selectPanelTime_ = defaultSelectPanelTime_;
 }
 
 void MapField::UpdateControlMino() {
 	if (!controlMino_) return;
-
-	/*downTime_ -= FPSKeeper::DeltaTime();
-	if (downTime_ <= 0.0f) {
-		downTime_ = 60.0f;
-		CellCheck();
-		controlMino_->GetModel()->transform.translate = { (cellNum_.x) * 2.0f,(20.0f - cellNum_.y) * 2.0f,0.0f };
-	}*/
 
 	MoveControlMino();
 
@@ -668,18 +538,13 @@ void MapField::UpdateControlMino() {
 		CellSet();
 		return;
 	}
-	if (futureMino_) {
-		futureMino_->Update();
-	}
-	RemoveControlMino();
-
 }
 
 void MapField::ArrowUpdate() {
 	arrowMoveTime_ += FPSKeeper::DeltaTime() * 0.1f;
-	arrowMoveTime_ = fmodf(arrowMoveTime_, std::numbers::pi_v<float>);
+	arrowMoveTime_ = std::fmod(arrowMoveTime_, std::numbers::pi_v<float>);
 	// sin波で 0.0 ～ 1.0 に正規化
-	float t = fabsf((sinf(arrowMoveTime_) + 1.0f) * 0.5f);
+	float t = std::abs((sinf(arrowMoveTime_) + 1.0f) * 0.5f);
 	Vector2 pos;
 	pos.x = 55.0f + (45.0f - 55.0f) * t;
 	pos.y = 515.0f + (525.0f - 515.0f) * t;
@@ -701,7 +566,8 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
-		} else {
+		}
+		else {
 			float mainPos = std::lerp(285.0f, -290.0f, t);
 			float subPos = std::lerp(880.0f, 285.0f, t);
 
@@ -741,251 +607,67 @@ void MapField::MoveControlMino() {
 
 	CellSpriteSetColor();
 
-	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
-		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 14
-			|| int(nextCell.y) <= 1) {
-			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 2));
-			nextCell.y = std::clamp(nextCell.y, 2.0f, float(gridSize));
+	// controlMinoを範囲外に出ないようにする
+	controlMino_->AdjustPosition(this, cellY, cellX);
+
+	// チェック
+	for (auto& block : controlMino_->GetBlocks()) {
+		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
+		auto& cell = cellsData_[row][column];
+		if (cell->genderType != GenderType::None) {
+			cell->required->SetColor({ 1.0f,0.0f,0.0f,0.6f });
 		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 2.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 2.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::T:
-		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
-			|| int(nextCell.y) <= 0) {
-			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
-			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x - 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x - 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::S:
-		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
-			|| int(nextCell.y) <= 0) {
-			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
-			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x - 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x - 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::Z:
-		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 14
-			|| int(nextCell.y) <= 0) {
-			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 2));
-			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x - 1.0f)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x - 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::O:
-		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 14
-			|| int(nextCell.y) <= 0) {
-			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 2));
-			nextCell.y = std::clamp(nextCell.y, 1.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x + 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x + 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::J:
-		if (int(nextCell.x) <= 0 || int(nextCell.x) >= 15
-			|| int(nextCell.y) <= 1) {
-			nextCell.x = std::clamp(nextCell.x, 1.0f, float(gridSize - 1));
-			nextCell.y = std::clamp(nextCell.y, 2.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 2.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 2.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y)][int(nextCell.x - 1.0f)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x - 1.0f)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	case BlockType::I:
-		if (int(nextCell.x) <= -1 || int(nextCell.x) >= 15
-			|| int(nextCell.y) <= 2) {
-			nextCell.x = std::clamp(nextCell.x, 0.0f, float(gridSize - 1));
-			nextCell.y = std::clamp(nextCell.y, 3.0f, float(gridSize));
-		}
-		if (map_[int(nextCell.y)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 1.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 1.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 2.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 2.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		if (map_[int(nextCell.y - 3.0f)][int(nextCell.x)] >= 1) arrangementCells_[int(nextCell.y - 3.0f)][int(nextCell.x)]->SetColor({ 1.0f,0.0f,0.0f,0.6f });
-		break;
-	default:
-		break;
 	}
 
 	cellNum_ = nextCell;
-
-	float oldDistance = GetOldDistance();
-	controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-	FutureMinoUpdate();
-
-	if (climber_) {
-		if (climber_->CanAvoidBlock()) {
-			climber_->AvoidFeatureBlock();
-			canQuickDrop_ = true;
-		} else {
-			canQuickDrop_ = false;
-		}
-	}
-}
-
-void MapField::CellCheck() {
-	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::T:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::S:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::Z:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::O:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x + 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::J:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x - 1.0f)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	case BlockType::I:
-
-		if (int(cellNum_.y + 1.0f) == 15 || map_[int(cellNum_.y + 1.0f)][int(cellNum_.x)] == 1) {
-			controlMino_->SetBlockMode(BlockMode::Stay);
-			return;
-		}
-		break;
-	default:
-		break;
-	}
-	cellNum_.y++;
-}
-
-void MapField::QuickDrop() {
-	if (!controlMino_ || !canQuickDrop_) return;
-
-	if (controlMino_) {
-		while (controlMino_->GetBlockMode() == BlockMode::Fall) {
-			CellCheck();
-		}
-		float oldDistance = GetOldDistance();
-		controlMino_->GetTransform().translate = { cellsPos_.x + (cellNum_.x) * 2.0f,cellsPos_.y + (15.0f - cellNum_.y) * 2.0f + oldDistance,0.0f };
-		controlMino_->Update();
-		RemoveControlMino();
-	}
 }
 
 void MapField::CellSet() {
-	if (!controlMino_) return;
-
-	if (controlMino_) {
-		if (!ArrangementCheck()) {
-			return;
-		}
-		controlMino_->SetBlockMode(BlockMode::Stay);
+	if (CanArrangement()) {
 		controlMino_->Update();
 		RemoveControlMino();
 	}
 }
 
-bool MapField::ArrangementCheck() {
-	bool result = false;
-	switch (controlMino_->GetBlockType()) {
-	case BlockType::L:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::T:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::S:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x + 1)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::Z:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x - 1)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::O:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x + 1)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x + 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::J:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y)][int(cellNum_.x - 1)] >= 1) {
-			return result;
-		}
-		break;
-	case BlockType::I:
-		if (int(cellNum_.y) == 15 ||
-			map_[int(cellNum_.y)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 1)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 2)][int(cellNum_.x)] >= 1 || map_[int(cellNum_.y - 3)][int(cellNum_.x)] >= 1) {
-			return result;
-		}
-		break;
-	default:
-		break;
+bool MapField::CanArrangement() {
+	if (!controlMino_) {
+		return false;
 	}
-	result = true;
-	return result;
+
+	auto& blocks = controlMino_->GetBlocks();
+	for (auto& block : blocks) {
+		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
+
+		// 範囲外
+		if (row < 0 || row >= kMapHeight_ || column < 0 || column >= kMapWidth_) {
+			return false;
+		}
+		// 既に配置されている
+		auto& cell = cellsData_[row][column];
+		if (cell->genderType != GenderType::None) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
-void MapField::CompleteArragement() {
+void MapField::CompleteArrangement() {
 	if (controlMino_) return;
 	int manBlocks = 0;
 	int womanBlocks = 0;
 
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 15; j++) {
-			if (TypeMap_[i][j] == 1 && map_[i][j] == 1) {
-				manBlocks++;
-			} else if (TypeMap_[i][j] == 1 && map_[i][j] == 2) {
-				womanBlocks++;
+	for (auto& row : cellsData_) {
+		for (auto& cell : row) {
+			switch (cell->genderType) {
+			case GenderType::Man:
+				++manBlocks;
+				break;
+			case GenderType::Woman:
+				++womanBlocks;
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -1005,7 +687,8 @@ void MapField::CompleteArragement() {
 		if (friendlyManager_) {
 			friendlyManager_->AddFriendly(status);
 		}
-	} else {
+	}
+	else {
 		CharaStatus status;
 		status.hp = maxBlocks;
 		status.name = "womanWalk.gltf";
@@ -1022,437 +705,79 @@ void MapField::CompleteArragement() {
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
 
-	map_ = std::vector(15, std::vector<int>(kMapWidth_));
-	minos_.clear();
+	// 再度初期化
+	for (auto& row : cellsData_) {
+		for (auto& cell : row) {
+			cell->genderType = GenderType::None;
+			cell->isRequired = false;
+		}
+	}
 	blockButtonNum_ = Random::GetInt(0, 6);
+
+	// テーブルの選択
+	tableIndex = Random::GetInt(0, (int)minoTables.size() - 1);
+	useMinoIndex = std::nullopt;
+	for (auto& tableMino : minoTables[tableIndex].minos) {
+		tableMino->OnSelectedTable();
+	}
 }
 
-void MapField::SetColliderManager(CollisionManager* cMana) {
-	cMana_ = cMana;
-}
-
-void MapField::SetClimber(Climber* climber) {
-	climber_ = climber;
-}
-
-void MapField::SetFriendlyManager(FriendlyManager* friendlyManager) {
-	friendlyManager_ = friendlyManager;
-}
-
-const std::vector<int>& MapField::GetMapRows(size_t row) const {
-	return map_[row];
-}
-
-const Mino* MapField::GetFeatureMino() const {
-	return futureMino_.get();
-}
-
-std::pair<int, int> MapField::CalcFieldGrid(const Vector3& pos) const {
-	return {
-		static_cast<int>(GetMapHeight() - (pos.y - GetOldDistance()) / 2.0f),
-		static_cast<int>(pos.x / 2.0f)
-	};
-}
-
-const float MapField::GetOldDistance() const {
-	float growLine = float(oldLine_) * 2.0f;
-	growLine *= float(old_);
-	growLine += float(old_) * nextSpace_;
-	return (growLine);
+std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
+	i32 xIndex = static_cast<i32>((position.x - cellsPos_.x) / cellsSize_);
+	i32 yIndex = static_cast<i32>((position.y - cellsPos_.y) / cellsSize_);
+	return { yIndex, xIndex };
 }
 
 void MapField::RemoveControlMino() {
-	if (controlMino_->GetBlockMode() == BlockMode::Stay) {
-		switch (controlMino_->GetBlockType()) {
-		case BlockType::L:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 2;
-			}
+	auto& blocks = controlMino_->GetBlocks();
 
-			break;
-		case BlockType::T:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 2;
-			}
+	Vector4 color = controlMino_->GetGender() == GenderType::Man ?
+		Vector4(0.0f, 0.0f, 1.0f, 0.6f) :
+		Vector4(1.0f, 0.08f, 0.58f, 0.6f);
 
-			break;
-		case BlockType::S:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 2;
-			}
+	// 設置したやつをマップに反映
+	for (auto& block : blocks) {
+		auto [rowI, colI] = CalcCellIndex(block->sprite->GetPos());
 
-			break;
-		case BlockType::Z:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x - 1.0f)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x - 1.0f)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 2;
-			}
+		auto& cell = cellsData_[rowI][colI];
 
-			break;
-		case BlockType::O:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x + 1.0f)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x + 1.0f)] = 2;
-			}
-
-			break;
-		case BlockType::J:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y)][int(cellNum_.x - 1.0f)] = 2;
-			}
-
-			break;
-		case BlockType::I:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 1;
-				map_[int(cellNum_.y - 3.0f)][int(cellNum_.x)] = 1;
-			} else {
-				map_[int(cellNum_.y)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 1.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 2.0f)][int(cellNum_.x)] = 2;
-				map_[int(cellNum_.y - 3.0f)][int(cellNum_.x)] = 2;
-			}
-
-			break;
-		default:
-			break;
-		}
-
-		if (climber_) {
-			climber_->OnDropped();
-		}
-
-		minos_.push_back(std::move(controlMino_));
-		controlMino_ = nullptr;
-		//selectPanelTime_ = defaultSelectPanelTime_;
+		cell->genderType = controlMino_->GetGender();
+		cell->block->SetColor(color);
 	}
-}
 
-void MapField::FutureMinoUpdate() {
-	if (!futureMino_) return;
-	Vector2 cell = cellNum_;
-	futureMino_->SetBlockMode(BlockMode::Fall);
-	while (futureMino_->GetBlockMode() == BlockMode::Fall) {
-		switch (futureMino_->GetBlockType()) {
-		case BlockType::L:
+	// ミノの消費カウント
+	controlMino_->OnUsedMino();
 
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::T:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::S:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::Z:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::O:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x + 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::J:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x - 1.0f)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		case BlockType::I:
-
-			if (int(cell.y + 1.0f) == 15) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-			if (map_[int(cell.y + 1.0f)][int(cell.x)] == 1) {
-				futureMino_->SetBlockMode(BlockMode::Stay);
-				break;
-			}
-
-			break;
-		default:
-			break;
-		}
-
-		if (futureMino_->GetBlockMode() != BlockMode::Stay) {
-			cell.y++;
-		}
-	}
-	float oldDistance = GetOldDistance();
-	futureMino_->GetTransform().translate = { (cell.x) * 2.0f,(15.0f - cell.y) * 2.0f + oldDistance,0.0f };
-	futureMino_->Update();
+	controlMino_ = nullptr;
 }
 
 void MapField::CellSpriteSetColor() {
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (map_[i][j] == 1) {
-				arrangementCells_[i][j]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			}
-			if (map_[i][j] == 2) {
-				arrangementCells_[i][j]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
+	auto& blocks = controlMino_->GetBlocks();
+	for (auto& block : blocks) {
+		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
+
+		// 範囲外
+		if (row < 0 || row >= kMapHeight_ || column < 0 || column >= kMapWidth_) {
+			continue;
 		}
-	}
-	if (controlMino_) {
-		switch (controlMino_->GetBlockType()) {
-		case BlockType::L:
+		// 既に配置されている
+		auto& cell = cellsData_[row][column];
+		if (cell->genderType != GenderType::None) {
+			block->sprite->SetColor({ 1.0f,0.0f,0.0f,0.8f });
+		}
+		else {
 			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+				block->sprite->SetColor({ 0,0,1,0.6f });
 			}
-
-			break;
-		case BlockType::T:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			else if (controlMino_->GetGender() == GenderType::Woman) {
+				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
-
-			break;
-		case BlockType::S:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
-
-
-			break;
-		case BlockType::Z:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x - 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
-
-
-			break;
-		case BlockType::O:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x + 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
-
-
-			break;
-		case BlockType::J:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x - 1)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
-
-
-			break;
-		case BlockType::I:
-			if (controlMino_->GetGender() == GenderType::Man) {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-				arrangementCells_[int(cellNum_.y - 3)][int(cellNum_.x)]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
-				arrangementCells_[int(cellNum_.y)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 1)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 2)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-				arrangementCells_[int(cellNum_.y - 3)][int(cellNum_.x)]->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-			}
-
-			break;
-		default:
-			break;
 		}
 	}
 }
 
 void MapField::InitCells() {
-	cellsPos_ = { 158.0f,280.0f };
-	cells_.resize(15);
-	for (int i = 0; i < 15; i++) {
-		cells_[i].resize(15);
-		for (int j = 0; j < 15; j++) {
-			// unique_ptr の生成
-			auto cell = std::make_unique<Sprite>();
-			cell->Load("white2x2.png");
-			cell->SetColor({ 0.2f,0.2f,0.2f,0.4f });
-			cell->SetSize({ cellsSize_ - 6.0f,cellsSize_ - 6.0f });
-			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i)*cellsSize_),0.0f });
-			cells_[i][j] = std::move(cell);
-		}
-	}
-
-	TypeMap_ = {
+	const std::vector<std::vector<bool>> requiresMap = {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -1469,48 +794,91 @@ void MapField::InitCells() {
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
-	typeCells_.resize(15);
-	for (int i = 0; i < 15; i++) {
-		typeCells_[i].resize(15);
-		for (int j = 0; j < 15; j++) {
-			// unique_ptr の生成
-			auto cell = std::make_unique<Sprite>();
-			cell->Load("white2x2.png");
-			cell->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-			cell->SetSize({ 2.0f,2.0f });
-			if (TypeMap_[i][j] == 1) {
-				cell->SetSize({ cellsSize_,cellsSize_ });
-				cell->SetColor({ 0.1f,0.1f,0.1f,0.5f });
-			}
-			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i)*cellsSize_),0.0f });
-			typeCells_[i][j] = std::move(cell);
-		}
-	}
 
-	arrangementCells_.resize(15);
-	for (int i = 0; i < 15; i++) {
-		arrangementCells_[i].resize(15);
-		for (int j = 0; j < 15; j++) {
-			// unique_ptr の生成
-			auto cell = std::make_unique<Sprite>();
-			cell->Load("white2x2.png");
-			cell->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			cell->SetSize({ cellsSize_,cellsSize_ });
-			cell->SetPos({ cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i)*cellsSize_),0.0f });
-			arrangementCells_[i][j] = std::move(cell);
+	cellsPos_ = { 158.0f,280.0f };
+
+	Vector2 cellSize = { cellsSize_,cellsSize_ };
+	cellsData_.resize(15);
+	for (i32 i = 0; std::vector<std::unique_ptr<CellData>>& row : cellsData_) {
+		row.resize(15);
+
+		for (i32 j = 0; std::unique_ptr<CellData>& cell : row) {
+			cell = std::make_unique<CellData>();
+			cell->genderType = GenderType::None;
+			cell->isRequired = requiresMap[i][j];
+
+			Vector3 cellPosition = { cellsPos_.x + (j * cellsSize_),cellsPos_.y + ((i)*cellsSize_), 0 };
+
+			cell->block = std::make_unique<Sprite>();
+			cell->block->Load("white2x2.png");
+			cell->block->SetSize(cellSize);
+			cell->block->SetPos(cellPosition);
+			cell->block->SetColor({ 0.2f, 0.2f, 0.2f, 0.0f });
+
+			cell->background = std::make_unique<Sprite>();
+			cell->background->Load("white2x2.png");
+			cell->background->SetPos(cellPosition);
+			cell->background->SetColor({ 0.5f, 0.5f, 0.5f, 0.5f });
+			cell->background->SetSize(cellSize / 2);
+
+			cell->required = std::make_unique<Sprite>();
+			cell->required->Load("white2x2.png");
+			cell->required->SetPos(cellPosition);
+			cell->required->SetSize(cellSize);
+			if (cell->isRequired) {
+				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
+			}
+			else {
+				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
+			}
+
+			++j;
 		}
+		++i;
 	}
 }
 
-void MapField::GenderColor() {
-	for (size_t i = 0; i < cells_.size(); i++) {
-		for (size_t j = 0; j < cells_[i].size(); j++) {
-			if (map_[i][j] >= 1) return;
-			if (gender_ == int(GenderType::Man)) {
-				arrangementCells_[i][j]->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else if (gender_ == int(GenderType::Woman)) {
-				arrangementCells_[i][j]->SetColor({ 1.0f, 0.08f, 0.58f, 0.6f });
+void MapField::LoadMinoTables() {
+	minoTables.clear();
+
+	for (auto& file : std::filesystem::directory_iterator("resource/Json/minos/")) {
+		nlohmann::json json = JsonSerializer::DeserializeJsonData(file.path().string());
+
+		auto& table = minoTables.emplace_back();
+		table.friendlyType = json["Type"];
+		for (auto& minoJson : json["Minos"]) {
+			std::unique_ptr<Mino> newMino = std::make_unique<Mino>();
+
+			newMino->Initialize();
+			newMino->Load(minoJson, this);
+
+			if (newMino->GetGender() == GenderType::Man) {
+				++table.numManMino;
 			}
+			else {
+				++table.numWomanMino;
+			}
+
+			table.minos.emplace_back(std::move(newMino));
+		}
+
+		std::ranges::sort(table.minos, [](const std::unique_ptr<Mino>& lhs, const std::unique_ptr<Mino>& rhs) -> bool {
+			if (lhs->GetGender() != rhs->GetGender()) {
+				// 性別が異なる場合、男性を優先
+				return lhs->GetGender() == GenderType::Man;
+			}
+			// ブロック数が異なる場合、ブロック数の多い方を優先
+			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
+		});
+
+		// ボタン位置の設定
+		if (table.minos.size() == 6) {
+			table.minos[0]->SetupButtonPosition({ 105,119,0 });
+			table.minos[1]->SetupButtonPosition({ 193,92,0 });
+			table.minos[2]->SetupButtonPosition({ 193,148,0 });
+			table.minos[3]->SetupButtonPosition({ 470,119,0 });
+			table.minos[4]->SetupButtonPosition({ 372,92,0 });
+			table.minos[5]->SetupButtonPosition({ 372,148,0 });
 		}
 	}
 }

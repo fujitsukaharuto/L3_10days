@@ -1,92 +1,80 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include <Engine/Math/Matrix/MatrixCalculation.h>
+#include <Engine/Model/Sprite.h>
 
-#include "Game/OriginGameObject.h"
-#include "ImGuiManager/ImGuiManager.h"
-#include <numbers>
-#include "Game/Collider/BaseCollider.h"
-#include "Game/Collider/AABBCollider.h"
-#include "Model/Line3dDrawer.h"
-#include "Game/GameObj/Block/BaseBlock.h"
-
-enum class BlockType {
-	L,
-	T,
-	S,
-	Z,
-	O,
-	J,
-	I,
-};
+#include <json.hpp>
 
 enum class GenderType {
-	Man,
-	Woman,
+	None = 0,
+	Man = 1,
+	Woman = 2,
 };
 
-enum class BlockMode {
-	Fall,
-	Stay,
-};
-
-class CollisionManager;
+class MapField;
 
 class Mino {
 public:
-	Mino();
-	~Mino();
+	struct Block {
+		Vector3 offset;
+		std::unique_ptr<Sprite> sprite;
+		std::unique_ptr<Sprite> buttonTexture;
+	};
+
+public:
+	Mino() = default;
+	~Mino() = default;
 
 	void Initialize();
+
+	void Load(const nlohmann::json& minoJson, MapField* const mapField);
+
 	void Update();
-	void Draw();
+
+	void DrawBlocks();
+
+	void DrawButton();
+
 	void DebugGUI();
 
-	void DrawLine();
-	void InitBlock(BlockType type, GenderType gender);
+	void OnUsedMino();
 
-	//========================================================================*/
-	//* Collision
+	void OnSelectedTable();
 
-	void OnCollisionEnter(const ColliderInfo& other);
-	void OnCollisionStay(const ColliderInfo& other);
-	void OnCollisionExit(const ColliderInfo& other);
+	void AdjustPosition(MapField* const mapField, i32 rowSize, i32 colSize);
 
 	//========================================================================*/
 	//* Getter
-	const std::vector<std::unique_ptr<BaseBlock>>& GetBlocks() const {
+	const std::vector<std::unique_ptr<Block>>& GetBlocks() const {
 		return blocks_;
 	}
-	std::vector<std::unique_ptr<BaseBlock>>& GetBlock() {
+	std::vector<std::unique_ptr<Block>>& GetBlock() {
 		return blocks_;
-	}
-	BlockType GetBlockType() {
-		return blockType_;
-	}
-	BlockMode GetBlockMode() {
-		return blockMode_;
 	}
 	GenderType GetGender() { return gender_; }
 
 	Trans& GetTransform();
 	const Trans& GetTransform() const;
 
-	//========================================================================*/
-	//* Setter
-	void SetBlockMode(BlockMode mode) {
-		blockMode_ = mode;
-	}
-
-	void SetCollisionMana(CollisionManager* cMana);
+	void SetupButtonPosition(const Vector3& pos);
 
 private:
 	Trans transform;
 
-	BlockType blockType_;
-	BlockMode blockMode_;
+	Vector3 buttonPosition;
+
 	GenderType gender_;
 
-	std::vector<std::unique_ptr<BaseBlock>> blocks_;
+	i32 minRow;
+	i32 minColumn;
+	i32 maxRow;
+	i32 maxColumn;
 
-	CollisionManager* cMana_;
+	std::vector<std::unique_ptr<Block>> blocks_;
+
+	i32 numMaxUse;
+	i32 numUseRest;
 };

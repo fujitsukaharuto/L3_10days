@@ -57,25 +57,8 @@ void TitleScene::Initialize() {
 	terrain_->transform.scale = { 1.0f,1.0f,1.0f };
 	terrain_->SetUVScale({ 20.0f,20.0f }, { 0.0f,0.0f });
 
-	/*b1_ = std::make_unique<Mino>();
-	b1_->Initialize();
-	b1_->InitBlock(BlockType::L);
-	b1_->GetModel()->transform.translate.x = -3.0f;
-	b2_ = std::make_unique<Mino>();
-	b2_->Initialize();
-	b2_->InitBlock(BlockType::T);
-	b2_->GetModel()->transform.translate.x = 3.0f;*/
-
 	map_ = std::make_unique<MapField>();
 	map_->Initialize();
-	map_->SetColliderManager(cMane_.get());
-
-
-	climber_ = std::make_unique<Climber>(map_.get());
-	climber_->Initialize();
-
-	map_->SetClimber(climber_.get());
-
 
 	terrainCollider_ = std::make_unique<AABBCollider>();
 	terrainCollider_->SetTag("terrain");
@@ -138,8 +121,6 @@ void TitleScene::Update() {
 
 	map_->Update();
 
-	climber_->Update();
-
 	cMane_->CheckAllCollision();
 
 	// 
@@ -192,12 +173,7 @@ void TitleScene::Draw() {
 
 	obj3dCommon->PreDraw();
 
-
-	//b1_->Draw();
-	//b2_->Draw();
-
 	map_->Draw();
-	//climber_->Draw();
 
 	friendlyManager_->Draw();
 	enemyManager_->Draw();
@@ -237,7 +213,6 @@ void TitleScene::DebugGUI() {
 
 	ImGui::Indent();
 	map_->DebugGUI();
-	climber_->DebugGUI();
 	friendlyManager_->DebugGUI();
 	waveEditor_->Draw();
 	enemyTableEditor_->Draw();

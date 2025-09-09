@@ -284,20 +284,12 @@
     <ClCompile Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.cpp">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Block\BaseBlock.cpp">
-      <Filter>Game\GameObj\Block</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObj\Map\MapField.cpp">
       <Filter>Game\GameObj\Map</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObj\Block\Mino.cpp">
       <Filter>Game\GameObj\Block</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObj\Climber\Climber.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.cpp" />
-    <ClCompile Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.cpp" />
     <ClCompile Include="Game\Editor\UsableMinoEditor.cpp" />
     <ClCompile Include="Game\Editor\MinoEditor.cpp" />
     <ClCompile Include="Game\Scene\FightScene.cpp" />
@@ -642,20 +634,12 @@
     <ClInclude Include="Engine\GraphicPipeline\CSPipe\EmitterTexParticleCSPipe.h">
       <Filter>Engine\GraphicPipeline\CSPipe</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Block\BaseBlock.h">
-      <Filter>Game\GameObj\Block</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObj\Map\MapField.h">
       <Filter>Game\GameObj\Map</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObj\Block\Mino.h">
       <Filter>Game\GameObj\Block</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObj\Climber\Climber.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontCollider\ClimberFrontCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontTopCollider\FrontTopCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\BottomCollider\ClimberBottomCollider.h" />
-    <ClInclude Include="Game\GameObj\Climber\FrontBottomCollider\FrontBottomCollider.h" />
     <ClInclude Include="BuiltinTypes.h" />
     <ClInclude Include="Game\Editor\UsableMinoEditor.h" />
     <ClInclude Include="Game\Editor\MinoEditor.h" />

@@ -1,11 +1,10 @@
 #pragma once
-#include "Game/OriginGameObject.h"
-#include "ImGuiManager/ImGuiManager.h"
-#include <numbers>
-#include "Game/Collider/BaseCollider.h"
-#include "Game/Collider/AABBCollider.h"
-#include "Model/Line3dDrawer.h"
+
+#include <memory>
+#include <vector>
+
 #include "Engine/Model/Sprite.h"
+
 #include "Game/GameObj/Block/Mino.h"
 
 class CollisionManager;
@@ -28,81 +27,106 @@ public:
 	void TitleUpdateSelectPanel();
 	void TitleDraw();
 
+	void DrawCells();
+
 	void BackDraw();
 	void FactoryDraw();
 	void CursorDraw();
-	void ArrangementDraw();
+
+	void CellBackgroundDraw();
+	void CellRequiredSpriteDraw();
 
 	void UpdateSelectPanel();
+
+	void UpdateSelectPanelControlling();
+	void UpdateSelectPanelUncontrolling();
+
 	void SelectMino();
-	void ReturenSelectMino();
-	void AddMino(BlockType type);
+	void AddMino();
 	void UpdateControlMino();
 
 	void ArrowUpdate();
 	void FrameUpdate();
 
 	void MoveControlMino();
-	void CellCheck(); // Dropする時に置けるかどうかのチェック用
-	void QuickDrop();
 	void CellSet();
-	bool ArrangementCheck(); // マウスで置く際のチェック用
+	bool CanArrangement(); // マウスで置く際のチェック用
 
-	void CompleteArragement();
+	void CompleteArrangement();
 
-	void SetColliderManager(CollisionManager* cMana);
-	void SetClimber(Climber* climber);
-	void SetFriendlyManager(FriendlyManager* friendlyManager);
 public:
-	const std::vector<int>& GetMapRows(size_t row) const;
-	const Mino* GetFeatureMino() const;
-
 	// TODO : 定数にする
-	size_t GetMapHeight() const { return map_.size(); }
-	size_t GetMapWidth() const { return map_[0].size(); }
+	size_t GetMapHeight() const { return 15; }
+	size_t GetMapWidth() const { return 15; }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <returns>[row, column]</returns>
-	std::pair<int, int> CalcFieldGrid(const Vector3& pos) const;
+	std::pair<i32, i32> CalcCellIndex(const Vector3& position) const;
 
-	const float GetOldDistance() const;
+	float GetCellSize() const { return cellsSize_; }
+
+	void SetFriendlyManager(FriendlyManager* const friendlyManager) { friendlyManager_ = friendlyManager; }
+
+	const Vector2& GetCellPosition() const { return cellsPos_; }
 
 private:
 	void RemoveControlMino();
-	void FutureMinoUpdate();
 	void CellSpriteSetColor();
 
 	void InitCells();
-	void GenderColor();
+
+	void LoadMinoTables();
 
 private:
-	bool canQuickDrop_ = true;
-	bool isCameraMove_ = false;
+	/// <summary>
+	/// マップ上の各セルデータ
+	/// </summary>
+	struct CellData {
+		GenderType genderType{ GenderType::None }; // ブロックが配置されているか
+		bool isRequired; // 攻撃に関与するセル
+		std::unique_ptr<Sprite> background; // セルの背景
+		std::unique_ptr<Sprite> required;
+		std::unique_ptr<Sprite> block; // セルに配置されているブロック
+	};
+
+	/// <summary>
+	/// 1テーブルあたりのミノデータ
+	/// </summary>
+	struct MinoTable {
+		i32 friendlyType;
+
+		i32 numManMino;
+		i32 numWomanMino;
+
+		std::vector<std::unique_ptr<Mino>> minos;
+	};
+
+private:
 	bool haveControlMino_ = false;
 	bool isSmallChange_ = false;
 
-	std::vector<std::vector<int>> map_;
-	std::vector<std::vector<int>> TypeMap_;
-	const uint32_t kMapWidth_ = 15;
+	const i32 kMapWidth_ = 15;
+	const i32 kMapHeight_ = 15;
+
+	std::vector<std::vector<std::unique_ptr<CellData>>> cellsData_;
+
+	i32 tableIndex;
+	std::optional<i32> useMinoIndex;
+	std::vector<MinoTable> minoTables;
 
 	Vector2 cellNum_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> cells_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> typeCells_;
-	std::vector<std::vector<std::unique_ptr<Sprite>>> arrangementCells_;
 
-	std::unique_ptr<Mino> controlMino_;
-	std::unique_ptr<Mino> futureMino_;
-	std::vector<std::unique_ptr<Mino>> minos_;
+	Mino* controlMino_;
 
 	// この３つはデバッグ表示用
+	// これは何…
+	// 多分男ブロックと音場ブロックの累積をメモってる
 	std::vector<int> maxB_;
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
 
+	int preGender_ = 0;
 	int gender_ = 0;
+
+	int preMinoButtonNum_ = 0;
 	int minoButtonNum_ = 0;
 	int mapSizeNum_ = 2;
 	int blockButtonNum_ = 0;
@@ -117,8 +141,9 @@ private:
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
-	std::vector<BlockType> selectTypes_;
-	std::unique_ptr<Sprite> panelTex_;
+
+	std::unique_ptr<Sprite> manPanelTex_;
+	std::unique_ptr<Sprite> womanPanelTex_;
 	std::unique_ptr<Sprite> genderPanelTex_;
 	std::unique_ptr<Sprite> frameTex_;
 	std::unique_ptr<Sprite> subFrameTex_;
@@ -135,23 +160,14 @@ private:
 	std::unique_ptr<Sprite> factoryBackPanelTex_;
 	std::unique_ptr<Sprite> cursorTex_;
 	std::unique_ptr<Sprite> grabCursorTex_;
-	std::vector<std::unique_ptr<Sprite>> buttonTex_;
+
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
 
-	int oldLine_ = 15;
-	int old_;
 	float nextSpace_ = 10.0f;
 
-	float cameraHeight_ = 22.0f;
-	float cameraMoveTime_ = 30.0f;
+	Vector2 cellsPos_; // セルの左下の位置
+	float cellsSize_ = 18.0f; // セル一つの大きさ
 
-	Vector2 cellsPos_;
-	float cellsSize_ = 18.0f;
-
-	CollisionManager* cMana_;
-
-	Climber* climber_{ nullptr };
-
-	FriendlyManager* friendlyManager_;
+	FriendlyManager* friendlyManager_ = nullptr;
 };

@@ -4,7 +4,6 @@
 #include "Game/GameObj/SkyDome/SkyBox.h"
 #include "Game/Collider/CollisionManager.h"
 
-#include "Game/GameObj/Climber/Climber.h"
 #include "Game/GameObj/Block/Mino.h"
 #include "Game/GameObj/Map/MapField.h"
 
@@ -44,9 +43,6 @@ private:
 	std::unique_ptr<Mino> b2_;
 
 	std::unique_ptr<MapField> map_;
-
-	// 人間
-	std::unique_ptr<Climber> climber_;
 
 	ParticleEmitter emit;
 

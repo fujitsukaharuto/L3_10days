@@ -57,7 +57,6 @@ void GameScene::Initialize() {
 	map_ = std::make_unique<MapField>();
 	map_->Initialize();
 	map_->TitleInit();
-	map_->SetColliderManager(cMane_.get());
 
 	/*title = std::make_unique<Object3d>();
 	title->Create("title.obj");
