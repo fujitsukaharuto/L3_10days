@@ -34,6 +34,7 @@ private:
 	std::unique_ptr<Sprite> cursorTex_;
 
 	bool isRetry_ = false;
+	float goTitleTime_ = 0.0f;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
