@@ -97,6 +97,7 @@ void MapField::Initialize() {
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
+	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
 }
 
 void MapField::Update() {
@@ -628,6 +629,9 @@ void MapField::UpdateControlMino() {
 	controlMino_->Update();
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
+		return;
+	} else if (Input::GetInstance()->IsTriggerMouse(1) && haveControlMino_) {
+		controlMino_ = nullptr;
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
@@ -724,7 +728,10 @@ void MapField::CellSet() {
 	if (CanArrangement()) {
 		controlMino_->Update();
 		RemoveControlMino();
+		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
+		return;
 	}
+	AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav,0.6f);
 }
 
 bool MapField::CanArrangement() {
