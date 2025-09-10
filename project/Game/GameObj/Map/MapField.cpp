@@ -792,31 +792,25 @@ void MapField::CompleteArrangement() {
 	int maxBlocks = manBlocks + womanBlocks;
 
 	// 人間生成処理
-
+	CharaStatus status;
+	i32 hp = kCellNum_ - maxBlocks;
+	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
 	if (manBlocks < womanBlocks) {
-		CharaStatus status;
-		status.hp = maxBlocks;
-		status.name = "womanWalk.gltf";
+		status.hp = hp;
 		status.power = womanBlocks;
 		status.gender = WOMAN;
-
-		// 自軍発車
-		if (friendlyManager_) {
-			friendlyManager_->AddFriendly(status);
-		}
-	}
-	else {
-		CharaStatus status;
-		status.hp = maxBlocks;
 		status.name = "womanWalk.gltf";
+	} else {
+		status.hp = hp;
 		status.power = manBlocks;
 		status.gender = MAN;
+		status.name = "womanWalk.gltf";
+	}
 
-		// 自軍発車
-		if (friendlyManager_) {
-			friendlyManager_->AddFriendly(status);
-		}
+	// 自軍発車
+	if (friendlyManager_) {
+		friendlyManager_->AddFriendly(status);
 	}
 
 	maxB_.push_back(maxBlocks);
