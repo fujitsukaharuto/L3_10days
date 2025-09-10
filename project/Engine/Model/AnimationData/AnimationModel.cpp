@@ -146,6 +146,63 @@ void AnimationModel::LoadAnimationFile(const std::string& filename) {
 	environment_ = TextureManager::GetInstance()->LoadTexture("skyboxTexture.dds");
 }
 
+void AnimationModel::AddAnimation(const std::string& filename) {
+	Assimp::Importer importer;
+
+	const aiScene* scene = importer.ReadFile(kDirectoryPath_ + filename.c_str(), 0);
+	assert(scene->mNumAnimations != 0);
+
+	for (uint32_t animIndex = 0; animIndex < scene->mNumAnimations; ++animIndex) {
+		aiAnimation* animationAssimp = scene->mAnimations[animIndex];
+		Animation animation;
+
+		// アニメーション名を取得（空なら仮の名前）
+		std::string animName;
+		if (animationAssimp->mName.length > 0) {
+			animName = animationAssimp->mName.C_Str();
+		} else {
+			animName = "Animation_" + std::to_string(animIndex);
+		}
+		if (animations_.contains(animName)) {
+			animName += "_" + std::to_string(animations_.size() + 1);
+		}
+		animation.name = animName;
+		animation.duration = float(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
+
+		for (uint32_t channelIndex = 0; channelIndex < animationAssimp->mNumChannels; ++channelIndex) {
+			aiNodeAnim* nodeAnimationAssimp = animationAssimp->mChannels[channelIndex];
+			NodeAnimation& nodeAnimation = animation.nodeAnimations[nodeAnimationAssimp->mNodeName.C_Str()];
+
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumPositionKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mPositionKeys[keyIndex];
+				KeyframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { -keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z };
+				nodeAnimation.translate.keyframes.push_back(keyframe);
+			}
+
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumRotationKeys; ++keyIndex) {
+				aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
+				KeyframeQuaternion keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w };
+				nodeAnimation.rotate.keyframes.push_back(keyframe);
+			}
+
+			for (uint32_t keyIndex = 0; keyIndex < nodeAnimationAssimp->mNumScalingKeys; ++keyIndex) {
+				aiVectorKey& keyAssimp = nodeAnimationAssimp->mScalingKeys[keyIndex];
+				KeyframeVector3 keyframe;
+				keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond);
+				keyframe.value = { keyAssimp.mValue.x, keyAssimp.mValue.y, keyAssimp.mValue.z };
+				nodeAnimation.scale.keyframes.push_back(keyframe);
+			}
+		}
+
+		// マップに追加
+		animations_[animName] = std::move(animation);
+	}
+}
+
 void AnimationModel::CreateSkeleton(const Node& rootNode) {
 	skeleton_.root = CreateJoint(rootNode, {}, skeleton_.joints);
 	for (const Joint& joint : skeleton_.joints) {

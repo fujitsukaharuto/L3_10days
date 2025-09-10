@@ -31,6 +31,8 @@ public:
 
 	void LoadAnimationFile(const std::string& filename);
 
+	void AddAnimation(const std::string& filename);
+
 	void CreateSkeleton(const Node& rootNode);
 
 	void Create(const std::string& fileName);
