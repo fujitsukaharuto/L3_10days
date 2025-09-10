@@ -142,7 +142,7 @@ void TitleScene::Update() {
 		if (battleSystem_->CheckBattleOver()) {
 			isChangeFase = true;
 		}
-	} 
+	}
 
 
 
@@ -270,6 +270,8 @@ void TitleScene::BlackFade() {
 }
 
 void TitleScene::EditorModeSwitchUI() {
+#ifdef _DEBUG
+
 	ImGui::Begin("EditorModeSwitch");
 
 	if (!isEditorMode_) {
@@ -283,6 +285,7 @@ void TitleScene::EditorModeSwitchUI() {
 	}
 
 	ImGui::End();
+#endif
 }
 
 void TitleScene::ApplyGlobalVariables() {

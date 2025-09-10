@@ -12,7 +12,7 @@ Friendly::Friendly(const CharaStatus& status, const Vector3& popPos)
 void Friendly::Update() {
 	BaseChara::Update();
 	// 勝利判定確認
-	if (OriginGameObject::GetModel()->GetWorldPos().x > winXPos_) {
+	if (OriginGameObject::GetAnimModel()->GetWorldPos().x > winXPos_) {
 		fri_->Win();
 	}
 }
