@@ -44,20 +44,20 @@
                 0.0
             ],
             "GenderType": 1,
-            "Name": "1man",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
             "Blocks": [
                 [
                     1,
-                    1,
+                    0,
                     0,
                     0,
                     0
                 ],
                 [
-                    0,
+                    1,
                     0,
                     0,
                     0,
@@ -91,7 +91,7 @@
                 0.0
             ],
             "GenderType": 1,
-            "Name": "2man",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
@@ -112,13 +112,13 @@
                 ],
                 [
                     1,
-                    1,
+                    0,
                     0,
                     0,
                     0
                 ],
                 [
-                    0,
+                    1,
                     0,
                     0,
                     0,
@@ -138,7 +138,7 @@
                 0.0
             ],
             "GenderType": 1,
-            "Name": "Lman",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
@@ -185,20 +185,20 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "1woman",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
             "Blocks": [
                 [
                     1,
-                    0,
+                    1,
                     0,
                     0,
                     0
                 ],
                 [
-                    1,
+                    0,
                     0,
                     0,
                     0,
@@ -232,34 +232,34 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "2woman",
+            "Name": "NewMino",
             "NumMaxUse": 1
         },
         {
             "Blocks": [
                 [
                     1,
-                    0,
+                    1,
                     0,
                     0,
                     0
                 ],
                 [
-                    1,
                     0,
+                    1,
                     0,
                     0,
                     0
                 ],
                 [
-                    1,
                     0,
+                    1,
                     0,
                     0,
                     0
                 ],
                 [
-                    1,
+                    0,
                     0,
                     0,
                     0,
@@ -279,10 +279,10 @@
                 0.0
             ],
             "GenderType": 2,
-            "Name": "Iwoman",
+            "Name": "NewMino",
             "NumMaxUse": 1
         }
     ],
-    "Name": "NewPattern",
+    "Name": "NewPattern5",
     "Type": 0
 }

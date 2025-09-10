@@ -13,7 +13,11 @@ void Friendly::Update() {
 	BaseChara::Update();
 	// 勝利判定確認
 	if (OriginGameObject::GetAnimModel()->GetWorldPos().x > winXPos_) {
-		fri_->Win();
+		if (ene_->GetCurrentWave() != 2) {
+			ene_->AddWave();
+		} else {
+			fri_->Win();
+		}
 	}
 }
 

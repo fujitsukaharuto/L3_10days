@@ -22,6 +22,12 @@ void FriendlyManager::CheckIsTargetDead() {
 	}
 }
 
+void FriendlyManager::AllKill() {
+	for (auto& obj : friendlies_) {
+		obj->SetIsAlive(false);
+	}
+}
+
 void FriendlyManager::CSDispatch() {
 	for (auto& obj : friendlies_) {
 		obj->CSDispatch();
@@ -46,10 +52,14 @@ void FriendlyManager::AddFriendly(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
 	const float posZ = Random::GetFloat(minPopRangeZ_, maxPopRangeZ_);
 	popPosition_.z = posZ;
-	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>(status, popPosition_);
+	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>(status,
+		Vector3(popPosition_.x + 1.0f, popPosition_.y, popPosition_.z));
+
 	newObj->SetEne(ene_);
 	newObj->SetFri(this);
 	friendlies_.push_back(std::move(newObj));
+
+	factory_->Pop();
 }
 
 void FriendlyManager::DebugGUI() {

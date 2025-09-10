@@ -27,6 +27,7 @@ void UsableMinoEditor::DrawGUI() {
 		auto& mino = patternData.emplace_back();
 		mino.name = "NewPattern";
 		selectedIndex = static_cast<i32>(patternData.size() - 1);
+		selectedMinoIndex = std::nullopt;
 	}
 
 	// パターンの選択
