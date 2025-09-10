@@ -101,6 +101,10 @@ void GameScene::Initialize() {
 
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("titleBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
+
+	friendlyManager_ = std::make_unique<FriendlyManager>();
+
+	map_->SetFriendlyManager(friendlyManager_.get());
 }
 
 void GameScene::Update() {
@@ -116,6 +120,7 @@ void GameScene::Update() {
 #ifdef _DEBUG
 
 #endif // _DEBUG
+	friendlyManager_->Update();
 
 	ni_->AnimationUpdate();
 	nn_->AnimationUpdate();
@@ -138,6 +143,7 @@ void GameScene::Draw() {
 	ge_->CSDispatch();
 	nn2_->CSDispatch();
 	factory_->CSDispatch();
+	friendlyManager_->CSDispatch();
 
 	map_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
@@ -158,7 +164,7 @@ void GameScene::Draw() {
 	ge_->Draw();
 	nn2_->Draw();
 	factory_->Draw();
-
+	friendlyManager_->Draw();
 
 	ParticleManager::GetInstance()->Draw();
 
