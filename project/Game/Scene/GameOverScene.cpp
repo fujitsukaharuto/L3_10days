@@ -213,12 +213,6 @@ void GameOverScene::Draw() {
 #pragma region 背景描画
 
 	back_->Draw();
-	frame_->Draw();
-	report_->Draw();
-	chain_->Draw();
-	chain2_->Draw();
-	goTitle_->Draw();
-	retry_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
 
@@ -227,6 +221,13 @@ void GameOverScene::Draw() {
 	obj3dCommon->PreDraw();
 	sphere->Draw();
 
+
+	frame_->Draw();
+	report_->Draw();
+	chain_->Draw();
+	chain2_->Draw();
+	goTitle_->Draw();
+	retry_->Draw();
 
 	ParticleManager::GetInstance()->Draw();
 
