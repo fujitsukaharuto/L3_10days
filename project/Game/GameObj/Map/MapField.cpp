@@ -110,7 +110,7 @@ void MapField::Initialize() {
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
-	machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
+	//machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
 
 	arrangement.AnimationTime = 1.0f;
 	arrangement.timer = arrangement.AnimationTime;
@@ -273,7 +273,7 @@ void MapField::TitleUpdateSelectPanel() {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
-					AudioPlayer::GetInstance()->SoundPlayWave(*machine);
+					//AudioPlayer::GetInstance()->SoundPlayWave(*machine);
 					CharaStatus status;
 					status.gender = Gender::WOMAN;
 					status.name = "womanWalk.gltf";
@@ -461,7 +461,7 @@ void MapField::UpdateSelectPanel() {
 				if (!controlMino_ && canComplete) {
 					CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
-					AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
+					//AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
 					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
 					ClickEmit_.Emit();
 				}

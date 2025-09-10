@@ -2,6 +2,7 @@
 
 #include "Game/OriginGameObject.h"
 #include "SimpleAnimation/SimpleAnimation.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 enum class FactoryState {
 	IDLE,
@@ -11,7 +12,7 @@ enum class FactoryState {
 /// <summary>
 /// 工場
 /// </summary>
-class Factory : public OriginGameObject {
+class Factory: public OriginGameObject {
 public:
 	Factory(const Vector3& pos, bool isfriend = true);
 	~Factory()override = default;
@@ -35,5 +36,7 @@ private:
 	SimpleAnimation<Vector3> animation;
 	Vector3 popMinScale_ = { 2.0f,3.0f,20.0f };
 	Vector3 popMaxScale_ = { 4.0f,1.5f,20.0f };
+
+	SoundData* machine;
 
 };

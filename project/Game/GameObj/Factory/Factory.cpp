@@ -18,11 +18,14 @@ Factory::Factory(const Vector3& pos, bool isfriend) {
 
 	state_ = FactoryState::IDLE;
 	animation = SimpleAnimation<Vector3>(popMinScale_, popMaxScale_, EasingType::EaseInOutBounce, true, LoopType::PingPong);
+
+	machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
 }
 
 void Factory::Pop() {
 	isPop_ = true;
 	popTimer_ = popTime_;
+	AudioPlayer::GetInstance()->SoundPlayWave(*machine);
 }
 
 void Factory::Update() {
