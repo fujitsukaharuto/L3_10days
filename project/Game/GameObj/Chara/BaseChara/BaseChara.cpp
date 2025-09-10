@@ -15,6 +15,7 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::GetAnimModel()->LoadAnimationFile(status.name);
 	OriginGameObject::GetAnimModel()->transform.translate = popPos;
 
+	OriginGameObject::GetAnimModel()->transform.scale = { 0.4f,0.4f,0.4f };
 
 	switch (status_.gender) {
 	case MAN:
@@ -106,6 +107,11 @@ void BaseChara::Update() {
 	// 移動
 	OriginGameObject::GetAnimModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
 	OriginGameObject::GetAnimModel()->AnimationUpdate();
+
+	// 回転
+	const Vector3 dir = Vector3::Normalize(velocity);
+	float yaw = std::atan2(dir.x, dir.z);
+	OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
 }
 
 void BaseChara::CSDispatch() {
