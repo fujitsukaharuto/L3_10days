@@ -90,6 +90,7 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("lightning.obj");
 	modelManager_->LoadOBJ("myFactry.obj");
 	modelManager_->LoadOBJ("enemyFactry.obj");
+	modelManager_->LoadOBJ("floor.obj");
 
 	//modelManager_->LoadOBJ("playerModel.obj");
 	//modelManager_->LoadOBJ("boss.obj");

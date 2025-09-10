@@ -21,7 +21,6 @@ public:
 
 	void Draw(Material* mate = nullptr, bool is = false)override;
 
-	void DebugUI();
 
 private:
 	bool isFriend_ = false;

@@ -42,12 +42,3 @@ void Factory::Update() {
 void Factory::Draw(Material* mate, bool is) {
 	OriginGameObject::Draw(mate, is);
 }
-
-void Factory::DebugUI() {
-	if (isFriend_) {
-		ImGui::Begin("IsFriend");
-
-		ImGui::End();
-	}
-
-}

@@ -306,6 +306,7 @@
     <ClCompile Include="Game\GameObj\Factory\Factory.cpp" />
     <ClCompile Include="Engine\SimpleAnimation\EasingIhara\EasingIhara.cpp" />
     <ClCompile Include="Engine\Math\Animation\Easing.cpp" />
+    <ClCompile Include="Game\GameObj\floor\Floor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Field\MapChipField.h">
@@ -659,11 +660,10 @@
     <ClInclude Include="Game\Editor\EnemyTableEditor\EnemyTableEditor.h" />
     <ClInclude Include="Game\GameObj\Map\HumanMoldManager.h" />
     <ClInclude Include="Game\GameObj\Factory\Factory.h" />
-
     <ClInclude Include="Engine\SimpleAnimation\SimpleAnimation.h" />
     <ClInclude Include="Engine\SimpleAnimation\EasingIhara\EasingIhara.h" />
-
     <ClInclude Include="Engine\Math\Animation\Easing.h" />
+    <ClInclude Include="Game\GameObj\floor\Floor.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Engine">
