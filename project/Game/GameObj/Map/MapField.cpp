@@ -59,8 +59,10 @@ void MapField::Initialize() {
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	cursorTex_->SetSize({ 40.0f,40.0f });
 	grabCursorTex_ = std::make_unique<Sprite>();
 	grabCursorTex_->Load("grabCursor.png");
+	grabCursorTex_->SetSize({ 40.0f,40.0f });
 
 	arrowLTex_ = std::make_unique<Sprite>();
 	arrowLTex_->Load("arrow.png");
@@ -83,6 +85,16 @@ void MapField::Initialize() {
 	mapSizeTex_->SetSize({ 40.0f, 50.0f });
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+	 
+	menuButtonTex_ = std::make_unique<Sprite>();
+	menuButtonTex_->Load("white2x2.png");
+	menuButtonTex_->SetSize({ 50.0f, 50.0f });
+	menuButtonTex_->SetPos({ 60.0f, 660.0f,0.0f });
+
+	menuTex_ = std::make_unique<Sprite>();
+	menuTex_->Load("white2x2.png");
+	menuTex_->SetSize({ 800.0f, 500.0f });
+	menuTex_->SetPos({ -450.0f, 460.0f,0.0f });
 
 	LoadMinoTables();
 
@@ -133,6 +145,8 @@ void MapField::Update() {
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
 	//factoryTex_->Draw();
 	//enemyFactoryTex_->Draw();
+	menuTex_->Draw();
+	menuButtonTex_->Draw();
 }
 
 void MapField::DebugGUI() {
@@ -300,8 +314,8 @@ void MapField::TitleDraw() {
 	titleCompleteTex_->Draw();
 	//factoryTex_->Draw();
 	//enemyFactoryTex_->Draw();
-	manPanelTex_->Draw();
-	womanPanelTex_->Draw();
+	//manPanelTex_->Draw();
+	//womanPanelTex_->Draw();
 
 	genderPanelTex_->Draw();
 
@@ -404,30 +418,32 @@ void MapField::CellRequiredSpriteDraw() {
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
 		UpdateSelectPanelControlling();
-	}
-	else {
+	} else {
 		UpdateSelectPanelUncontrolling();
 	}
 
-	Vector2 mouse = Input::GetInstance()->GetMousePosition();
-	// 完了を押す
-	Vector3 pos = completeTex_->GetPos();
-	Vector2 size = completeTex_->GetSize();
-	r32 halfW = size.x * 0.5f;
-	r32 halfH = size.y * 0.5f;
-	if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-		mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-		if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-			if (!controlMino_) {
-				CompleteArrangement();
-				AudioPlayer::GetInstance()->SoundPlayWave(*push);
+	if (!isPoseMenu_) {
+		Vector2 mouse = Input::GetInstance()->GetMousePosition();
+		// 完了を押す
+		Vector3 pos = completeTex_->GetPos();
+		Vector2 size = completeTex_->GetSize();
+		r32 halfW = size.x * 0.5f;
+		r32 halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					CompleteArrangement();
+					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+				}
 			}
+			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
+		} else {
+			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
-		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
 	}
-	else {
-		completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
-	}
+	// ポーズメニュー
+	PoseMenu();
 
 	// 矢印の選択
 	ArrowUpdate();
@@ -443,6 +459,7 @@ void MapField::UpdateSelectPanelControlling() {
 }
 
 void MapField::UpdateSelectPanelUncontrolling() {
+	if (isPoseMenu_) return;
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 
 	// パネルの選択
@@ -856,17 +873,26 @@ void MapField::CompleteArrangement() {
 }
 
 void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
+	// 最大パワー
+	constexpr float maxPower = 50.0f;
+	// 最小パワー
+	constexpr float minPower = 0.0f;
+
 	// 人間生成処理
 	// HP処理
 	i32 hp = kCellNum_ - moldSize - stickOutBlocks;
 	float genderLevel = 0.0f;
+	float t = 1.0f - (float(moldSize) - float(maxBlocks)) / float(moldSize);
+	float power = Lerp(minPower, maxPower, t);
 
 	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
 	if (manBlocks < womanBlocks) {
+
 		arrangement.status.hp = hp;
-		arrangement.status.power = womanBlocks;
+		arrangement.status.power = uint32_t(power);
 		arrangement.status.gender = WOMAN;
+
 		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
 
 		if (90.0f <= genderLevel) {	// とても女
@@ -878,7 +904,7 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 	}
 	else {
 		arrangement.status.hp = hp;
-		arrangement.status.power = manBlocks;
+		arrangement.status.power = uint32_t(power);
 		arrangement.status.gender = MAN;
 		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
 
@@ -1019,6 +1045,57 @@ void MapField::ResetMold() {
 
 	// 穴の大きさを取得
 	moldSize = mold.size;
+}
+
+void MapField::PoseMenu() {
+	
+	if (menuMoveTime_ > 0.0f) {
+		menuMoveTime_ -= FPSKeeper::DeltaTime();
+
+		float t = 1.0f - (menuMoveTime_ / 40.0f);
+		float posX = 0.0f;
+		if (isPoseMenu_) {
+			posX = std::lerp(-450.0f, 400.0f, t);
+		} else {
+			posX = std::lerp(400.0f, -450.0f, t);
+		}
+		menuTex_->SetPos({ posX, 460.0f,0.0f });
+
+		if (menuMoveTime_ <= 0.0f) {
+			menuMoveTime_ = 0.0f;
+			if (isPoseMenu_) {
+				menuTex_->SetPos({ 400.0f, 460.0f,0.0f });
+			} else {
+				menuTex_->SetPos({ -450.0f, 460.0f,0.0f });
+			}
+		}
+	}
+
+	if (controlMino_) return;
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	// PoseMenu
+	{
+		Vector3 pos = menuButtonTex_->GetPos();
+		Vector2 size = menuButtonTex_->GetSize();
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!isPoseMenu_) {
+					isPoseMenu_ = true;
+					menuMoveTime_ = 40.0f;
+				} else {
+					isPoseMenu_ = false;
+					menuMoveTime_ = 40.0f;
+				}
+				AudioPlayer::GetInstance()->SoundPlayWave(*push);
+			}
+			menuButtonTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+		} else {
+			menuButtonTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+	}
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {

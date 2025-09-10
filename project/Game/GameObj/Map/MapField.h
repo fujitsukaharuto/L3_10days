@@ -68,6 +68,8 @@ public:
 	void RandomizeTable();
 	void ResetMold();
 
+	void PoseMenu();
+
 public:
 	// TODO : 定数にする
 	size_t GetMapHeight() const { return 15; }
@@ -117,6 +119,7 @@ private:
 	bool haveControlMino_ = false;
 	bool isSmallChange_ = false;
 	bool isTitleToGame_ = false;
+	bool isPoseMenu_ = false;
 
 	const i32 kMapWidth_ = 15;
 	const i32 kMapHeight_ = 15;
@@ -157,6 +160,7 @@ private:
 	float arrowMoveTime_;
 	float frameMoveTime_;
 	float titleToGameTime_ = 90.0f;
+	float menuMoveTime_ = 0.0f;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
@@ -183,6 +187,10 @@ private:
 
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
+
+	std::unique_ptr<Sprite> menuButtonTex_;
+	std::unique_ptr<Sprite> menuTex_;
+
 
 	float nextSpace_ = 10.0f;
 
