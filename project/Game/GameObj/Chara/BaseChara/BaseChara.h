@@ -92,7 +92,8 @@ protected:
 
 	// ターゲットに近づくときのスピード
 	float approachSpeed_ = 0.02f;
-	float womanApproachSpeed_ = 0.01f;
+	float womanApproachSpeed_ = 0.018f;
+
 	// ステータス
 	CharaStatus status_;
 
