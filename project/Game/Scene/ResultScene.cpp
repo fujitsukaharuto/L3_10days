@@ -5,6 +5,7 @@
 #include "CameraManager.h"
 #include "FPSKeeper.h"
 #include "Math/Random/Random.h"
+#include "Engine/Light/LightManager.h"
 
 #include "Particle/ParticleManager.h"
 #include "Scene/SceneManager.h"
@@ -23,12 +24,16 @@ void ResultScene::Initialize() {
 
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 3.5f, -20.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(false);
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
-	black_->Load("white2x2.png");
-	black_->SetColor({ 0.0f,0.0f,0.0f,1.0f });
-	black_->SetSize({ 1280.0f,720.0f });
+	black_->Load("sceneMove.png");
+	black_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	black_->SetPos({ 0.0f,0.0f,0.0f });
 	black_->SetAnchor({ 0.0f,0.0f });
 #pragma endregion
 
@@ -129,6 +134,17 @@ void ResultScene::Initialize() {
 	woman2_1->transform.rotate.z = 0.18f;
 	woman2_1->transform.rotate.y = 3.14f;
 
+	man1->RandomAddAnimationTime();
+	man2->RandomAddAnimationTime();
+	half->RandomAddAnimationTime();
+	woman1->RandomAddAnimationTime();
+	woman2->RandomAddAnimationTime();
+	man1_1->RandomAddAnimationTime();
+	man2_1->RandomAddAnimationTime();
+	half_1->RandomAddAnimationTime();
+	woman1_1->RandomAddAnimationTime();
+	woman2_1->RandomAddAnimationTime();
+
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("winBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
 }
@@ -176,9 +192,19 @@ void ResultScene::Update() {
 		posY = std::lerp(-360.0f, -20.0f, t);
 		chain_->SetPos({ 980.0f,posY,0.0f });
 
+		float t2 = 1.0f - std::pow(1.0f - x, 5.0f);
+		if (x == 1.0f) { t2 = 1.0f; }
+		float posX = std::lerp(-180.0f, 180.0f, t2);
+		report_->SetPos({ posX,470.0f,0.0f });
+		float angle = std::lerp(-0.38f, 0.38f, t2);
+		report_->SetAngle(angle);
+
 		if (goTitleTime_ == 90.0f) {
 			goTitle_->SetPos({ 980.0f,280.0f,0.0f });
 			chain_->SetPos({ 980.0f,-20.0f,0.0f });
+
+			report_->SetAngle(0.38f);
+			report_->SetPos({ 180.0f,470.0f,0.0f });
 		}
 	}
 
@@ -337,7 +363,11 @@ void ResultScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
+			float t = (blackTime / blackLimmite);
+			float x = std::lerp(-1610.0f, 0.0f, t);
+			black_->SetPos({ x,0.0f,0.0f });
 			if (blackTime >= blackLimmite) {
+				black_->SetPos({ 0.0f,0.0f,0.0f });
 				blackTime = blackLimmite;
 			}
 		} else {
@@ -348,12 +378,15 @@ void ResultScene::BlackFade() {
 			if (FPSKeeper::DeltaTime() < 3.0f) {
 				blackTime -= FPSKeeper::DeltaTime();
 			}
+			float t = 1.0f - (blackTime / blackLimmite);
+			black_->SetPos({ 1290.0f * t,0.0f,0.0f });
 			if (blackTime <= 0.0f) {
+				black_->SetPos({ 1290.0f,0.0f,0.0f });
 				blackTime = 0.0f;
 			}
 		}
 	}
-	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
+
 	if (isGoTitle_) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;

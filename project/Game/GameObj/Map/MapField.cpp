@@ -98,6 +98,7 @@ void MapField::Initialize() {
 
 	arrangement.AnimationTime = 1.0f;
 	arrangement.timer = arrangement.AnimationTime;
+	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
 }
 
 void MapField::Update() {
@@ -114,8 +115,8 @@ void MapField::Update() {
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
-	factoryTex_->Draw();
-	enemyFactoryTex_->Draw();
+	//factoryTex_->Draw();
+	//enemyFactoryTex_->Draw();
 }
 
 void MapField::DebugGUI() {
@@ -281,8 +282,8 @@ void MapField::TitleDraw() {
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	titleCompleteTex_->Draw();
-	factoryTex_->Draw();
-	enemyFactoryTex_->Draw();
+	//factoryTex_->Draw();
+	//enemyFactoryTex_->Draw();
 	manPanelTex_->Draw();
 	womanPanelTex_->Draw();
 
@@ -318,9 +319,9 @@ void MapField::BackDraw() {
 
 void MapField::FactoryDraw() {
 	// 
-	factoryBackPanelTex_->Draw();
-	frameTex_->Draw();
-	subFrameTex_->Draw();
+	factoryBackPanelTex_->Draw();//
+	frameTex_->Draw();//
+	subFrameTex_->Draw();//
 	completeTex_->Draw();
 	if (mapSizeNum_ != 2) {
 		arrowLTex_->Draw();
@@ -647,6 +648,9 @@ void MapField::UpdateControlMino() {
 	controlMino_->Update();
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
+		return;
+	} else if (Input::GetInstance()->IsTriggerMouse(1) && haveControlMino_) {
+		controlMino_ = nullptr;
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
@@ -751,7 +755,10 @@ void MapField::CellSet() {
 	if (CanArrangement()) {
 		controlMino_->Update();
 		RemoveControlMino();
+		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
+		return;
 	}
+	AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav,0.6f);
 }
 
 bool MapField::CanArrangement() {
@@ -819,8 +826,20 @@ void MapField::CompleteArrangement() {
 	}
 	int maxBlocks = manBlocks + womanBlocks;
 
+	CulGender(maxBlocks, manBlocks, womanBlocks, stickOutBlocks);
+
+	maxB_.push_back(maxBlocks);
+	manB_.push_back(manBlocks);
+	womanB_.push_back(womanBlocks);
+
+	ResetArrangementAnimation();
+}
+
+void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
+	// 人間生成処理
 	// HP処理
 	i32 hp = kCellNum_ - moldSize - stickOutBlocks;
+	float genderLevel = 0.0f;
 
 	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
@@ -828,20 +847,27 @@ void MapField::CompleteArrangement() {
 		arrangement.status.hp = hp;
 		arrangement.status.power = womanBlocks;
 		arrangement.status.gender = WOMAN;
-		arrangement.status.name = "womanWalk.gltf";
-	}
-	else {
+		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
+
+		if (90.0f <= genderLevel) {	// とても女
+			arrangement.status.name = "womanWalk.gltf";
+		} else { // 割と女
+			arrangement.status.name = "womanWalk2.gltf";
+		}
+	} else {
 		arrangement.status.hp = hp;
 		arrangement.status.power = manBlocks;
 		arrangement.status.gender = MAN;
-		arrangement.status.name = "womanWalk.gltf";
+		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
+
+		if (90.0f <= genderLevel) {	// とても男
+			arrangement.status.name = "manWalk.gltf";
+		} else if (60.0f <= genderLevel) { // 割と男
+			arrangement.status.name = "manWalk2.gltf";
+		} else {
+			arrangement.status.name = "halfWalk.gltf"; // ハーフ
+		}
 	}
-
-	maxB_.push_back(maxBlocks);
-	manB_.push_back(manBlocks);
-	womanB_.push_back(womanBlocks);
-
-	ResetArrangementAnimation();
 }
 
 void MapField::ResetArrangementAnimation() {

@@ -4,13 +4,17 @@
 #include "Random/Random.h"
 
 EnemyManager::EnemyManager() {
+	enemies_.clear();
 
-}
-
-void EnemyManager::Initialzie() {
+	factory_ = std::make_unique<Factory>(popPosition_, false);
 }
 
 void EnemyManager::Update() {
+	factory_->Update();
+
+	if (!we_)return;
+	if (!ete_)return;
+
 	if (we_->GetData().empty()) return;
 	if (ete_->GetTable().empty())return;
 
@@ -39,7 +43,6 @@ void EnemyManager::Update() {
 	for (auto& obj : enemies_) {
 		obj->Update();
 	}
-
 }
 
 void EnemyManager::CheckIsTargetDead() {
@@ -55,6 +58,8 @@ void EnemyManager::CSDispatch() {
 }
 
 void EnemyManager::Draw() {
+	factory_->Draw();
+
 	for (auto& obj : enemies_) {
 		obj->Draw();
 	}

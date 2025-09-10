@@ -93,6 +93,8 @@ public:
 
 	Vector3 GetTranslate();
 
+	void SetIsHeiko(bool heiko);
+
 	Trans transform;
 
 private:
@@ -117,4 +119,6 @@ private:
 	float shakeStrength_;
 	Vector3 shakeGap_;
 	float rollingTime_;
+
+	bool isHeiko_ = false;
 };

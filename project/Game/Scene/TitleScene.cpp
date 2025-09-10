@@ -26,8 +26,9 @@ void TitleScene::Initialize() {
 	MyWin::GetInstance()->SetDrawCursor(false);
 #endif // !_DEBUG
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.01f,0.005f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 19.0f, 28.0f, -300.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(true);
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
@@ -39,9 +40,9 @@ void TitleScene::Initialize() {
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
-	black_->Load("white2x2.png");
-	black_->SetColor({ 0.0f,0.0f,0.0f,1.0f });
-	black_->SetSize({ 1280.0f,720.0f });
+	black_->Load("sceneMove.png");
+	black_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	black_->SetPos({ 0.0f,0.0f,0.0f });
 	black_->SetAnchor({ 0.0f,0.0f });
 #pragma endregion
 
@@ -233,7 +234,11 @@ void TitleScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
+			float t = (blackTime / blackLimmite);
+			float x = std::lerp(-1610.0f, 0.0f, t);
+			black_->SetPos({ x,0.0f,0.0f });
 			if (blackTime >= blackLimmite) {
+				black_->SetPos({ 0.0f,0.0f,0.0f });
 				blackTime = blackLimmite;
 			}
 		} else {
@@ -248,12 +253,15 @@ void TitleScene::BlackFade() {
 			if (FPSKeeper::DeltaTime() < 3.0f) {
 				blackTime -= FPSKeeper::DeltaTime();
 			}
+			float t = 1.0f - (blackTime / blackLimmite);
+			black_->SetPos({ 1290.0f * t,0.0f,0.0f });
 			if (blackTime <= 0.0f) {
+				black_->SetPos({ 1290.0f,0.0f,0.0f });
 				blackTime = 0.0f;
 			}
 		}
 	}
-	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
+
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;

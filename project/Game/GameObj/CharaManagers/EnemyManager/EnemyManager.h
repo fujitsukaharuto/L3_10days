@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "GameObj/Chara/Enemy/Enemy.h"
+#include "GameObj/Factory/Factory.h"
 
 class FriendlyManager;
 
@@ -18,7 +19,6 @@ public:
 	EnemyManager();
 	~EnemyManager() = default;
 
-	void Initialzie();
 	void Update();
 	void CheckIsTargetDead();
 
@@ -45,7 +45,7 @@ private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;
 
 	// 敵の沸く座標
-	Vector3 popPosition_ = { 50.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 50.0f,10.0f,-15.0f };
 
 	// 沸く位置の乱数用変数
 	float maxPopRangeZ_ = -5.0f;
@@ -59,6 +59,9 @@ private:
 	bool isWin_ = false;
 
 	int32_t currentWave_ = 0;
+
+	// 工場
+	std::unique_ptr<Factory> factory_;
 
 private:
 	FriendlyManager* fri_;

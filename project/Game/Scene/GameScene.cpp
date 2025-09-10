@@ -24,8 +24,9 @@ void GameScene::Initialize() {
 	MyWin::GetInstance()->SetDrawCursor(false);
 #endif // !_DEBUG
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.01f,0.005f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 19.0f, 28.0f, -300.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(true);
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
@@ -36,9 +37,9 @@ void GameScene::Initialize() {
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
-	black_->Load("white2x2.png");
-	black_->SetColor({ 0.0f,0.0f,0.0f,1.0f });
-	black_->SetSize({ 1280.0f,720.0f });
+	black_->Load("sceneMove.png");
+	black_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	black_->SetPos({ 0.0f,0.0f,0.0f });
 	black_->SetAnchor({ 0.0f,0.0f });
 #pragma endregion
 
@@ -68,32 +69,37 @@ void GameScene::Initialize() {
 	ni_ = std::make_unique<AnimationModel>();
 	ni_->Create("title1.gltf");
 	ni_->LoadAnimationFile("title1.gltf");
-	ni_->transform.translate = { 22.1f,29.0f,-62.0f };
+	ni_->transform.translate = titlePos_;
 	ni_->transform.rotate.y = 3.14f;
+	ni_->transform.scale = { 10.0f,10.0,10.0f };
 
 	nn_ = std::make_unique<AnimationModel>();
 	nn_->Create("title2.gltf");
 	nn_->LoadAnimationFile("title2.gltf");
-	nn_->transform.translate = { 22.1f,29.0f,-62.0f };
+	nn_->transform.translate = titlePos_;
 	nn_->transform.rotate.y = 3.14f;
+	nn_->transform.scale = { 10.0f,10.0,10.0f };
 
 	ge_ = std::make_unique<AnimationModel>();
 	ge_->Create("title3.gltf");
 	ge_->LoadAnimationFile("title3.gltf");
-	ge_->transform.translate = { 22.1f,29.0f,-62.0f };
+	ge_->transform.translate = titlePos_;
 	ge_->transform.rotate.y = 3.14f;
+	ge_->transform.scale = { 10.0f,10.0,10.0f };
 
 	nn2_ = std::make_unique<AnimationModel>();
 	nn2_->Create("title4.gltf");
 	nn2_->LoadAnimationFile("title4.gltf");
-	nn2_->transform.translate = { 22.1f,29.0f,-62.0f };
+	nn2_->transform.translate = titlePos_;
 	nn2_->transform.rotate.y = 3.14f;
+	nn2_->transform.scale = { 10.0f,10.0,10.0f };
 
 	factory_ = std::make_unique<AnimationModel>();
 	factory_->Create("title5.gltf");
 	factory_->LoadAnimationFile("title5.gltf");
-	factory_->transform.translate = { 22.1f,29.0f,-62.0f };
+	factory_->transform.translate = titlePos_;
 	factory_->transform.rotate.y = 3.14f;
+	factory_->transform.scale = { 10.0f,10.0,10.0f };
 
 	ApplyGlobalVariables();
 
@@ -103,6 +109,7 @@ void GameScene::Initialize() {
 	audioPlayer_->SoundLoop(soundData1);
 
 	friendlyManager_ = std::make_unique<FriendlyManager>();
+	enemyManager_ = std::make_unique<EnemyManager>();
 
 	map_->SetFriendlyManager(friendlyManager_.get());
 }
@@ -121,6 +128,7 @@ void GameScene::Update() {
 
 #endif // _DEBUG
 	friendlyManager_->Update();
+	enemyManager_->Update();
 
 	ni_->AnimationUpdate();
 	nn_->AnimationUpdate();
@@ -144,6 +152,7 @@ void GameScene::Draw() {
 	nn2_->CSDispatch();
 	factory_->CSDispatch();
 	friendlyManager_->CSDispatch();
+	enemyManager_->CSDispatch();
 
 	map_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
@@ -165,6 +174,7 @@ void GameScene::Draw() {
 	nn2_->Draw();
 	factory_->Draw();
 	friendlyManager_->Draw();
+	enemyManager_->Draw();
 
 	ParticleManager::GetInstance()->Draw();
 
@@ -215,6 +225,17 @@ void GameScene::DebugGUI() {
 	}
 
 	ImGui::Unindent();
+
+	ImGui::Begin("Title");
+
+	if (ImGui::DragFloat3("Pos", &titlePos_.x)) {
+		ni_->transform.translate = titlePos_;
+		nn_->transform.translate = titlePos_;
+		ge_->transform.translate = titlePos_;
+		nn2_->transform.translate = titlePos_;
+		factory_->transform.translate = titlePos_;
+	}
+	ImGui::End();
 #endif // _DEBUG
 }
 
@@ -230,7 +251,11 @@ void GameScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
+			float t = (blackTime / blackLimmite);
+			float x = std::lerp(-1610.0f, 0.0f, t);
+			black_->SetPos({ x,0.0f,0.0f });
 			if (blackTime >= blackLimmite) {
+				black_->SetPos({ 0.0f,0.0f,0.0f });
 				blackTime = blackLimmite;
 			}
 		} else {
@@ -245,12 +270,15 @@ void GameScene::BlackFade() {
 			if (FPSKeeper::DeltaTime() < 3.0f) {
 				blackTime -= FPSKeeper::DeltaTime();
 			}
+			float t = 1.0f - (blackTime / blackLimmite);
+			black_->SetPos({ 1290.0f * t,0.0f,0.0f });
 			if (blackTime <= 0.0f) {
+				black_->SetPos({ 1290.0f,0.0f,0.0f });
 				blackTime = 0.0f;
 			}
 		}
 	}
-	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
+
 	if (map_->TitleToGame()) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;

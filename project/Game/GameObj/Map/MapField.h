@@ -46,7 +46,6 @@ public:
 	void UpdateSelectPanelUncontrolling();
 
 	void SelectMino();
-	void AddMino();
 	void UpdateControlMino();
 
 	void UpdateCells();
@@ -63,6 +62,8 @@ public:
 	void CompleteArrangement();
 	void ResetArrangementAnimation();
 	void UpdateArrangementAnimation();
+
+	void CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks);
 
 	void RandomizeTable();
 	void ResetMold();
@@ -205,4 +206,5 @@ private:
 	SoundData* push;
 	SoundData* grab;
 	SoundData* returnWav;
+	SoundData* dontPushWav;
 };

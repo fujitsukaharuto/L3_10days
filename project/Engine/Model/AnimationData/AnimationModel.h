@@ -65,6 +65,8 @@ public:
 
 	void ChangeAnimation(const std::string& newName);
 
+	void RandomAddAnimationTime();
+
 	void UpdateWVP() { SetWVP(); }
 
 	void LoadTransformFromJson(const std::string& filename);
