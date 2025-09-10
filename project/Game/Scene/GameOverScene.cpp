@@ -25,9 +25,9 @@ void GameOverScene::Initialize() {
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 3.5f, -20.0f };
 	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(false);
-	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
-	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
-	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 0.74f;
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,0.679f,0.727f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 0.211f,0.267f,0.768f,1.0f };
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();

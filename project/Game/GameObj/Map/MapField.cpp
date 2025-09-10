@@ -112,7 +112,7 @@ void MapField::Initialize() {
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
 	//machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
 
-	arrangement.AnimationTime = 1.0f;
+	arrangement.AnimationTime = 1.5f;
 	arrangement.timer = arrangement.AnimationTime;
 	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
 
@@ -457,7 +457,7 @@ void MapField::UpdateSelectPanel() {
 		r32 halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
-			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_ && arrangement.timer >= 1.0f) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_ && arrangement.timer >= arrangement.AnimationTime) {
 				if (!controlMino_ && canComplete) {
 					CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
@@ -918,7 +918,7 @@ void MapField::CompleteArrangement() {
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
 
-	i32 humanPower = ((maxBlocks * 20) / moldSize);
+	i32 humanPower = std::clamp((maxBlocks * 5) / moldSize, 0, 4);
 	ResetArrangementAnimation(humanPower);
 }
 
@@ -1013,7 +1013,7 @@ void MapField::UpdateArrangementAnimation() {
 		r32 param = (arrangement.timer - 0.5f) / (arrangement.AnimationTime - 0.5f);
 		param = std::clamp(param, 0.0f, 1.0f);
 		// ブロックが消えた際に色々する
-		if (arrangement.timer - 0.5f < FPSKeeper::DeltaTimeFrame() && arrangement.timer >= 0.0f) {
+		if (arrangement.timer - 0.5f < FPSKeeper::DeltaTimeFrame() && arrangement.timer - 0.5f >= 0.0f) {
 			RandomizeTable();
 			ResetMold();
 			ResetBlocks();
@@ -1038,8 +1038,8 @@ void MapField::UpdateArrangementAnimation() {
 	{
 		// 性別スプライトのアニメーション
 		r32 InSeparateTime = 0.3f;
-		r32 OutSeparateTime = 0.5f;
-		if (arrangement.timer < InSeparateTime) {
+		r32 OutSeparateTime = 1.0f;
+		if (arrangement.timer < arrangement.AnimationTime - OutSeparateTime) {
 			r32 param = arrangement.timer / InSeparateTime;
 			param = std::clamp(param, 0.0f, 1.0f);
 
@@ -1058,9 +1058,10 @@ void MapField::UpdateArrangementAnimation() {
 
 	{
 		// 人間度スプライトのアニメーション
-		r32 SeparateTime = 0.5f;
-		if (arrangement.timer < SeparateTime) {
-			r32 param = arrangement.timer / SeparateTime;
+		r32 InSeparateTime = 0.5f;
+		r32 OutSeparateTime = 1.0f;
+		if (arrangement.timer < arrangement.AnimationTime - OutSeparateTime) {
+			r32 param = arrangement.timer / InSeparateTime;
 			param = std::clamp(param, 0.0f, 1.0f);
 
 			arrangement.humanRatioSprite->SetColorAlpha(Easing::Out::Expo(param));
@@ -1068,8 +1069,7 @@ void MapField::UpdateArrangementAnimation() {
 			arrangement.humanRatioSprite->SetScale({ scaleBase, scaleBase });
 		}
 		else {
-			arrangement.humanRatioSprite->SetScale({ 1, 1 });
-			r32 param = (arrangement.timer - SeparateTime) / (arrangement.AnimationTime - SeparateTime);
+			r32 param = (arrangement.timer - OutSeparateTime) / (arrangement.AnimationTime - OutSeparateTime);
 			param = std::clamp(param, 0.0f, 1.0f);
 
 			// 性別スプライト

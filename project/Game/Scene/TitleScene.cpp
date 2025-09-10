@@ -131,7 +131,8 @@ void TitleScene::Update() {
 	//　マネージャ更新
 	// 
 
-	if (!isEditorMode_) {
+	isPoseMode_ = map_->GetPoseMode();
+	if (!isPoseMode_) {
 		friendlyManager_->Update();
 		enemyManager_->Update();
 		// 相手が死んでいた時にターゲットから外す処理

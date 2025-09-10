@@ -88,6 +88,8 @@ public:
 
 	const Vector2& GetCellPosition() const { return cellsPos_; }
 
+	bool GetPoseMode() { return isPoseMenu_; }
+
 private:
 	void RemoveControlMino();
 	void CellSpriteSetColor();
