@@ -12,15 +12,16 @@ void BattleSystem::Update() {
 
 }
 
-bool BattleSystem::CheckBattleOver() {
-
-	if (friendlyManager_->GetIsWin()) {
-		return true;
-	}
-
+bool BattleSystem::CheckGameOver() {
 	if (enemyManager_->GetIsWin()) {
 		return true;
 	}
+	return false;
+}
 
+bool BattleSystem::CheckBattleOver() {
+	if (friendlyManager_->GetIsWin()) {
+		return true;
+	}
 	return false;
 }
