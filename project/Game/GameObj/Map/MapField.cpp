@@ -784,6 +784,7 @@ void MapField::CompleteArrangement() {
 	CharaStatus status;
 	// HP処理
 	i32 hp = kCellNum_ - moldSize - stickOutBlocks;
+	float genderLevel = 0.0f;
 
 	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
@@ -791,12 +792,26 @@ void MapField::CompleteArrangement() {
 		status.hp = hp;
 		status.power = womanBlocks;
 		status.gender = WOMAN;
-		status.name = "womanWalk.gltf";
+		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
+
+		if (90.0f <= genderLevel) {	// とても女
+			status.name = "womanWalk.gltf";
+		} else { // 割と女
+			status.name = "womanWalk2.gltf";
+		}
 	} else {
 		status.hp = hp;
 		status.power = manBlocks;
 		status.gender = MAN;
-		status.name = "womanWalk.gltf";
+		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
+
+		if (90.0f <= genderLevel) {	// とても男
+			status.name = "manWalk.gltf";
+		} else if (65.0f <= genderLevel) { // 割と男
+			status.name = "manWalk2.gltf";
+		} else {
+			status.name = "halfWalk.gltf"; // ハーフ
+		}
 	}
 
 	// 自軍発車
