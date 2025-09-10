@@ -13,9 +13,12 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::Initialize();
 	OriginGameObject::CreateAnimModel(status_.name);
 	OriginGameObject::GetAnimModel()->LoadAnimationFile(status.name);
+	OriginGameObject::GetAnimModel()->transform.translate = popPos;
+	OriginGameObject::GetAnimModel()->transform.scale = { 0.4f,0.4f,0.4f };
 
 	if (status.name == "womanWalk.gltf") {
 		OriginGameObject::GetAnimModel()->AddAnimation("womanLose.gltf");
+		OriginGameObject::GetAnimModel()->transform.translate.y += 1.0f;
 	} else if (status.name == "womanWalk2.gltf") {
 		OriginGameObject::GetAnimModel()->AddAnimation("womanLose2.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("womanRecovery2.gltf");
@@ -24,26 +27,26 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 		OriginGameObject::GetAnimModel()->AddAnimation("manLose.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("manAtack.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("manWin.gltf");
+		OriginGameObject::GetAnimModel()->transform.translate.y -= 0.3f;
 	} else if (status.name == "manWalk2.gltf") {
 		// OriginGameObject::GetAnimModel()->AddAnimation("manLose2.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("manAtack2.gltf");
 		// 	OriginGameObject::GetAnimModel()->AddAnimation("manWin2.gltf");
+		OriginGameObject::GetAnimModel()->transform.translate.y -= 0.3f;
 	} else if (status.name == "halfWalk.gltf") {
 		OriginGameObject::GetAnimModel()->AddAnimation("halfLose.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("halfAtack.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("halfWin.gltf");
 	}
 
-	OriginGameObject::GetAnimModel()->transform.translate = popPos;
-	OriginGameObject::GetAnimModel()->transform.scale = { 0.4f,0.4f,0.4f };
 
 	switch (status_.gender) {
 	case MAN:
-		collider.radius = 5.0f;
+		collider.radius = 20.0f;
 		break;
 
 	case WOMAN:
-		collider.radius = 10.0f;
+		collider.radius = 20.0f;
 		break;
 	}
 
@@ -179,6 +182,10 @@ CharaStatus BaseChara::GetStatus() {
 
 void BaseChara::SetTarget(BaseChara* target) {
 	target_ = target;
+}
+
+void BaseChara::SetIsAlive(bool alive) {
+	isAlive_ = alive;
 }
 
 void BaseChara::SetEne(EnemyManager* ene) {
