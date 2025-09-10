@@ -160,6 +160,7 @@ private:
 	float arrowMoveTime_;
 	float frameMoveTime_;
 	float titleToGameTime_ = 90.0f;
+	float menuMoveTime_ = 0.0f;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
@@ -187,7 +188,8 @@ private:
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
 
-	std::unique_ptr<Sprite> poseMenuTex_;
+	std::unique_ptr<Sprite> menuButtonTex_;
+	std::unique_ptr<Sprite> menuTex_;
 
 
 	float nextSpace_ = 10.0f;
