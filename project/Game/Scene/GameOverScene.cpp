@@ -5,6 +5,7 @@
 #include "CameraManager.h"
 #include "FPSKeeper.h"
 #include "Math/Random/Random.h"
+#include "Engine/Light/LightManager.h"
 
 #include "Particle/ParticleManager.h"
 #include "Scene/SceneManager.h"
@@ -23,6 +24,10 @@ void GameOverScene::Initialize() {
 
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 3.5f, -20.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(false);
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
+	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
@@ -135,6 +140,17 @@ void GameOverScene::Initialize() {
 	woman2_1->transform.translate = { 8.0f, -3.0f, 1.5f };
 	woman2_1->transform.rotate.z = 0.18f;
 	woman2_1->transform.rotate.y = 3.14f;
+
+	man1->RandomAddAnimationTime();
+	man2->RandomAddAnimationTime();
+	half->RandomAddAnimationTime();
+	woman1->RandomAddAnimationTime();
+	woman2->RandomAddAnimationTime();
+	man1_1->RandomAddAnimationTime();
+	man2_1->RandomAddAnimationTime();
+	half_1->RandomAddAnimationTime();
+	woman1_1->RandomAddAnimationTime();
+	woman2_1->RandomAddAnimationTime();
 
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("loseBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
