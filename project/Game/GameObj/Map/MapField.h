@@ -5,6 +5,7 @@
 
 #include "Engine/Audio/AudioPlayer.h"
 #include "Engine/Model/Sprite.h"
+#include "Engine/Particle/ParticleManager.h"
 
 #include "Game/GameObj/Block/Mino.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
@@ -231,4 +232,8 @@ private:
 	SoundData* grab;
 	SoundData* returnWav;
 	SoundData* dontPushWav;
+	SoundData* machine;
+
+	// Particle
+	ParticleEmitter ClickEmit_;
 };

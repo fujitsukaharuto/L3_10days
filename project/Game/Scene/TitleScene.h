@@ -69,6 +69,7 @@ private:
 	float blackLimmite = 20.0f;
 	float blackTime = 20.0f;
 	bool isChangeFase = false;
+	bool isGameover_ = false;
 	bool isParticleDebugScene_ = false;
 
 #ifdef _DEBUG

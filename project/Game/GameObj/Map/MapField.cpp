@@ -87,12 +87,13 @@ void MapField::Initialize() {
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
 	menuButtonTex_ = std::make_unique<Sprite>();
-	menuButtonTex_->Load("white2x2.png");
+	menuButtonTex_->Load("menuButton.png");
 	menuButtonTex_->SetSize({ 50.0f, 50.0f });
+	menuButtonTex_->SetRange({ 0.0f, 0.0f }, { 50.0f,50.0f });
 	menuButtonTex_->SetPos({ 60.0f, 660.0f,0.0f });
 
 	menuTex_ = std::make_unique<Sprite>();
-	menuTex_->Load("white2x2.png");
+	menuTex_->Load("menu.png");
 	menuTex_->SetSize({ 800.0f, 500.0f });
 	menuTex_->SetPos({ -450.0f, 460.0f,0.0f });
 
@@ -109,6 +110,7 @@ void MapField::Initialize() {
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
+	machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
 
 	arrangement.AnimationTime = 1.0f;
 	arrangement.timer = arrangement.AnimationTime;
@@ -127,6 +129,9 @@ void MapField::Initialize() {
 	arrangement.humanRatioSprite->SetSize({ 300,Arrangement::HumanRatioHeight });
 	arrangement.humanRatioSprite->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	arrangement.humanRatioSprite->SetAngle(-PI / 8); // -30度傾ける
+
+	ParticleManager::Load(ClickEmit_, "sphere2");
+	ClickEmit_.frequencyTime_ = 0.0f;
 }
 
 void MapField::Update() {
@@ -268,10 +273,13 @@ void MapField::TitleUpdateSelectPanel() {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					AudioPlayer::GetInstance()->SoundPlayWave(*machine);
 					CharaStatus status;
 					status.gender = Gender::WOMAN;
 					status.name = "womanWalk.gltf";
 					friendlyManager_->AddFriendly(status);
+					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
+					ClickEmit_.Emit();
 				}
 			}
 			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -453,6 +461,11 @@ void MapField::UpdateSelectPanel() {
 				if (!controlMino_) {
 					CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
+					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
+					ClickEmit_.Emit();
+				} else {
+					AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav);
 				}
 			}
 			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -492,15 +505,14 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			minoButtonNum_ = 0;
-			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
-				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-					if (!controlMino_) {
-						int idx = minoButtonNum_;
-						if (gender_ == int(GenderType::Woman)) { idx += 3; }
-						controlMino_ = minoTables[tableIndex].minos[idx].get();
-						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
-						return;
-					}
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					int idx = minoButtonNum_;
+					if (gender_ == int(GenderType::Man)) { ClickEmit_.pos_ = { -6.1f,36.85f,0.0f }; ClickEmit_.Emit(); }
+					if (gender_ == int(GenderType::Woman)) { idx += 3; ClickEmit_.pos_ = { 11.9f,37.00f,0.0f }; ClickEmit_.Emit(); }
+					controlMino_ = minoTables[tableIndex].minos[idx].get();
+					AudioPlayer::GetInstance()->SoundPlayWave(*grab);
+					return;
 				}
 			}
 		}
@@ -512,15 +524,14 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			minoButtonNum_ = 1;
-			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
-				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-					if (!controlMino_) {
-						int idx = minoButtonNum_;
-						if (gender_ == int(GenderType::Woman)) { idx += 3; }
-						controlMino_ = minoTables[tableIndex].minos[idx].get();
-						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
-						return;
-					}
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					int idx = minoButtonNum_;
+					if (gender_ == int(GenderType::Man)) { ClickEmit_.pos_ = { -1.1f,38.35f,0.0f }; ClickEmit_.Emit(); }
+					if (gender_ == int(GenderType::Woman)) { idx += 3; ClickEmit_.pos_ = { 7.3f,38.55f,0.0f }; ClickEmit_.Emit(); }
+					controlMino_ = minoTables[tableIndex].minos[idx].get();
+					AudioPlayer::GetInstance()->SoundPlayWave(*grab);
+					return;
 				}
 			}
 		}
@@ -532,16 +543,15 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			minoButtonNum_ = 2;
-			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
-				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-					if (!controlMino_) {
-						int idx = minoButtonNum_;
-						if (gender_ == int(GenderType::Woman)) { idx += 3; }
-						controlMino_ = minoTables[tableIndex].minos[idx].get();
-						// AddMino(selectTypes_[blockButtonNum_]);
-						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
-						return;
-					}
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!controlMino_) {
+					int idx = minoButtonNum_;
+					if (gender_ == int(GenderType::Man)) { ClickEmit_.pos_ = { -1.7f,35.85f,0.0f }; ClickEmit_.Emit(); }
+					if (gender_ == int(GenderType::Woman)) { idx += 3; ClickEmit_.pos_ = { 7.2f,35.55f,0.0f }; ClickEmit_.Emit(); }
+					controlMino_ = minoTables[tableIndex].minos[idx].get();
+					// AddMino(selectTypes_[blockButtonNum_]);
+					AudioPlayer::GetInstance()->SoundPlayWave(*grab);
+					return;
 				}
 			}
 		}
@@ -614,6 +624,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
 					isSmallChange_ = true;
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					ClickEmit_.pos_ = { -8.9f,22.09f,0.0f };
+					ClickEmit_.Emit();
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -641,6 +653,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
 					isSmallChange_ = false;
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					ClickEmit_.pos_ = { 15.1f,22.09f,0.0f };
+					ClickEmit_.Emit();
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
@@ -1166,11 +1180,14 @@ void MapField::PoseMenu() {
 				if (!isPoseMenu_) {
 					isPoseMenu_ = true;
 					menuMoveTime_ = 40.0f;
-				}
-				else {
+					menuButtonTex_->SetRange({ 50.0f, 0.0f }, { 50.0f,50.0f });
+				} else {
 					isPoseMenu_ = false;
 					menuMoveTime_ = 40.0f;
+					menuButtonTex_->SetRange({ 0.0f, 0.0f }, { 50.0f,50.0f });
 				}
+				ClickEmit_.pos_ = { -8.1f,9.09f,0.0f };
+				ClickEmit_.Emit();
 				AudioPlayer::GetInstance()->SoundPlayWave(*push);
 			}
 			menuButtonTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });

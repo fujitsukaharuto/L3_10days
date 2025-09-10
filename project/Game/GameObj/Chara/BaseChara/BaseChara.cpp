@@ -60,23 +60,41 @@ void BaseChara::Update() {
 	// コライダーの座標を更新
 	collider.pos = OriginGameObject::GetAnimModel()->GetWorldPos();
 
-	// 状態判定
-	if (!target_) {
-		state_ = State::Search;
-	}
-
 	// 移動量計算
 	Vector3 velocity{};
 
 	// 状態に応じた更新処理
 	switch (state_) {
 	case State::Search:
+	{
 		Search();
 		// 移動
 		velocity = moveDir_.Normalize() * speed_;
-		break;
+
+		// 回転
+		const Vector3 dir = Vector3::Normalize(velocity);
+		const float yaw = std::atan2(dir.x, dir.z);
+		OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
+	}
+	break;
 	case State::Approach:
 	{
+		// 状態判定
+		if (!target_) {
+			state_ = State::Search;
+			if (status_.name == "womanWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "womanWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+			} else if (status_.name == "manWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			} else if (status_.name == "manWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "halfWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			}
+			return;
+		}
 		// ターゲットした敵に近づいていく
 
 		// ターゲットの座標
@@ -91,6 +109,17 @@ void BaseChara::Update() {
 		// 一定距離に入ったら戦闘開始
 		if (len < fightRange_) {
 			state_ = State::Fight;
+			if (status_.name == "womanWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.002");
+			} else if (status_.name == "womanWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "manWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "manWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "halfWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.004_3");
+			}
 			return;
 		}
 
@@ -98,9 +127,31 @@ void BaseChara::Update() {
 		const Vector3 nDir = Vector3::Normalize(dir);
 		// 移動量計算
 		velocity = nDir * approachSpeed_;
+
+		// 回転
+		const float yaw = std::atan2(dir.x, dir.z);
+		OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
 	}
 	break;
 	case State::Fight:
+	{
+		// 状態判定
+		if (!target_) {
+			state_ = State::Search;
+			if (status_.name == "womanWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "womanWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+			} else if (status_.name == "manWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			} else if (status_.name == "manWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "halfWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			}
+			return;
+		}
+
 		// タイマー処理
 		if (actionCoolTimer_ < kActionCoolTime_) {
 			actionCoolTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
@@ -122,19 +173,29 @@ void BaseChara::Update() {
 		if (len >= fightRange_) {
 			actionCoolTimer_ = 0.0f;
 			state_ = State::Approach;
+			if (status_.name == "womanWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "womanWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+			} else if (status_.name == "manWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			} else if (status_.name == "manWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+			} else if (status_.name == "halfWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+			}
 			return;
 		}
-		break;
+
+		float yaw = std::atan2(dir.x, dir.z);
+		OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
+	}
+	break;
 	}
 
 	// 移動
 	OriginGameObject::GetAnimModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
 	OriginGameObject::GetAnimModel()->AnimationUpdate();
-
-	// 回転
-	const Vector3 dir = Vector3::Normalize(velocity);
-	float yaw = std::atan2(dir.x, dir.z);
-	OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
 }
 
 void BaseChara::CSDispatch() {
@@ -209,4 +270,5 @@ void BaseChara::Action() {
 		}
 		break;
 	}
+
 }
