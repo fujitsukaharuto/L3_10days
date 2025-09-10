@@ -127,14 +127,6 @@ void Mino::AdjustPosition(MapField* const mapField, i32 mouseRow, i32 mouseColum
 	Update();
 }
 
-Trans& Mino::GetTransform() {
-	return transform;
-}
-
-const Trans& Mino::GetTransform() const {
-	return transform;
-}
-
 void Mino::SetupButtonPosition(const Vector3& pos) {
 	buttonPosition = pos - Vector3{ maxColumn * 0.5f * 18.0f, maxRow * 0.5f * 18.0f, 0.0f };
 

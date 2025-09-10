@@ -456,7 +456,7 @@ void MapField::UpdateSelectPanel() {
 		r32 halfW = size.x * 0.5f;
 		r32 halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH && canComplete) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_) {
 					CompleteArrangement();
@@ -471,7 +471,9 @@ void MapField::UpdateSelectPanel() {
 			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
 		}
 		else {
-			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			if (canComplete) {
+				completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+			}
 		}
 	}
 	// ポーズメニュー
@@ -838,6 +840,7 @@ void MapField::CellSet() {
 			hideArrowAnimationTimer = 0.0f;
 		}
 		canChangeMoldType = false; // ミノを配置したら鋳型変更不可にする
+
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
@@ -1072,8 +1075,11 @@ void MapField::RandomizeTable() {
 
 void MapField::ResetMold() {
 	canChangeMoldType = true;
+	canComplete = false;
 	// セルの選択
 	useMoldIndex = moldManager.random_select();
+
+	completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
 
 	WriteMold();
 }
@@ -1115,10 +1121,6 @@ void MapField::UpdateMold() {
 }
 
 void MapField::WriteMold() {
-	if (!canChangeMoldType) {
-		return;
-	}
-
 	const auto& mold = moldManager.get_mold(static_cast<MoldType>(moldType), useMoldIndex[moldType]);
 	// 書き込み&再度初期化
 	for (i32 rowI = 0; rowI < kMapHeight_; ++rowI) {
@@ -1219,10 +1221,11 @@ void MapField::RemoveControlMino() {
 
 		cell->genderType = controlMino_->GetGender();
 		cell->block->SetColor(color);
-	}
 
-	// ミノの消費カウント
-	controlMino_->OnUsedMino();
+		if (cell->isRequired) {
+			canComplete = true;
+		}
+	}
 
 	controlMino_ = nullptr;
 }
