@@ -83,6 +83,11 @@ void MapField::Initialize() {
 	mapSizeTex_->SetSize({ 40.0f, 50.0f });
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+	 
+	poseMenuTex_ = std::make_unique<Sprite>();
+	poseMenuTex_->Load("white2x2.png");
+	poseMenuTex_->SetSize({ 50.0f, 50.0f });
+	poseMenuTex_->SetPos({ 60.0f, 660.0f,0.0f });
 
 	LoadMinoTables();
 
@@ -344,6 +349,8 @@ void MapField::FactoryDraw() {
 
 	BackPanelTex_->Draw();
 
+	poseMenuTex_->Draw();
+
 	for (auto& tableMino : minoTables[tableIndex].minos) {
 		tableMino->DrawButton();
 	}
@@ -411,6 +418,9 @@ void MapField::UpdateSelectPanel() {
 	else {
 		completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
+
+	// ポーズメニュー
+	PoseMenu();
 
 	// 矢印の選択
 	ArrowUpdate();
@@ -955,6 +965,32 @@ void MapField::ResetMold() {
 
 	// 穴の大きさを取得
 	moldSize = mold.size;
+}
+
+void MapField::PoseMenu() {
+	if (controlMino_) return;
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	// PoseMenu
+	{
+		Vector3 pos = poseMenuTex_->GetPos();
+		Vector2 size = poseMenuTex_->GetSize();
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!isPoseMenu_) {
+					isPoseMenu_ = true;
+				} else {
+					isPoseMenu_ = false;
+				}
+				AudioPlayer::GetInstance()->SoundPlayWave(*push);
+			}
+			poseMenuTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+		} else {
+			poseMenuTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+	}
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
