@@ -443,6 +443,8 @@ void MapField::UpdateSelectPanel() {
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
 					ClickEmit_.Emit();
+				} else {
+					AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav);
 				}
 			}
 			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
