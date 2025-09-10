@@ -62,7 +62,7 @@ public:
 	void ResetBlocks();
 
 	void CompleteArrangement();
-	void ResetArrangementAnimation();
+	void ResetArrangementAnimation(i32 humanPower);
 	void UpdateArrangementAnimation();
 
 	void CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks);
@@ -138,6 +138,8 @@ private:
 	i32 tableIndex;
 	std::optional<i32> useMinoIndex;
 	std::vector<MinoTable> minoTables;
+
+	i32 genderRatio;
 
 	Vector2 cellNum_;
 
