@@ -16,9 +16,4 @@ public:
 
 private:
 	float winXPos_ = 19.0f;
-
-	// Sound
-	SoundData* attack;
-	SoundData* recovery;
-	SoundData* die;
 };
