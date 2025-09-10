@@ -844,7 +844,7 @@ void MapField::ResetMold() {
 		for (i32 colI = 0; colI < kMapWidth_; ++colI) {
 			auto& cell = cellsData_[rowI][colI];
 			cell->genderType = GenderType::None;
-			cell->isRequired = mold[rowI][colI];
+			cell->isRequired = mold.body[rowI][colI];
 
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
@@ -854,6 +854,9 @@ void MapField::ResetMold() {
 			}
 		}
 	}
+
+	// 穴の大きさを取得
+	moldSize = mold.size;
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
