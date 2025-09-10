@@ -51,8 +51,12 @@ void Camera::Update() {
 	}
 #endif // _DEBUG
 
-	// projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspect_, nearClip_, farClip_);
-	projectionMatrix_ = MakeOrthographicMatrix(-16 * 2, 9 * 2, 16 * 2, -9 * 2, nearClip_, farClip_);
+	if (isHeiko_) {
+		projectionMatrix_ = MakeOrthographicMatrix(-16 * 2, 9 * 2, 16 * 2, -9 * 2, nearClip_, farClip_);
+	} else {
+		projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspect_, nearClip_, farClip_);
+	}
+
 	viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
 }
 
@@ -95,4 +99,8 @@ Vector3 Camera::GetTranslate() {
 	} else {
 		return transform.translate;
 	}
+}
+
+void Camera::SetIsHeiko(bool heiko) {
+	isHeiko_ = heiko;
 }
