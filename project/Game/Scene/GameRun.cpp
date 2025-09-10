@@ -82,6 +82,9 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("terrain.obj");
 	//modelManager_->LoadOBJ("skydome.obj");
 	modelManager_->LoadOBJ("lightning.obj");
+	modelManager_->LoadOBJ("myFactry.obj");
+	modelManager_->LoadOBJ("enemyFactry.obj");
+
 	//modelManager_->LoadOBJ("playerModel.obj");
 	//modelManager_->LoadOBJ("boss.obj");
 	//modelManager_->LoadOBJ("bossWaveWall.obj");
@@ -102,7 +105,6 @@ void GameRun::Initialize() {
 	modelManager_->LoadGLTF("manWalk2.gltf");
 
 
-
 #pragma endregion
 
 
@@ -119,7 +121,7 @@ void GameRun::Initialize() {
 	pManager_->CreateParticleGroup("ChargeWave", "chargeCircle.png", 2);
 	pManager_->CreateParticleGroup("ChargeCircle", "chargeCircle.png", 2);
 	pManager_->CreateParticleGroup("BulletTrajectory", "redCircle.png", 1000);
-	pManager_->CreateParticleGroup("BulletTrajectory2", "redCircle.png",1000);
+	pManager_->CreateParticleGroup("BulletTrajectory2", "redCircle.png", 1000);
 	pManager_->CreateParticleGroup("playerTranjectory", "kira.png", 200);
 	pManager_->CreateParticleGroup("playerhit", "redCircle.png", 100);
 
@@ -136,7 +138,7 @@ void GameRun::Initialize() {
 
 	pManager_->CreateParticleGroup("strongShotWave", "gradationLine.png", 20, ShapeType::RING);
 
-	
+
 	pManager_->CreateParticleGroup("bulletHit", "redCircle.png", 100);
 	pManager_->CreateParticleGroup("bulletHit2", "redCircle.png", 100);
 	pManager_->CreateParticleGroup("bulletHit3", "redCircle.png", 100);
@@ -178,10 +180,10 @@ void GameRun::Initialize() {
 
 
 	// playerBullet用
-	pManager_->CreateParentParticleGroup("ChargeEffect1", "redCircle.png",40);
-	pManager_->CreateParentParticleGroup("ChargeEffect2", "redCircle.png",40);
-	pManager_->CreateParentParticleGroup("ChargeEffect3", "redCircle.png",40);
-	pManager_->CreateParentParticleGroup("ChargeLight", "redCircle.png",40);
+	pManager_->CreateParentParticleGroup("ChargeEffect1", "redCircle.png", 40);
+	pManager_->CreateParentParticleGroup("ChargeEffect2", "redCircle.png", 40);
+	pManager_->CreateParentParticleGroup("ChargeEffect3", "redCircle.png", 40);
+	pManager_->CreateParentParticleGroup("ChargeLight", "redCircle.png", 40);
 	pManager_->CreateParentParticleGroup("ChargeRay", "chargeRay.png", 20);
 	pManager_->CreateParentParticleGroup("ChargeWave", "chargeCircle.png", 10);
 	pManager_->CreateParentParticleGroup("ChargeCircle", "chargeCircle.png", 10);

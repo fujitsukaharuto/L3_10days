@@ -12,7 +12,7 @@ enum class FactoryState {
 /// </summary>
 class Factory : public OriginGameObject {
 public:
-	Factory(const Vector3& pos);
+	Factory(const Vector3& pos, bool isfriend = true);
 	~Factory()override = default;
 
 	void Update()override;
