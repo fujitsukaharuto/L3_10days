@@ -22,23 +22,28 @@ void HumanMoldManager::load() {
 	}
 }
 
-const HumanMoldManager::Mold& HumanMoldManager::random_select(MoldType type) {
+std::array<i32, 3> HumanMoldManager::random_select() {
+	return {
+		Random::GetInt(0, static_cast<i32>(smallMolds.size()) - 1),
+		Random::GetInt(0, static_cast<i32>(mediumMolds.size()) - 1),
+		Random::GetInt(0, static_cast<i32>(largeMolds.size()) - 1)
+	};
+}
+
+const HumanMoldManager::Mold& HumanMoldManager::get_mold(MoldType type, i32 index) {
 	switch (type) {
 	case MoldType::Small:
 		if (!smallMolds.empty()) {
-			int index = Random::GetInt(0, static_cast<int>(smallMolds.size()) - 1);
 			return smallMolds[index];
 		}
 		break;
 	case MoldType::Medium:
 		if (!mediumMolds.empty()) {
-			int index = Random::GetInt(0, static_cast<int>(mediumMolds.size()) - 1);
 			return mediumMolds[index];
 		}
 		break;
 	case MoldType::Large:
 		if (!largeMolds.empty()) {
-			int index = Random::GetInt(0, static_cast<int>(largeMolds.size()) - 1);
 			return largeMolds[index];
 		}
 		break;
@@ -70,7 +75,9 @@ MoldType HumanMoldManager::load_mold(const std::filesystem::path& path, HumanMol
 				row.emplace_back(false);
 			}
 		}
+		row.resize(15, false);
 	}
+	result.body.resize(15, std::vector<bool>(15, false));
 
 	result.size = size;
 
