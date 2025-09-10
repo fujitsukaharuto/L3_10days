@@ -16,13 +16,13 @@
             "gender": "WOMAN",
             "hp": 1,
             "name": "womanWalk.gltf",
-            "power": 20
+            "power": 5
         },
         {
             "gender": "WOMAN",
             "hp": 1,
             "name": "womanWalk2.gltf",
-            "power": 30
+            "power": 10
         },
         {
             "gender": "MAN",
