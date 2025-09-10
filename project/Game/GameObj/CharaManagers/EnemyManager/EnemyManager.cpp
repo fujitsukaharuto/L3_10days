@@ -81,6 +81,7 @@ void EnemyManager::AddEnemy(const CharaStatus& status) {
 	newObj->SetFri(fri_);
 	newObj->SetEne(this);
 	enemies_.push_back(std::move(newObj));
+	factory_->Pop();
 }
 
 const std::vector<std::unique_ptr<Enemy>>& EnemyManager::GetEnemies() {

@@ -117,16 +117,16 @@ void MapField::Initialize() {
 	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
 
 	arrangement.genderRatioSprite = std::make_unique<Sprite>();
-	arrangement.genderRatioSprite->Load("white2x2.png");
+	arrangement.genderRatioSprite->Load("manwoman.png");
 	arrangement.genderRatioSprite->SetPos({ 285.0f, 360.0f,0.0f });
-	arrangement.genderRatioSprite->SetSize({ 300,Arrangement::GenderSpriteHeight });
+	arrangement.genderRatioSprite->SetSize({ 400,Arrangement::GenderSpriteHeight });
 	arrangement.genderRatioSprite->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	arrangement.genderRatioSprite->SetAngle(-PI / 8); // -30度傾ける
 
 	arrangement.humanRatioSprite = std::make_unique<Sprite>();
-	arrangement.humanRatioSprite->Load("white2x2.png");
+	arrangement.humanRatioSprite->Load("human.png");
 	arrangement.humanRatioSprite->SetPos({ 350, 420,0.0f });
-	arrangement.humanRatioSprite->SetSize({ 300,Arrangement::HumanRatioHeight });
+	arrangement.humanRatioSprite->SetSize({ 400,Arrangement::HumanRatioHeight });
 	arrangement.humanRatioSprite->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
 	arrangement.humanRatioSprite->SetAngle(-PI / 8); // -30度傾ける
 
@@ -464,7 +464,8 @@ void MapField::UpdateSelectPanel() {
 					AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
 					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
 					ClickEmit_.Emit();
-				} else {
+				}
+				else {
 					AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav);
 				}
 			}
@@ -611,7 +612,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH && 
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH &&
 			canChangeMoldType) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_ && /*minos_.size() == 0 && */mapSizeNum_ != 2) {
@@ -640,7 +641,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		halfW = size.x * 0.5f;
 		halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH && 
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH &&
 			canChangeMoldType) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_ && /*minos_.size() == 0 && */ mapSizeNum_ != 0) {
@@ -917,7 +918,8 @@ void MapField::CompleteArrangement() {
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
 
-	ResetArrangementAnimation();
+	i32 humanPower = ((maxBlocks * 20) / moldSize);
+	ResetArrangementAnimation(humanPower);
 }
 
 void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
@@ -945,9 +947,11 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 
 		if (90.0f <= genderLevel) {	// とても女
 			arrangement.status.name = "womanWalk.gltf";
+			genderRatio = 4;
 		}
 		else { // 割と女
 			arrangement.status.name = "womanWalk2.gltf";
+			genderRatio = 3;
 		}
 	}
 	else {
@@ -958,18 +962,29 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 
 		if (90.0f <= genderLevel) {	// とても男
 			arrangement.status.name = "manWalk.gltf";
+			genderRatio = 0;
 		}
 		else if (60.0f <= genderLevel) { // 割と男
 			arrangement.status.name = "manWalk2.gltf";
+			genderRatio = 1;
 		}
 		else {
 			arrangement.status.name = "halfWalk.gltf"; // ハーフ
+			genderRatio = 2;
 		}
 	}
 }
 
-void MapField::ResetArrangementAnimation() {
+void MapField::ResetArrangementAnimation(i32 humanPower) {
 	arrangement.timer = 0.0f;
+	arrangement.genderRatioSprite->SetRange(
+		{ 0.0f,float(genderRatio) * Arrangement::GenderSpriteHeight },
+		{ 400.0f, (r32)Arrangement::GenderSpriteHeight }
+	);
+	arrangement.humanRatioSprite->SetRange(
+		{ 0.0f, float(humanPower) * Arrangement::HumanRatioHeight },
+		{ 400.0f, (r32)Arrangement::HumanRatioHeight }
+	);
 }
 
 void MapField::UpdateArrangementAnimation() {
@@ -1182,7 +1197,8 @@ void MapField::PoseMenu() {
 					isPoseMenu_ = true;
 					menuMoveTime_ = 40.0f;
 					menuButtonTex_->SetRange({ 50.0f, 0.0f }, { 50.0f,50.0f });
-				} else {
+				}
+				else {
 					isPoseMenu_ = false;
 					menuMoveTime_ = 40.0f;
 					menuButtonTex_->SetRange({ 0.0f, 0.0f }, { 50.0f,50.0f });
