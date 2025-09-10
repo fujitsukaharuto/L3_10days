@@ -26,7 +26,7 @@ void GameRun::Initialize() {
 	textureManager_->Load("beamCore3.png");
 	textureManager_->Load("kira.png");
 	textureManager_->Load("ringOutline.png");
-	textureManager_->Load("Atlas.png");
+	//textureManager_->Load("Atlas.png");
 	textureManager_->Load("underRing.png");
 	textureManager_->Load("boal16x16.png");
 	textureManager_->Load("title.png");
@@ -66,6 +66,7 @@ void GameRun::Initialize() {
 	textureManager_->Load("manFrame.png");
 	textureManager_->Load("womanFrame.png");
 	textureManager_->Load("titleCompleted.png");
+	textureManager_->Load("half.png");
 
 
 #pragma endregion
@@ -78,7 +79,7 @@ void GameRun::Initialize() {
 	modelManager_->LoadOBJ("suzanne.obj");
 	modelManager_->LoadOBJ("Fence.obj");
 	modelManager_->LoadOBJ("terrain.obj");
-	modelManager_->LoadOBJ("skydome.obj");
+	//modelManager_->LoadOBJ("skydome.obj");
 	modelManager_->LoadOBJ("lightning.obj");
 	//modelManager_->LoadOBJ("playerModel.obj");
 	//modelManager_->LoadOBJ("boss.obj");
@@ -92,6 +93,15 @@ void GameRun::Initialize() {
 	modelManager_->LoadGLTF("title2.gltf");
 	modelManager_->LoadGLTF("title3.gltf");
 	modelManager_->LoadGLTF("title5.gltf");
+
+	modelManager_->LoadGLTF("halfWalk.gltf");
+	modelManager_->LoadGLTF("womanWalk.gltf");
+	modelManager_->LoadGLTF("womanWalk2.gltf");
+	modelManager_->LoadGLTF("manWalk.gltf");
+	modelManager_->LoadGLTF("manWalk2.gltf");
+
+
+
 #pragma endregion
 
 

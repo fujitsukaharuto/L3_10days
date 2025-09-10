@@ -34,6 +34,18 @@ private:
 	float goTitleReturenTime_ = 0.0f;
 	bool isGoTitle_ = false;
 
+	std::unique_ptr<AnimationModel> man1 = nullptr;
+	std::unique_ptr<AnimationModel> man2 = nullptr;
+	std::unique_ptr<AnimationModel> half = nullptr;
+	std::unique_ptr<AnimationModel> woman1 = nullptr;
+	std::unique_ptr<AnimationModel> woman2 = nullptr;
+	std::unique_ptr<AnimationModel> man1_1 = nullptr;
+	std::unique_ptr<AnimationModel> man2_1 = nullptr;
+	std::unique_ptr<AnimationModel> half_1 = nullptr;
+	std::unique_ptr<AnimationModel> woman1_1 = nullptr;
+	std::unique_ptr<AnimationModel> woman2_1 = nullptr;
+
+
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
 	float blackLimmite = 20.0f;
