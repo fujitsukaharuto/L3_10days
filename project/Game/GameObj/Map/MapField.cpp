@@ -4,6 +4,8 @@
 #include "Engine/Editor/JsonSerializer.h"
 #include "Engine/Input/Input.h"
 
+#include "Engine/Math/Animation/Easing.h"
+
 #undef min
 #undef max
 
@@ -111,6 +113,20 @@ void MapField::Initialize() {
 	arrangement.AnimationTime = 1.0f;
 	arrangement.timer = arrangement.AnimationTime;
 	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
+
+	arrangement.genderRatioSprite = std::make_unique<Sprite>();
+	arrangement.genderRatioSprite->Load("white2x2.png");
+	arrangement.genderRatioSprite->SetPos({ 285.0f, 360.0f,0.0f });
+	arrangement.genderRatioSprite->SetSize({ 300,Arrangement::GenderSpriteHeight });
+	arrangement.genderRatioSprite->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	arrangement.genderRatioSprite->SetAngle(-PI / 8); // -30度傾ける
+
+	arrangement.humanRatioSprite = std::make_unique<Sprite>();
+	arrangement.humanRatioSprite->Load("white2x2.png");
+	arrangement.humanRatioSprite->SetPos({ 350, 420,0.0f });
+	arrangement.humanRatioSprite->SetSize({ 300,Arrangement::HumanRatioHeight });
+	arrangement.humanRatioSprite->SetColor({ 1.0f, 1.0f, 1.0f, 0.0f });
+	arrangement.humanRatioSprite->SetAngle(-PI / 8); // -30度傾ける
 }
 
 void MapField::Update() {
@@ -363,6 +379,9 @@ void MapField::FactoryDraw() {
 	if (frameMoveTime_ == 0.0f) {
 		DrawCells();
 	}
+
+	arrangement.genderRatioSprite->Draw();
+	arrangement.humanRatioSprite->Draw();
 }
 
 void MapField::CursorDraw() {
@@ -666,7 +685,8 @@ void MapField::UpdateControlMino() {
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
 		return;
-	} else if (Input::GetInstance()->IsTriggerMouse(1) && haveControlMino_) {
+	}
+	else if (Input::GetInstance()->IsTriggerMouse(1) && haveControlMino_) {
 		controlMino_ = nullptr;
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
@@ -775,7 +795,7 @@ void MapField::CellSet() {
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
-	AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav,0.6f);
+	AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav, 0.6f);
 }
 
 bool MapField::CanArrangement() {
@@ -877,11 +897,12 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 
 		if (90.0f <= genderLevel) {	// とても女
 			arrangement.status.name = "womanWalk.gltf";
-		} else { // 割と女
+		}
+		else { // 割と女
 			arrangement.status.name = "womanWalk2.gltf";
 		}
-	} else {
-
+	}
+	else {
 		arrangement.status.hp = hp;
 		arrangement.status.power = uint32_t(power);
 		arrangement.status.gender = MAN;
@@ -889,9 +910,11 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 
 		if (90.0f <= genderLevel) {	// とても男
 			arrangement.status.name = "manWalk.gltf";
-		} else if (60.0f <= genderLevel) { // 割と男
+		}
+		else if (60.0f <= genderLevel) { // 割と男
 			arrangement.status.name = "manWalk2.gltf";
-		} else {
+		}
+		else {
 			arrangement.status.name = "halfWalk.gltf"; // ハーフ
 		}
 	}
@@ -946,6 +969,48 @@ void MapField::UpdateArrangementAnimation() {
 					cell->required->SetScale({ param, param });
 				}
 			}
+		}
+	}
+
+	{
+		// 性別スプライトのアニメーション
+		r32 InSeparateTime = 0.3f;
+		r32 OutSeparateTime = 0.5f;
+		if (arrangement.timer < InSeparateTime) {
+			r32 param = arrangement.timer / InSeparateTime;
+			param = std::clamp(param, 0.0f, 1.0f);
+
+			arrangement.genderRatioSprite->SetColorAlpha(Easing::Out::Expo(param));
+			r32 scaleBase = std::lerp(100.0f, 1.0f, Easing::Out::Expo(param));
+			arrangement.genderRatioSprite->SetScale({ scaleBase, scaleBase });
+		}
+		else if (arrangement.timer >= OutSeparateTime) {
+			r32 param = (arrangement.timer - OutSeparateTime) / (arrangement.AnimationTime - OutSeparateTime);
+			param = std::clamp(param, 0.0f, 1.0f);
+
+			// 性別スプライト
+			arrangement.genderRatioSprite->SetColorAlpha(1 - param);
+		}
+	}
+
+	{
+		// 人間度スプライトのアニメーション
+		r32 SeparateTime = 0.5f;
+		if (arrangement.timer < SeparateTime) {
+			r32 param = arrangement.timer / SeparateTime;
+			param = std::clamp(param, 0.0f, 1.0f);
+
+			arrangement.humanRatioSprite->SetColorAlpha(Easing::Out::Expo(param));
+			r32 scaleBase = std::lerp(100.0f, 1.0f, Easing::Out::Expo(param));
+			arrangement.humanRatioSprite->SetScale({ scaleBase, scaleBase });
+		}
+		else {
+			arrangement.humanRatioSprite->SetScale({ 1, 1 });
+			r32 param = (arrangement.timer - SeparateTime) / (arrangement.AnimationTime - SeparateTime);
+			param = std::clamp(param, 0.0f, 1.0f);
+
+			// 性別スプライト
+			arrangement.humanRatioSprite->SetColorAlpha(1 - param);
 		}
 	}
 }
