@@ -195,7 +195,7 @@ private:
 		r32 timer;
 		r32 AnimationTime;
 
-		std::unique_ptr<Sprite> sexualRatioSprite;
+		std::unique_ptr<Sprite> genderRatioSprite;
 		std::unique_ptr<Sprite> bonusSprite;
 	} arrangement;
 
