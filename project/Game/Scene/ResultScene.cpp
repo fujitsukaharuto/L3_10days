@@ -65,6 +65,7 @@ void ResultScene::Initialize() {
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	cursorTex_->SetSize({ 40.0f,40.0f });
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 	cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 

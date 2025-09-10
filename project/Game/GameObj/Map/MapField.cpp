@@ -59,8 +59,10 @@ void MapField::Initialize() {
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	cursorTex_->SetSize({ 40.0f,40.0f });
 	grabCursorTex_ = std::make_unique<Sprite>();
 	grabCursorTex_->Load("grabCursor.png");
+	grabCursorTex_->SetSize({ 40.0f,40.0f });
 
 	arrowLTex_ = std::make_unique<Sprite>();
 	arrowLTex_->Load("arrow.png");
@@ -277,8 +279,8 @@ void MapField::TitleDraw() {
 	titleCompleteTex_->Draw();
 	//factoryTex_->Draw();
 	//enemyFactoryTex_->Draw();
-	manPanelTex_->Draw();
-	womanPanelTex_->Draw();
+	//manPanelTex_->Draw();
+	//womanPanelTex_->Draw();
 
 	genderPanelTex_->Draw();
 
