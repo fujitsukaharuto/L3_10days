@@ -13,26 +13,11 @@ Friendly::Friendly(const CharaStatus& status, const Vector3& popPos)
 void Friendly::Update() {
 	BaseChara::Update();
 	// 勝利判定確認
-	if (OriginGameObject::GetAnimModel()->GetWorldPos().x > winXPos_) {
-		isWinTime_ = true;
-		winTimer_ = 0.0f;
 
-		if (status_.name == "womanWalk.gltf") {
-			OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.002");
-		} else if (status_.name == "womanWalk2.gltf") {
-			OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-		} else if (status_.name == "manWalk.gltf") {
-			OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-		} else if (status_.name == "manWalk2.gltf") {
-			OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-		} else if (status_.name == "halfWalk.gltf") {
-			OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.004_3");
-		}
-	}
 
 	if (isWinTime_) {
 		winTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
-		if (winTime_ >= winTime_) {
+		if (winTimer_ >= winTime_) {
 			if (ene_->GetCurrentWave() != 2) {
 				AudioPlayer::GetInstance()->SoundPlayWave(*break_);
 				ene_->AddWave();
@@ -41,9 +26,24 @@ void Friendly::Update() {
 				fri_->Win();
 			}
 		}
+	} else {
+		if (OriginGameObject::GetAnimModel()->GetWorldPos().x > winXPos_) {
+			isWinTime_ = true;
+			winTimer_ = 0.0f;
+
+			if (status_.name == "womanWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.002");
+			} else if (status_.name == "womanWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "manWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "manWalk2.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+			} else if (status_.name == "halfWalk.gltf") {
+				OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.004_3");
+			}
+		}
 	}
-
-
 }
 
 void Friendly::Search() {
