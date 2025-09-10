@@ -176,9 +176,19 @@ void ResultScene::Update() {
 		posY = std::lerp(-360.0f, -20.0f, t);
 		chain_->SetPos({ 980.0f,posY,0.0f });
 
+		float t2 = 1.0f - std::pow(1.0f - x, 5.0f);
+		if (x == 1.0f) { t2 = 1.0f; }
+		float posX = std::lerp(-180.0f, 180.0f, t2);
+		report_->SetPos({ posX,470.0f,0.0f });
+		float angle = std::lerp(-0.38f, 0.38f, t2);
+		report_->SetAngle(angle);
+
 		if (goTitleTime_ == 90.0f) {
 			goTitle_->SetPos({ 980.0f,280.0f,0.0f });
 			chain_->SetPos({ 980.0f,-20.0f,0.0f });
+
+			report_->SetAngle(0.38f);
+			report_->SetPos({ 180.0f,470.0f,0.0f });
 		}
 	}
 
