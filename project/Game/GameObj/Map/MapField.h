@@ -113,6 +113,7 @@ private:
 
 	const i32 kMapWidth_ = 15;
 	const i32 kMapHeight_ = 15;
+	const i32 kCellNum_ = kMapWidth_ * kMapHeight_;
 
 	std::vector<std::vector<std::unique_ptr<CellData>>> cellsData_;
 
