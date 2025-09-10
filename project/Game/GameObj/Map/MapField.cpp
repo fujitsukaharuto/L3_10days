@@ -918,7 +918,7 @@ void MapField::CompleteArrangement() {
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
 
-	i32 humanPower = ((maxBlocks * 20) / moldSize);
+	i32 humanPower = std::clamp((maxBlocks * 5) / moldSize, 0, 4);
 	ResetArrangementAnimation(humanPower);
 }
 
