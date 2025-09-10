@@ -115,7 +115,7 @@ protected:
 	FriendlyManager* fri_;
 
 	float winTimer_ = 0.0f;
-	float winTime_ = 1.0f;
+	float winTime_ = 0.9f;
 
 	bool isWinTime_ = false;
 };
