@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 /// <summary>
 /// 友軍
@@ -11,10 +12,10 @@ public:
 	~Friendly()override = default;
 
 	void Update()override;
-	
+
 	void Search()override;
 
 private:
 	float winXPos_ = 50.0f;
-
+	SoundData* break_;
 };

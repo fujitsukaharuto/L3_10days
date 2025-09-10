@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObj/Chara/BaseChara/BaseChara.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 /// <summary>
 /// 敵キャラ
@@ -16,4 +17,5 @@ public:
 
 private:
 	float winXPos_ = 19.0f;
+	SoundData* break_;
 };
