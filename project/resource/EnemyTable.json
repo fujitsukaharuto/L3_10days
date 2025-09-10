@@ -1,3 +1,34 @@
 {
-    "enemies": []
+    "enemies": [
+        {
+            "gender": "MAN",
+            "hp": 100,
+            "name": "manWalk.gltf",
+            "power": 10
+        },
+        {
+            "gender": "MAN",
+            "hp": 50,
+            "name": "manWalk2.gltf",
+            "power": 50
+        },
+        {
+            "gender": "WOMAN",
+            "hp": 75,
+            "name": "womanWalk.gltf",
+            "power": 20
+        },
+        {
+            "gender": "WOMAN",
+            "hp": 75,
+            "name": "womanWalk2.gltf",
+            "power": 30
+        },
+        {
+            "gender": "MAN",
+            "hp": 100,
+            "name": "halfWalk.gltf",
+            "power": 95
+        }
+    ]
 }
