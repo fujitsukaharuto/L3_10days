@@ -46,7 +46,6 @@ public:
 	void UpdateSelectPanelUncontrolling();
 
 	void SelectMino();
-	void AddMino();
 	void UpdateControlMino();
 
 	void ArrowUpdate();
@@ -57,6 +56,8 @@ public:
 	bool CanArrangement(); // マウスで置く際のチェック用
 
 	void CompleteArrangement();
+
+	void CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks);
 
 	void RandomizeTable();
 	void ResetMold();
