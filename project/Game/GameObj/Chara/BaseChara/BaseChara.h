@@ -88,6 +88,8 @@ protected:
 
 	// スピード
 	float speed_ = 0.01f;
+	float womanSpeed_ = 0.002f;
+
 	// ターゲットに近づくときのスピード
 	float approachSpeed_ = 0.02f;
 
