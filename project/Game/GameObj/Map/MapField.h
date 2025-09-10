@@ -3,11 +3,11 @@
 #include <memory>
 #include <vector>
 
-#include "Engine/Model/Sprite.h"
 #include "Engine/Audio/AudioPlayer.h"
+#include "Engine/Model/Sprite.h"
 
 #include "Game/GameObj/Block/Mino.h"
-
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 #include "HumanMoldManager.h"
 
 class CollisionManager;
@@ -46,8 +46,9 @@ public:
 	void UpdateSelectPanelUncontrolling();
 
 	void SelectMino();
-	void AddMino();
 	void UpdateControlMino();
+
+	void UpdateCells();
 
 	void ArrowUpdate();
 	void FrameUpdate();
@@ -56,10 +57,18 @@ public:
 	void CellSet();
 	bool CanArrangement(); // マウスで置く際のチェック用
 
+	void ResetBlocks();
+
 	void CompleteArrangement();
+	void ResetArrangementAnimation();
+	void UpdateArrangementAnimation();
+
+	void CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks);
 
 	void RandomizeTable();
 	void ResetMold();
+
+	void PoseMenu();
 
 public:
 	// TODO : 定数にする
@@ -110,6 +119,7 @@ private:
 	bool haveControlMino_ = false;
 	bool isSmallChange_ = false;
 	bool isTitleToGame_ = false;
+	bool isPoseMenu_ = false;
 
 	const i32 kMapWidth_ = 15;
 	const i32 kMapHeight_ = 15;
@@ -150,6 +160,7 @@ private:
 	float arrowMoveTime_;
 	float frameMoveTime_;
 	float titleToGameTime_ = 90.0f;
+	float menuMoveTime_ = 0.0f;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
@@ -177,6 +188,10 @@ private:
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
 
+	std::unique_ptr<Sprite> menuButtonTex_;
+	std::unique_ptr<Sprite> menuTex_;
+
+
 	float nextSpace_ = 10.0f;
 
 	Vector2 cellsPos_; // セルの左下の位置
@@ -184,10 +199,20 @@ private:
 
 	HumanMoldManager moldManager;
 
+	struct Arrangement {
+		CharaStatus status;
+		r32 timer;
+		r32 AnimationTime;
+
+		std::unique_ptr<Sprite> genderRatioSprite;
+		std::unique_ptr<Sprite> bonusSprite;
+	} arrangement;
+
 	FriendlyManager* friendlyManager_ = nullptr;
 
 	// Sound
 	SoundData* push;
 	SoundData* grab;
 	SoundData* returnWav;
+	SoundData* dontPushWav;
 };
