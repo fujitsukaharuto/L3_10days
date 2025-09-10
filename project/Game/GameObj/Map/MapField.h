@@ -219,6 +219,7 @@ private:
 	SoundData* grab;
 	SoundData* returnWav;
 	SoundData* dontPushWav;
+	SoundData* machine;
 
 	// Particle
 	ParticleEmitter ClickEmit_;
