@@ -331,7 +331,7 @@ void MapField::FactoryDraw() {
 	}
 	genderPanelTex_->Draw();
 
-	//BackPanelTex_->Draw();
+	BackPanelTex_->Draw();
 
 	for (auto& tableMino : minoTables[tableIndex].minos) {
 		tableMino->DrawButton();

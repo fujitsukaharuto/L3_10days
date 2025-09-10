@@ -24,8 +24,8 @@ void GameScene::Initialize() {
 	MyWin::GetInstance()->SetDrawCursor(false);
 #endif // !_DEBUG
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.1f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.5f, 28.0f, -70.0f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };
@@ -68,32 +68,37 @@ void GameScene::Initialize() {
 	ni_ = std::make_unique<AnimationModel>();
 	ni_->Create("title1.gltf");
 	ni_->LoadAnimationFile("title1.gltf");
-	ni_->transform.translate = { 22.1f,29.0f,-62.0f };
+	ni_->transform.translate = titlePos_;
 	ni_->transform.rotate.y = 3.14f;
+	ni_->transform.scale = { 10.0f,10.0,10.0f };
 
 	nn_ = std::make_unique<AnimationModel>();
 	nn_->Create("title2.gltf");
 	nn_->LoadAnimationFile("title2.gltf");
-	nn_->transform.translate = { 22.1f,29.0f,-62.0f };
+	nn_->transform.translate = titlePos_;
 	nn_->transform.rotate.y = 3.14f;
+	nn_->transform.scale = { 10.0f,10.0,10.0f };
 
 	ge_ = std::make_unique<AnimationModel>();
 	ge_->Create("title3.gltf");
 	ge_->LoadAnimationFile("title3.gltf");
-	ge_->transform.translate = { 22.1f,29.0f,-62.0f };
+	ge_->transform.translate = titlePos_;
 	ge_->transform.rotate.y = 3.14f;
+	ge_->transform.scale = { 10.0f,10.0,10.0f };
 
 	nn2_ = std::make_unique<AnimationModel>();
 	nn2_->Create("title4.gltf");
 	nn2_->LoadAnimationFile("title4.gltf");
-	nn2_->transform.translate = { 22.1f,29.0f,-62.0f };
+	nn2_->transform.translate = titlePos_;
 	nn2_->transform.rotate.y = 3.14f;
+	nn2_->transform.scale = { 10.0f,10.0,10.0f };
 
 	factory_ = std::make_unique<AnimationModel>();
 	factory_->Create("title5.gltf");
 	factory_->LoadAnimationFile("title5.gltf");
-	factory_->transform.translate = { 22.1f,29.0f,-62.0f };
+	factory_->transform.translate = titlePos_;
 	factory_->transform.rotate.y = 3.14f;
+	factory_->transform.scale = { 10.0f,10.0,10.0f };
 
 	ApplyGlobalVariables();
 
@@ -219,6 +224,17 @@ void GameScene::DebugGUI() {
 	}
 
 	ImGui::Unindent();
+
+	ImGui::Begin("Title");
+
+	if (ImGui::DragFloat3("Pos", &titlePos_.x)) {
+		ni_->transform.translate = titlePos_;
+		nn_->transform.translate = titlePos_;
+		ge_->transform.translate = titlePos_;
+		nn2_->transform.translate = titlePos_;
+		factory_->transform.translate = titlePos_;
+	}
+	ImGui::End();
 #endif // _DEBUG
 }
 

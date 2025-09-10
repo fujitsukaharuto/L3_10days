@@ -51,8 +51,8 @@ void Camera::Update() {
 	}
 #endif // _DEBUG
 
-	projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspect_, nearClip_, farClip_);
-	//projectionMatrix_ = MakeOrthographicMatrix(float(MyWin::kWindowWidth) * 0.5f, 0.0f, float(MyWin::kWindowWidth), float(MyWin::kWindowHeight), nearClip_, farClip_);
+	// projectionMatrix_ = MakePerspectiveFovMatrix(fovY_, aspect_, nearClip_, farClip_);
+	projectionMatrix_ = MakeOrthographicMatrix(-16 * 2, 9 * 2, 16 * 2, -9 * 2, nearClip_, farClip_);
 	viewProjectionMatrix_ = Multiply(viewMatrix_, projectionMatrix_);
 }
 

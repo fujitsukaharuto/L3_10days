@@ -54,4 +54,7 @@ private:
 	float blackLimmite = 20.0f;
 	float blackTime = 20.0f;
 	bool isChangeFase = false;
+
+	Vector3 titlePos_ = { 35.0f,29.0f,-62.0f };
+
 };
