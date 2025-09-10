@@ -11,7 +11,10 @@ enum class MoldType {
 
 class HumanMoldManager {
 public:
-	using Mold = std::vector<std::vector<bool>>;
+	struct Mold {
+		std::vector<std::vector<bool>> body;
+		i32 size{ 0 };
+	};
 
 public:
 	void load();
