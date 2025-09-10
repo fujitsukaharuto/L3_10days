@@ -440,8 +440,6 @@ void MapField::UpdateSelectPanelUncontrolling() {
 						int idx = minoButtonNum_;
 						if (gender_ == int(GenderType::Woman)) { idx += 3; }
 						controlMino_ = minoTables[tableIndex].minos[idx].get();
-						// AddMino(selectTypes_[blockButtonNum_]);
-						controlMino_->AdjustPosition(this, 0, 0);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
@@ -462,10 +460,6 @@ void MapField::UpdateSelectPanelUncontrolling() {
 						int idx = minoButtonNum_;
 						if (gender_ == int(GenderType::Woman)) { idx += 3; }
 						controlMino_ = minoTables[tableIndex].minos[idx].get();
-						// AddMino(selectTypes_[blockButtonNum_]);
-
-						// controlMinoを範囲外に出ないようにする
-						controlMino_->AdjustPosition(this, 0, 0);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
@@ -723,22 +717,6 @@ void MapField::MoveControlMino() {
 
 	CellSpriteSetColor();
 
-	// 元の位置にある警告を消す
-	for (auto& block : controlMino_->GetBlocks()) {
-		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
-		auto& cell = cellsData_[row][column];
-
-		if (cell->genderType == GenderType::Man) {
-			cell->block->SetColor({ 0,0,1,0.6f });
-		}
-		else if (cell->genderType == GenderType::Woman) {
-			cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
-		}
-		else {
-			cell->block->SetColor({ 1.0f,1.0f,1.0f,0.0f });
-		}
-	}
-
 	// controlMinoを範囲外に出ないようにする
 	controlMino_->AdjustPosition(this, cellY, cellX);
 
@@ -747,7 +725,15 @@ void MapField::MoveControlMino() {
 		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
-			cell->block->SetColor({ 1.0f,0.0f,0.0f,0.6f });
+			block->sprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+		}
+		else {
+			if (controlMino_->GetGender() == GenderType::Man) {
+				block->sprite->SetColor({ 0.0f,0.0f,1.0f,0.6f });
+			}
+			else {
+				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
 		}
 	}
 
