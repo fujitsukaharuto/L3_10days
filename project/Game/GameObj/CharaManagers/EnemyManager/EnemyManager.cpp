@@ -6,7 +6,7 @@
 EnemyManager::EnemyManager() {
 	enemies_.clear();
 
-	factory_ = std::make_unique<Factory>(popPosition_);
+	factory_ = std::make_unique<Factory>(popPosition_, false);
 }
 
 void EnemyManager::Update() {
