@@ -26,8 +26,9 @@ void TitleScene::Initialize() {
 	MyWin::GetInstance()->SetDrawCursor(false);
 #endif // !_DEBUG
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.2f,0.0f,0.0f };
-	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.0f, 30.0f, -70.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.1f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.5f, 28.0f, -70.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(true);
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->intensity = 1.5f;
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->direction = { 0.0f,-0.8f,0.6f };
 	ModelManager::GetInstance()->ShareLight()->GetDirectionLight()->directionLightData_->color = { 1.0f,0.938f,0.671f,1.0f };

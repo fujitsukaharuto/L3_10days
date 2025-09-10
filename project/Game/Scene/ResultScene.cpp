@@ -23,6 +23,7 @@ void ResultScene::Initialize() {
 
 	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 3.5f, -20.0f };
+	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(false);
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();

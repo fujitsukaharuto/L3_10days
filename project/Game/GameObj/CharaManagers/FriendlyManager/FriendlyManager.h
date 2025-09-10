@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "GameObj/Chara/Friendly/Friendly.h"
+#include "GameObj/Factory/Factory.h"
 
 class EnemyManager;
 
@@ -38,7 +39,7 @@ private:
 	std::vector<std::unique_ptr<Friendly>> friendlies_;
 
 	// 敵の沸く座標
-	Vector3 popPosition_ = { 19.0f,10.0f,0.0f };
+	Vector3 popPosition_ = { 20.0f,10.0f,-15.0f };
 
 	// 沸く位置の乱数用変数
 	float maxPopRangeZ_ = -5.0f;
@@ -46,6 +47,9 @@ private:
 
 	// 勝利フラグ
 	bool isWin_ = false;
+
+	// 工場
+	std::unique_ptr<Factory> factory_;
 
 private:
 	EnemyManager* ene_;

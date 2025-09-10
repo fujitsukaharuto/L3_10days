@@ -14,7 +14,6 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 	OriginGameObject::CreateAnimModel(status_.name);
 	OriginGameObject::GetAnimModel()->LoadAnimationFile(status.name);
 	OriginGameObject::GetAnimModel()->transform.translate = popPos;
-
 	OriginGameObject::GetAnimModel()->transform.scale = { 0.4f,0.4f,0.4f };
 
 	switch (status_.gender) {

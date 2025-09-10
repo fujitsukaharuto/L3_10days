@@ -7,6 +7,7 @@
 #include "Game/Collider/CollisionManager.h"
 #include "Game/GameObj/Map/MapField.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
+#include "GameObj/CharaManagers/EnemyManager/EnemyManager.h"
 
 class GameScene :public BaseScene {
 public:
@@ -40,6 +41,7 @@ private:
 	//std::unique_ptr<Object3d> title = nullptr;
 
 	std::unique_ptr<FriendlyManager> friendlyManager_ = nullptr;
+	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 
 	Vector3 tPos;
 
@@ -52,4 +54,7 @@ private:
 	float blackLimmite = 20.0f;
 	float blackTime = 20.0f;
 	bool isChangeFase = false;
+
+	Vector3 titlePos_ = { 35.0f,29.0f,-62.0f };
+
 };

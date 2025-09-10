@@ -4,12 +4,16 @@
 
 FriendlyManager::FriendlyManager() {
 	friendlies_.clear();
+
+	factory_ = std::make_unique<Factory>(popPosition_);
 }
 
 void FriendlyManager::Update() {
 	for (auto& obj : friendlies_) {
 		obj->Update();
 	}
+
+	factory_->Update();
 }
 
 void FriendlyManager::CheckIsTargetDead() {
@@ -25,6 +29,8 @@ void FriendlyManager::CSDispatch() {
 }
 
 void FriendlyManager::Draw() {
+	factory_->Draw();
+
 	for (auto& obj : friendlies_) {
 		obj->Draw();
 	}
