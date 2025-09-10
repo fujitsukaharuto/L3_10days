@@ -780,6 +780,17 @@ void MapField::CompleteArrangement() {
 	}
 	int maxBlocks = manBlocks + womanBlocks;
 
+	CulGender(maxBlocks, manBlocks, womanBlocks, stickOutBlocks);
+
+	maxB_.push_back(maxBlocks);
+	manB_.push_back(manBlocks);
+	womanB_.push_back(womanBlocks);
+
+	RandomizeTable();
+	ResetMold();
+}
+
+void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
 	// 人間生成処理
 	CharaStatus status;
 	// HP処理
@@ -807,7 +818,7 @@ void MapField::CompleteArrangement() {
 
 		if (90.0f <= genderLevel) {	// とても男
 			status.name = "manWalk.gltf";
-		} else if (65.0f <= genderLevel) { // 割と男
+		} else if (60.0f <= genderLevel) { // 割と男
 			status.name = "manWalk2.gltf";
 		} else {
 			status.name = "halfWalk.gltf"; // ハーフ
@@ -818,13 +829,6 @@ void MapField::CompleteArrangement() {
 	if (friendlyManager_) {
 		friendlyManager_->AddFriendly(status);
 	}
-
-	maxB_.push_back(maxBlocks);
-	manB_.push_back(manBlocks);
-	womanB_.push_back(womanBlocks);
-
-	RandomizeTable();
-	ResetMold();
 }
 
 void MapField::RandomizeTable() {
