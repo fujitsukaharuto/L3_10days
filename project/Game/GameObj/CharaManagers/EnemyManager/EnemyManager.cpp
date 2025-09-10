@@ -2,6 +2,7 @@
 #include "Game/Editor/WaveEditor/WaveEditor.h"
 #include "Game/Editor/EnemyTableEditor/EnemyTableEditor.h"
 #include "Random/Random.h"
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 
 EnemyManager::EnemyManager() {
 	enemies_.clear();
@@ -75,7 +76,8 @@ void EnemyManager::AddEnemy(const CharaStatus& status) {
 	// TODO:モデル差し替える　座標はいい感じに設定する パズルの結果に応じて発生するキャラを変えられるようにする
 	const float posZ = Random::GetFloat(minPopRangeZ_, maxPopRangeZ_);
 	popPosition_.z = posZ;
-	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status, popPosition_);
+	std::unique_ptr<Enemy> newObj = std::make_unique<Enemy>(status,
+		Vector3(popPosition_.x - 1.0f, popPosition_.y, popPosition_.z));
 	newObj->SetFri(fri_);
 	newObj->SetEne(this);
 	enemies_.push_back(std::move(newObj));
@@ -97,14 +99,26 @@ void EnemyManager::SetEnemyTableEditor(EnemyTableEditor* enemyTableEditor) {
 	ete_ = enemyTableEditor;
 }
 
+void EnemyManager::AllKill() {
+	for (auto& obj : enemies_) {
+		obj->SetIsAlive(false);
+	}
+}
+
 void EnemyManager::Win() {
 	isWin_ = true;
 }
 
 void EnemyManager::AddWave() {
 	currentWave_++;
+	fri_->AllKill();
+	enemies_.clear();
 }
 
 bool EnemyManager::GetIsWin() {
 	return isWin_;
+}
+
+int32_t EnemyManager::GetCurrentWave() {
+	return currentWave_;
 }

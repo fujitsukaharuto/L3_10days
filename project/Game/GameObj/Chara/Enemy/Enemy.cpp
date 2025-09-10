@@ -16,6 +16,7 @@ void Enemy::Update() {
 	if (OriginGameObject::GetAnimModel()->GetWorldPos().x < winXPos_) {
 		ene_->Win();
 	}
+
 }
 
 void Enemy::Search() {

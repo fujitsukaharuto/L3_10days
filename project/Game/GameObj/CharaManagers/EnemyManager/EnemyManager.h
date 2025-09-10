@@ -36,10 +36,14 @@ public:
 	void SetWaveEditor(WaveEditor* waveEditor);
 	void SetEnemyTableEditor(EnemyTableEditor* enemyTableEditor);
 
+	void AllKill();
+
 	void Win();
+
 	void AddWave();
 
 	bool GetIsWin();
+	int32_t GetCurrentWave();
 
 private:
 	std::vector<std::unique_ptr<Enemy>> enemies_;

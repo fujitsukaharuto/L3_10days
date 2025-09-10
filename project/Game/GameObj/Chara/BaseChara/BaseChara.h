@@ -60,6 +60,7 @@ public:
 	bool GetIsAlive()const;
 	CharaStatus GetStatus();
 	void SetTarget(BaseChara* target);
+	void SetIsAlive(bool alive);
 
 	void SetEne(EnemyManager* ene);
 	void SetFri(FriendlyManager* fri);
