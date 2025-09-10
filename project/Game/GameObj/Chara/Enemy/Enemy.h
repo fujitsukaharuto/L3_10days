@@ -16,6 +16,6 @@ public:
 	void Search()override;
 
 private:
-	float winXPos_ = 21.0f;
+	float winXPos_ = 22.0f;
 	SoundData* break_;
 };
