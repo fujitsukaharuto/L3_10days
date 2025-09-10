@@ -60,11 +60,9 @@ void GameScene::Initialize() {
 	map_->TitleInit();
 
 	/*title = std::make_unique<Object3d>();
-	title->Create("title.obj");
-	title->SetLightEnable(LightMode::kLightNone);
+	title->CreateSphere();
 	title->transform.translate = { 39.0f,33.0f,0.0f };
-	title->transform.scale = { 10.0f,10.0f,10.0f };
-	title->transform.rotate.y = 3.14f;*/
+	title->transform.scale = { 10.0f,10.0f,10.0f };*/
 
 	ni_ = std::make_unique<AnimationModel>();
 	ni_->Create("title1.gltf");
