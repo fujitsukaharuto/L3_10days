@@ -101,7 +101,7 @@ protected:
 
 	// 戦闘距離
 	float fightRange_ = 3.0f;
-	float healRange_ = 5.0f;
+	float healRange_ = 8.0f;
 
 
 	// 戦闘時行動クールタイム
