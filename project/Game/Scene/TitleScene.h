@@ -13,12 +13,13 @@
 #include "GameObj/BattleSystem/BattleSystem.h"
 #include "Editor/WaveEditor/WaveEditor.h"
 #include "Editor/EnemyTableEditor/EnemyTableEditor.h"
+#include "GameObj/floor/floor.h"
 
 #ifdef _DEBUG
 #include "Game/Editor/UsableMinoEditor.h"
 #endif
 
-class TitleScene :public BaseScene {
+class TitleScene:public BaseScene {
 public:
 	TitleScene();
 	~TitleScene();
@@ -61,6 +62,8 @@ private:
 
 	// 敵テーブル作成エディタ
 	std::unique_ptr<EnemyTableEditor> enemyTableEditor_;
+
+	std::unique_ptr<Floor> floor_ = nullptr;
 
 	bool isEditorMode_ = false;
 

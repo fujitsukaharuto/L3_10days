@@ -103,6 +103,8 @@ void TitleScene::Initialize() {
 
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("gameBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
+
+	floor_ = std::make_unique<Floor>();
 }
 
 void TitleScene::Update() {
@@ -181,6 +183,7 @@ void TitleScene::Draw() {
 
 	friendlyManager_->Draw();
 	enemyManager_->Draw();
+	floor_->Draw();
 
 #ifdef _DEBUG
 	CommandManager::GetInstance()->Draw();
