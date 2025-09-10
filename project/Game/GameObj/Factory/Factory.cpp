@@ -1,9 +1,15 @@
 #include "Factory.h"
 
+#include "ImGuiManager.h"
+
+#include <numbers>
+
 Factory::Factory(const Vector3& pos, bool isfriend) {
 	OriginGameObject::Initialize();
+	isFriend_ = isfriend;
 	if (isfriend) {
 		OriginGameObject::CreateModel("myFactry.obj");
+		OriginGameObject::GetModel()->transform.rotate.y = std::numbers::pi_v<float>;
 	} else {
 		OriginGameObject::CreateModel("enemyFactry.obj");
 	}
@@ -37,3 +43,11 @@ void Factory::Draw(Material* mate, bool is) {
 	OriginGameObject::Draw(mate, is);
 }
 
+void Factory::DebugUI() {
+	if (isFriend_) {
+		ImGui::Begin("IsFriend");
+
+		ImGui::End();
+	}
+
+}
