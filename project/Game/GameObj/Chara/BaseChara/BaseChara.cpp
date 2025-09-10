@@ -25,9 +25,9 @@ BaseChara::BaseChara(const CharaStatus& status, const Vector3& popPos) {
 		OriginGameObject::GetAnimModel()->AddAnimation("manAtack.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("manWin.gltf");
 	} else if (status.name == "manWalk2.gltf") {
-		OriginGameObject::GetAnimModel()->AddAnimation("manLose2.gltf");
+		// OriginGameObject::GetAnimModel()->AddAnimation("manLose2.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("manAtack2.gltf");
-		OriginGameObject::GetAnimModel()->AddAnimation("manWin2.gltf");
+		// 	OriginGameObject::GetAnimModel()->AddAnimation("manWin2.gltf");
 	} else if (status.name == "halfWalk.gltf") {
 		OriginGameObject::GetAnimModel()->AddAnimation("halfLose.gltf");
 		OriginGameObject::GetAnimModel()->AddAnimation("halfAtack.gltf");
