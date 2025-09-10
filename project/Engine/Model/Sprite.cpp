@@ -42,6 +42,10 @@ void Sprite::SetColor(const Vector4& color) {
 	material_.SetColor(color);
 }
 
+void Sprite::SetColorAlpha(float alpha) {
+	material_.SetColorAlpha(alpha);
+}
+
 void Sprite::SetPos(const Vector3& pos) {
 	position_ = pos;
 	SetWvp();

@@ -1,10 +1,8 @@
 #include "MapField.h"
 
 #include "Engine//Math/Random/Random.h"
-#include "Engine/Input/Input.h"
-#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
-
 #include "Engine/Editor/JsonSerializer.h"
+#include "Engine/Input/Input.h"
 
 #undef min
 #undef max
@@ -59,8 +57,10 @@ void MapField::Initialize() {
 	cursorTex_ = std::make_unique<Sprite>();
 	cursorTex_->Load("normalCursor.png");
 	cursorTex_->SetAnchor({ 0.25f,0.25f });
+	cursorTex_->SetSize({ 40.0f,40.0f });
 	grabCursorTex_ = std::make_unique<Sprite>();
 	grabCursorTex_->Load("grabCursor.png");
+	grabCursorTex_->SetSize({ 40.0f,40.0f });
 
 	arrowLTex_ = std::make_unique<Sprite>();
 	arrowLTex_->Load("arrow.png");
@@ -83,6 +83,11 @@ void MapField::Initialize() {
 	mapSizeTex_->SetSize({ 40.0f, 50.0f });
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
+	 
+	poseMenuTex_ = std::make_unique<Sprite>();
+	poseMenuTex_->Load("white2x2.png");
+	poseMenuTex_->SetSize({ 50.0f, 50.0f });
+	poseMenuTex_->SetPos({ 60.0f, 660.0f,0.0f });
 
 	LoadMinoTables();
 
@@ -97,17 +102,23 @@ void MapField::Initialize() {
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
+
+	arrangement.AnimationTime = 1.0f;
+	arrangement.timer = arrangement.AnimationTime;
+	dontPushWav = &AudioPlayer::GetInstance()->SoundLoadWave("dontPush.wav");
 }
 
 void MapField::Update() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
 
 	UpdateControlMino();
 	UpdateSelectPanel();
+	UpdateCells();
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
@@ -183,13 +194,15 @@ void MapField::TitleInit() {
 			cell->genderType = (GenderType)map_[rowI][colI];
 			if (cell->genderType == GenderType::Man) {
 				cell->block->SetColor({ 0,0,1,0.6f });
-			} else if (cell->genderType == GenderType::Woman) {
+			}
+			else if (cell->genderType == GenderType::Woman) {
 				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 			cell->isRequired = mold[rowI][colI];
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			} else {
+			}
+			else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 			++colI;
@@ -207,7 +220,8 @@ void MapField::TitleInit() {
 void MapField::TitleUpdate() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
 	TitleUpdateSelectPanel();
@@ -238,7 +252,8 @@ void MapField::TitleUpdateSelectPanel() {
 				}
 			}
 			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
-		} else {
+		}
+		else {
 			titleCompleteTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 
@@ -276,8 +291,8 @@ void MapField::TitleDraw() {
 	titleCompleteTex_->Draw();
 	//factoryTex_->Draw();
 	//enemyFactoryTex_->Draw();
-	manPanelTex_->Draw();
-	womanPanelTex_->Draw();
+	//manPanelTex_->Draw();
+	//womanPanelTex_->Draw();
 
 	genderPanelTex_->Draw();
 
@@ -326,12 +341,15 @@ void MapField::FactoryDraw() {
 	womanPanelTex_->Draw();
 	if (haveControlMino_) {
 		nowSelectorTex_->Draw();
-	} else {
+	}
+	else {
 		selectorTex_->Draw();
 	}
 	genderPanelTex_->Draw();
 
 	BackPanelTex_->Draw();
+
+	poseMenuTex_->Draw();
 
 	for (auto& tableMino : minoTables[tableIndex].minos) {
 		tableMino->DrawButton();
@@ -347,7 +365,8 @@ void MapField::CursorDraw() {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		grabCursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		grabCursorTex_->Draw();
-	} else {
+	}
+	else {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		cursorTex_->Draw();
@@ -375,7 +394,8 @@ void MapField::CellRequiredSpriteDraw() {
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
 		UpdateSelectPanelControlling();
-	} else {
+	}
+	else {
 		UpdateSelectPanelUncontrolling();
 	}
 
@@ -394,9 +414,13 @@ void MapField::UpdateSelectPanel() {
 			}
 		}
 		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
-	} else {
+	}
+	else {
 		completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
+
+	// ポーズメニュー
+	PoseMenu();
 
 	// 矢印の選択
 	ArrowUpdate();
@@ -499,7 +523,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				manPanelTime_ += FPSKeeper::DeltaTime();
 				manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		} else {
+		}
+		else {
 			manPanelTime_ -= FPSKeeper::DeltaTime();
 			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -517,7 +542,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				womanPanelTime_ += FPSKeeper::DeltaTime();
 				womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		} else {
+		}
+		else {
 			womanPanelTime_ -= FPSKeeper::DeltaTime();
 			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -544,7 +570,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
@@ -566,7 +593,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
@@ -583,11 +611,13 @@ void MapField::SelectMino() {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 105.0f,110.0f,0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 102.0f,116.0f });
-		} else if (minoButtonNum_ == 1) {
+		}
+		else if (minoButtonNum_ == 1) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 68.0f,64.0f });
-		} else if (minoButtonNum_ == 2) {
+		}
+		else if (minoButtonNum_ == 2) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 376.5f,146.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 67.0f,45.0f });
@@ -596,10 +626,12 @@ void MapField::SelectMino() {
 		if (minoButtonNum_ == 0) {
 			selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
 			selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
-		} else if (minoButtonNum_ == 1) {
+		}
+		else if (minoButtonNum_ == 1) {
 			selectorMaxSize_ = { 63.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 63.0f + 10.0f,40.0f + 10.0f };
-		} else if (minoButtonNum_ == 2) {
+		}
+		else if (minoButtonNum_ == 2) {
 			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
 		}
@@ -628,9 +660,17 @@ void MapField::UpdateControlMino() {
 	controlMino_->Update();
 	if (Input::GetInstance()->IsTriggerMouse(0) && haveControlMino_) {
 		CellSet();
+		return;
+	} else if (Input::GetInstance()->IsTriggerMouse(1) && haveControlMino_) {
+		controlMino_ = nullptr;
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
+}
+
+void MapField::UpdateCells() {
+	// 完了時のアニメーション
+	UpdateArrangementAnimation();
 }
 
 void MapField::ArrowUpdate() {
@@ -659,7 +699,8 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
-		} else {
+		}
+		else {
 			float mainPos = std::lerp(285.0f, -290.0f, t);
 			float subPos = std::lerp(880.0f, 285.0f, t);
 
@@ -708,10 +749,12 @@ void MapField::MoveControlMino() {
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
 			block->sprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
-		} else {
+		}
+		else {
 			if (controlMino_->GetGender() == GenderType::Man) {
 				block->sprite->SetColor({ 0.0f,0.0f,1.0f,0.6f });
-			} else {
+			}
+			else {
 				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 		}
@@ -724,7 +767,10 @@ void MapField::CellSet() {
 	if (CanArrangement()) {
 		controlMino_->Update();
 		RemoveControlMino();
+		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
+		return;
 	}
+	AudioPlayer::GetInstance()->SoundPlayWave(*dontPushWav,0.6f);
 }
 
 bool MapField::CanArrangement() {
@@ -750,6 +796,16 @@ bool MapField::CanArrangement() {
 	return true;
 }
 
+void MapField::ResetBlocks() {
+	for (auto& rows : cellsData_) {
+		for (auto& cell : rows) {
+			if (cell->block) {
+				cell->block->SetColor({ 0.0f,0.0f,0.0f,0.0f });
+			}
+		}
+	}
+}
+
 void MapField::CompleteArrangement() {
 	if (controlMino_) return;
 	int manBlocks = 0;
@@ -762,14 +818,16 @@ void MapField::CompleteArrangement() {
 			case GenderType::Man:
 				if (cell->isRequired) {
 					++manBlocks;
-				} else {
+				}
+				else {
 					++stickOutBlocks;
 				}
 				break;
 			case GenderType::Woman:
 				if (cell->isRequired) {
 					++womanBlocks;
-				} else {
+				}
+				else {
 					++stickOutBlocks;
 				}
 				break;
@@ -786,8 +844,7 @@ void MapField::CompleteArrangement() {
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
 
-	RandomizeTable();
-	ResetMold();
+	ResetArrangementAnimation();
 }
 
 void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
@@ -797,7 +854,6 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 	constexpr float minPower = 0.0f;
 
 	// 人間生成処理
-	CharaStatus status;
 	// HP処理
 	i32 hp = kCellNum_ - moldSize - stickOutBlocks;
 	float genderLevel = 0.0f;
@@ -807,34 +863,85 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
 	if (manBlocks < womanBlocks) {
-		status.hp = hp;
-		status.power = uint32_t(power);
-		status.gender = WOMAN;
+
+		arrangement.status.hp = hp;
+		arrangement.status.power = uint32_t(power);
+		arrangement.status.gender = WOMAN;
+
 		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
 
 		if (90.0f <= genderLevel) {	// とても女
-			status.name = "womanWalk.gltf";
+			arrangement.status.name = "womanWalk.gltf";
 		} else { // 割と女
-			status.name = "womanWalk2.gltf";
+			arrangement.status.name = "womanWalk2.gltf";
 		}
 	} else {
-		status.hp = hp;
-		status.power = uint32_t(power);
-		status.gender = MAN;
+
+		arrangement.status.hp = hp;
+		arrangement.status.power = uint32_t(power);
+		arrangement.status.gender = MAN;
 		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
 
 		if (90.0f <= genderLevel) {	// とても男
-			status.name = "manWalk.gltf";
+			arrangement.status.name = "manWalk.gltf";
 		} else if (60.0f <= genderLevel) { // 割と男
-			status.name = "manWalk2.gltf";
+			arrangement.status.name = "manWalk2.gltf";
 		} else {
-			status.name = "halfWalk.gltf"; // ハーフ
+			arrangement.status.name = "halfWalk.gltf"; // ハーフ
 		}
 	}
+}
 
-	// 自軍発車
-	if (friendlyManager_) {
-		friendlyManager_->AddFriendly(status);
+void MapField::ResetArrangementAnimation() {
+	arrangement.timer = 0.0f;
+}
+
+void MapField::UpdateArrangementAnimation() {
+	if (arrangement.timer >= arrangement.AnimationTime) {
+		return;
+	}
+
+	arrangement.timer += FPSKeeper::DeltaTimeFrame();
+
+	if (arrangement.timer < 0.5f) {
+		r32 param = arrangement.timer / 0.5f;
+
+		for (auto& row : cellsData_) {
+			for (auto& cell : row) {
+				if (cell->isRequired) {
+					cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f * (1.0f - param) });
+					cell->required->SetScale({ 1 - param, 1 - param });
+				}
+				if (cell->genderType != GenderType::None) {
+					cell->block->SetColorAlpha((1.0f - param) * 0.6f);
+				}
+			}
+		}
+	}
+	else {
+		r32 param = (arrangement.timer - 0.5f) / (arrangement.AnimationTime - 0.5f);
+		param = std::clamp(param, 0.0f, 1.0f);
+		// ブロックが消えた際に色々する
+		if (arrangement.timer - 0.5f < FPSKeeper::DeltaTimeFrame()) {
+			RandomizeTable();
+			ResetMold();
+			ResetBlocks();
+
+			// 自軍発車
+			if (friendlyManager_) {
+				friendlyManager_->AddFriendly(arrangement.status);
+			}
+		}
+
+		// 徐々に出現させる
+		for (auto& row : cellsData_) {
+			for (auto& cell : row) {
+				if (cell->isRequired) {
+					cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f * param });
+					cell->required->SetScale({ param, param });
+				}
+			}
+		}
 	}
 }
 
@@ -859,7 +966,8 @@ void MapField::ResetMold() {
 
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			} else {
+			}
+			else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 		}
@@ -867,6 +975,32 @@ void MapField::ResetMold() {
 
 	// 穴の大きさを取得
 	moldSize = mold.size;
+}
+
+void MapField::PoseMenu() {
+	if (controlMino_) return;
+	Vector2 mouse = Input::GetInstance()->GetMousePosition();
+	// PoseMenu
+	{
+		Vector3 pos = poseMenuTex_->GetPos();
+		Vector2 size = poseMenuTex_->GetSize();
+		float halfW = size.x * 0.5f;
+		float halfH = size.y * 0.5f;
+		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
+				if (!isPoseMenu_) {
+					isPoseMenu_ = true;
+				} else {
+					isPoseMenu_ = false;
+				}
+				AudioPlayer::GetInstance()->SoundPlayWave(*push);
+			}
+			poseMenuTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
+		} else {
+			poseMenuTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+		}
+	}
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
@@ -911,10 +1045,12 @@ void MapField::CellSpriteSetColor() {
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
 			block->sprite->SetColor({ 1.0f,0.0f,0.0f,0.8f });
-		} else {
+		}
+		else {
 			if (controlMino_->GetGender() == GenderType::Man) {
 				block->sprite->SetColor({ 0,0,1,0.6f });
-			} else if (controlMino_->GetGender() == GenderType::Woman) {
+			}
+			else if (controlMino_->GetGender() == GenderType::Woman) {
 				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 		}
@@ -975,7 +1111,8 @@ void MapField::LoadMinoTables() {
 
 			if (newMino->GetGender() == GenderType::Man) {
 				++table.numManMino;
-			} else {
+			}
+			else {
 				++table.numWomanMino;
 			}
 
@@ -989,7 +1126,7 @@ void MapField::LoadMinoTables() {
 			}
 			// ブロック数が異なる場合、ブロック数の多い方を優先
 			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
-			});
+		});
 
 		// ボタン位置の設定
 		if (table.minos.size() == 6) {

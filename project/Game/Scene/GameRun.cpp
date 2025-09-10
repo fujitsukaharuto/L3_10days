@@ -65,6 +65,7 @@ void GameRun::Initialize() {
 	textureManager_->Load("chain.png");
 	textureManager_->Load("manFrame.png");
 	textureManager_->Load("womanFrame.png");
+	textureManager_->Load("sceneMove.png");
 	textureManager_->Load("titleCompleted.png");
 	textureManager_->Load("half.png");
 
@@ -254,7 +255,7 @@ void GameRun::Initialize() {
 
 	sceneFactory_ = std::make_unique<SceneFactory>();
 	sceneManager_->SetFactory(sceneFactory_.get());
-	sceneManager_->StartScene("RESULT");
+	sceneManager_->StartScene("GAME");
 }
 
 void GameRun::Finalize() {

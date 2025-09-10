@@ -65,6 +65,8 @@ public:
 
 	void SetColor(const Vector4& color) { materialDate_->color = color; }
 
+	void SetColorAlpha(float alpha) { materialDate_->color.w = alpha; }
+
 	void SetUVScale(const Vector2& scale, const Vector2& uvTrans);
 
 	void SetAlphaRef(float ref) { materialDate_->AlphaRef = ref; }
