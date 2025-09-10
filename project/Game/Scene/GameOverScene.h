@@ -36,6 +36,10 @@ private:
 	bool isRetry_ = false;
 	float goTitleTime_ = 0.0f;
 
+	float goTitleReturenTime_ = 0.0f;
+	bool isGoTitle_ = false;
+	bool isGoRetry_ = false;
+
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
 	float blackLimmite = 20.0f;

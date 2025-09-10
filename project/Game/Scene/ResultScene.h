@@ -31,6 +31,8 @@ private:
 	std::unique_ptr<Sprite> cursorTex_;
 
 	float goTitleTime_ = 0.0f;
+	float goTitleReturenTime_ = 0.0f;
+	bool isGoTitle_ = false;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
