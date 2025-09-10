@@ -150,6 +150,8 @@ private:
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
 
+	bool canComplete{ false };
+
 	bool canChangeMoldType;
 	r32 hideArrowAnimationTimer{ 0.0f };
 	SimpleAnimation<r32> hideArrowAnimation{ 1.0f, 0.0f, EasingType::Linear, true, LoopType::PingPong };
