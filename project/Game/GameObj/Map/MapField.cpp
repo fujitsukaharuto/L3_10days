@@ -430,7 +430,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
@@ -449,7 +451,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
@@ -468,7 +472,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
