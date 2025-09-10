@@ -21,7 +21,7 @@ void GameOverScene::Initialize() {
 	obj3dCommon.reset(new Object3dCommon());
 	obj3dCommon->Initialize();
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { -1.02f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 0.0f, 3.5f, -20.0f };
 
 #pragma region シーン遷移用
@@ -71,6 +71,71 @@ void GameOverScene::Initialize() {
 	Vector2 mouse = Input::GetInstance()->GetMousePosition();
 	cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 
+	man1 = std::make_unique<AnimationModel>();
+	man1->Create("manWalk.gltf");
+	man1->LoadAnimationFile("manLose.gltf");
+	man1->transform.translate = { 4.0f,1.0f,5.0f };
+	man1->transform.rotate.y = 3.14f;
+
+	man2 = std::make_unique<AnimationModel>();
+	man2->Create("manWalk2.gltf");
+	man2->LoadAnimationFile("manLose.gltf");
+	man2->transform.translate = { -2.0f,1.0f,5.0f };
+	man2->transform.rotate.y = 3.14f;
+
+	half = std::make_unique<AnimationModel>();
+	half->Create("halfWalk.gltf");
+	half->LoadAnimationFile("halfLose.gltf");
+	half->transform.translate = { 1.0f,1.0f,1.0f };
+	half->transform.rotate.y = 3.14f;
+
+	woman1 = std::make_unique<AnimationModel>();
+	woman1->Create("womanWalk.gltf");
+	woman1->LoadAnimationFile("womanLose.gltf");
+	woman1->transform.translate = { 7.0f,1.5f,9.0f };
+	woman1->transform.rotate.y = 3.14f;
+
+	woman2 = std::make_unique<AnimationModel>();
+	woman2->Create("womanWalk2.gltf");
+	woman2->LoadAnimationFile("womanLose2.gltf");
+	woman2->transform.translate = { -5.0f,1.5f,9.0f };
+	woman2->transform.rotate.y = 3.14f;
+
+	man1_1 = std::make_unique<AnimationModel>();
+	man1_1->Create("manWalk.gltf");
+	man1_1->LoadAnimationFile("manLose.gltf");
+	man1_1->transform.translate = { -4.5f,-2.8f,-1.4f };
+	man1_1->transform.rotate.z = -0.34f;
+	man1_1->transform.rotate.y = 3.14f;
+
+	man2_1 = std::make_unique<AnimationModel>();
+	man2_1->Create("manWalk2.gltf");
+	man2_1->LoadAnimationFile("manLose.gltf");
+	man2_1->transform.translate = { -9.2f,13.0f,16.2f };
+	man2_1->transform.rotate.z = 3.34f;
+	man2_1->transform.rotate.y = 3.14f;
+
+	half_1 = std::make_unique<AnimationModel>();
+	half_1->Create("halfWalk.gltf");
+	half_1->LoadAnimationFile("halfLose.gltf");
+	half_1->transform.translate = { 13.5f,11.0f,13.0f };
+	half_1->transform.rotate.z = 2.8f;
+	half_1->transform.rotate.y = 3.14f;
+
+	woman1_1 = std::make_unique<AnimationModel>();
+	woman1_1->Create("womanWalk.gltf");
+	woman1_1->LoadAnimationFile("womanLose.gltf");
+	woman1_1->transform.translate = { -8.0f, 1.5f,1.0f };
+	woman1_1->transform.rotate.z = -0.20f;
+	woman1_1->transform.rotate.y = 3.14f;
+
+	woman2_1 = std::make_unique<AnimationModel>();
+	woman2_1->Create("womanWalk2.gltf");
+	woman2_1->LoadAnimationFile("womanLose2.gltf");
+	woman2_1->transform.translate = { 8.0f, -3.0f, 1.5f };
+	woman2_1->transform.rotate.z = 0.18f;
+	woman2_1->transform.rotate.y = 3.14f;
+
 	SoundData& soundData1 = audioPlayer_->SoundLoadWave("loseBGM.wav");
 	audioPlayer_->SoundLoop(soundData1);
 }
@@ -84,7 +149,18 @@ void GameOverScene::Update() {
 
 	BlackFade();
 
-	sphere->transform.rotate.y += 0.02f;
+	//sphere->transform.rotate.y += 0.02f;
+
+	man1->AnimationUpdate();
+	man2->AnimationUpdate();
+	half->AnimationUpdate();
+	woman1->AnimationUpdate();
+	woman2->AnimationUpdate();
+	man1_1->AnimationUpdate();
+	man2_1->AnimationUpdate();
+	half_1->AnimationUpdate();
+	woman1_1->AnimationUpdate();
+	woman2_1->AnimationUpdate();
 
 	if (goTitleTime_ < 90.0f) {
 		if (FPSKeeper::DeltaTime() < 3.0f) {
@@ -212,6 +288,17 @@ void GameOverScene::Draw() {
 
 #pragma region 背景描画
 
+	man1->CSDispatch();
+	man2->CSDispatch();
+	half->CSDispatch();
+	woman1->CSDispatch();
+	woman2->CSDispatch();
+	man1_1->CSDispatch();
+	man2_1->CSDispatch();
+	half_1->CSDispatch();
+	woman1_1->CSDispatch();
+	woman2_1->CSDispatch();
+
 	back_->Draw();
 	dxcommon_->ClearDepthBuffer();
 #pragma endregion
@@ -219,8 +306,18 @@ void GameOverScene::Draw() {
 
 #pragma region 3Dオブジェクト
 	obj3dCommon->PreDraw();
-	sphere->Draw();
+	//sphere->Draw();
 
+	man1->Draw();
+	man2->Draw();
+	half->Draw();
+	woman1->Draw();
+	woman2->Draw();
+	man1_1->Draw();
+	man2_1->Draw();
+	half_1->Draw();
+	woman1_1->Draw();
+	woman2_1->Draw();
 
 	frame_->Draw();
 	report_->Draw();

@@ -75,6 +75,11 @@ void AnimationModel::DebugGUI() {
 		}
 		ImGui::TreePop();
 	}
+	if (ImGui::TreeNodeEx("transform", flags)) {
+		ImGui::DragFloat3("transform", &transform.translate.x, 0.1f);
+		ImGui::DragFloat3("scale", &transform.scale.x, 0.1f);
+		ImGui::TreePop();
+	}
 	ImGui::Unindent();
 #endif // _DEBUG
 }
