@@ -3,11 +3,11 @@
 #include <memory>
 #include <vector>
 
-#include "Engine/Model/Sprite.h"
 #include "Engine/Audio/AudioPlayer.h"
+#include "Engine/Model/Sprite.h"
 
 #include "Game/GameObj/Block/Mino.h"
-
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 #include "HumanMoldManager.h"
 
 class CollisionManager;
@@ -49,6 +49,8 @@ public:
 	void AddMino();
 	void UpdateControlMino();
 
+	void UpdateCells();
+
 	void ArrowUpdate();
 	void FrameUpdate();
 
@@ -56,7 +58,11 @@ public:
 	void CellSet();
 	bool CanArrangement(); // マウスで置く際のチェック用
 
+	void ResetBlocks();
+
 	void CompleteArrangement();
+	void ResetArrangementAnimation();
+	void UpdateArrangementAnimation();
 
 	void RandomizeTable();
 	void ResetMold();
@@ -183,6 +189,15 @@ private:
 	float cellsSize_ = 18.0f; // セル一つの大きさ
 
 	HumanMoldManager moldManager;
+
+	struct Arrangement {
+		CharaStatus status;
+		r32 timer;
+		r32 AnimationTime;
+
+		std::unique_ptr<Sprite> sexualRatioSprite;
+		std::unique_ptr<Sprite> bonusSprite;
+	} arrangement;
 
 	FriendlyManager* friendlyManager_ = nullptr;
 
