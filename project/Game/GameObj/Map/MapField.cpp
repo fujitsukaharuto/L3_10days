@@ -833,7 +833,6 @@ void MapField::MoveControlMino() {
 
 void MapField::CellSet() {
 	if (CanArrangement()) {
-		hideMoldAnimationTimer = 0.0f;
 		controlMino_->Update();
 		RemoveControlMino();
 		if (canChangeMoldType) {

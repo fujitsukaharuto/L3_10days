@@ -157,7 +157,7 @@ private:
 	SimpleAnimation<r32> hideArrowAnimation{ 1.0f, 0.0f, EasingType::Linear, true, LoopType::PingPong };
 
 	r32 hideMoldAnimationTimer{ 0.0f };
-	SimpleAnimation<r32> hideMoldAnimation{ 1.0f, 0.0f, EasingType::Linear, false, LoopType::PingPong };
+	SimpleAnimation<r32> hideMoldAnimation{ 1.0f, 0.0f, EasingType::Linear, true, LoopType::PingPong };
 
 	int preGender_ = 0;
 	int gender_ = 0;
