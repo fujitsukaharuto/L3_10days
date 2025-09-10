@@ -791,17 +791,24 @@ void MapField::CompleteArrangement() {
 }
 
 void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stickOutBlocks) {
+	// 最大パワー
+	constexpr float maxPower = 50.0f;
+	// 最小パワー
+	constexpr float minPower = 0.0f;
+
 	// 人間生成処理
 	CharaStatus status;
 	// HP処理
 	i32 hp = kCellNum_ - moldSize - stickOutBlocks;
 	float genderLevel = 0.0f;
+	float t = 1.0f - (float(moldSize) - float(maxBlocks)) / float(moldSize);
+	float power = Lerp(minPower, maxPower, t);
 
 	// TODO: 5種類に増やす
 	// 女ブロックの方が多い
 	if (manBlocks < womanBlocks) {
 		status.hp = hp;
-		status.power = womanBlocks;
+		status.power = uint32_t(power);
 		status.gender = WOMAN;
 		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
 
@@ -812,7 +819,7 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 		}
 	} else {
 		status.hp = hp;
-		status.power = manBlocks;
+		status.power = uint32_t(power);
 		status.gender = MAN;
 		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
 
