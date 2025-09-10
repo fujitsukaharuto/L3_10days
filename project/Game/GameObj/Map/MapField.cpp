@@ -111,8 +111,8 @@ void MapField::Update() {
 }
 
 void MapField::Draw([[maybe_unused]] Material* mate, [[maybe_unused]] bool is) {
-	factoryTex_->Draw();
-	enemyFactoryTex_->Draw();
+	//factoryTex_->Draw();
+	//enemyFactoryTex_->Draw();
 }
 
 void MapField::DebugGUI() {
@@ -274,8 +274,8 @@ void MapField::TitleDraw() {
 	factoryBackPanelTex_->Draw();
 	frameTex_->Draw();
 	titleCompleteTex_->Draw();
-	factoryTex_->Draw();
-	enemyFactoryTex_->Draw();
+	//factoryTex_->Draw();
+	//enemyFactoryTex_->Draw();
 	manPanelTex_->Draw();
 	womanPanelTex_->Draw();
 
@@ -311,9 +311,9 @@ void MapField::BackDraw() {
 
 void MapField::FactoryDraw() {
 	// 
-	factoryBackPanelTex_->Draw();
-	frameTex_->Draw();
-	subFrameTex_->Draw();
+	factoryBackPanelTex_->Draw();//
+	frameTex_->Draw();//
+	subFrameTex_->Draw();//
 	completeTex_->Draw();
 	if (mapSizeNum_ != 2) {
 		arrowLTex_->Draw();
@@ -331,7 +331,7 @@ void MapField::FactoryDraw() {
 	}
 	genderPanelTex_->Draw();
 
-	BackPanelTex_->Draw();
+	//BackPanelTex_->Draw();
 
 	for (auto& tableMino : minoTables[tableIndex].minos) {
 		tableMino->DrawButton();
