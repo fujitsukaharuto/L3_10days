@@ -78,8 +78,11 @@ void BaseChara::Update() {
 		{
 			Search();
 			// 移動
-			velocity = moveDir_.Normalize() * speed_;
-
+			if (status_.gender == Gender::MAN) {
+				velocity = moveDir_.Normalize() * speed_;
+			} else {
+				velocity = moveDir_.Normalize() * womanSpeed_;
+			}
 			// 回転
 			const Vector3 dir = Vector3::Normalize(velocity);
 			const float yaw = std::atan2(dir.x, dir.z);
