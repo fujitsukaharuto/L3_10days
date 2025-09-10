@@ -66,6 +66,7 @@ private:
 	std::unique_ptr<Floor> floor_ = nullptr;
 
 	bool isEditorMode_ = false;
+	bool isPoseMode_ = false;
 
 	// sceneChange
 	std::unique_ptr<Sprite> black_;
