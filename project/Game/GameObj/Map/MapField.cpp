@@ -945,7 +945,7 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 
 		genderLevel = (float(womanBlocks) / float(maxBlocks)) * 100.0f;
 
-		if (90.0f <= genderLevel) {	// とても女
+		if (80.0f <= genderLevel) {	// とても女
 			arrangement.status.name = "womanWalk.gltf";
 			genderRatio = 4;
 		}
@@ -960,7 +960,7 @@ void MapField::CulGender(int maxBlocks, int manBlocks, int womanBlocks, int stic
 		arrangement.status.gender = MAN;
 		genderLevel = (float(manBlocks) / float(maxBlocks)) * 100.0f;
 
-		if (90.0f <= genderLevel) {	// とても男
+		if (80.0f <= genderLevel) {	// とても男
 			arrangement.status.name = "manWalk.gltf";
 			genderRatio = 0;
 		}

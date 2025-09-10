@@ -72,141 +72,149 @@ void BaseChara::Update() {
 	// 移動量計算
 	Vector3 velocity{};
 
-	// 状態に応じた更新処理
-	switch (state_) {
-		case State::Search:
-		{
-			Search();
-			// 移動
-			if (status_.gender == Gender::MAN) {
-				velocity = moveDir_.Normalize() * speed_;
-			} else {
-				velocity = moveDir_.Normalize() * womanSpeed_;
+	if (!isWinTime_) {
+		// 状態に応じた更新処理
+		switch (state_) {
+			case State::Search:
+			{
+				Search();
+				// 移動
+				if (status_.gender == Gender::MAN) {
+					velocity = moveDir_.Normalize() * speed_;
+				} else {
+					velocity = moveDir_.Normalize() * womanSpeed_;
+				}
+				// 回転
+				const Vector3 dir = Vector3::Normalize(velocity);
+				const float yaw = std::atan2(dir.x, dir.z);
+				OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
 			}
-			// 回転
-			const Vector3 dir = Vector3::Normalize(velocity);
-			const float yaw = std::atan2(dir.x, dir.z);
-			OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
+			break;
+			case State::Approach:
+			{
+				// 状態判定
+				if (!target_) {
+					state_ = State::Search;
+					if (status_.name == "womanWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "womanWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+					} else if (status_.name == "manWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					} else if (status_.name == "manWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "halfWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					}
+					return;
+				}
+				// ターゲットした敵に近づいていく
+
+				// ターゲットの座標
+				const Vector3 targetPos = target_->GetAnimModel()->transform.translate;
+				// 自身の座標
+				const Vector3 pos = OriginGameObject::GetAnimModel()->transform.translate;
+				// 方向ベクトルを求める
+				const Vector3 dir = targetPos - pos;
+				// 距離を計算
+				const float len = Vector3::Length(dir);
+
+				// 一定距離に入ったら戦闘開始
+				if (len < fightRange_) {
+					state_ = State::Fight;
+					if (status_.name == "womanWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.002");
+					} else if (status_.name == "womanWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+					} else if (status_.name == "manWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+					} else if (status_.name == "manWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
+					} else if (status_.name == "halfWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.004_3");
+					}
+					return;
+				}
+
+				// 正規化
+				const Vector3 nDir = Vector3::Normalize(dir);
+				if (status_.gender == Gender::MAN) {
+					// 移動量計算
+					velocity = nDir * approachSpeed_;
+				} else {
+					velocity = nDir * womanApproachSpeed_;
+				}
+
+				// 回転
+				const float yaw = std::atan2(dir.x, dir.z);
+				OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
+			}
+			break;
+			case State::Fight:
+			{
+				// 状態判定
+				if (!target_) {
+					state_ = State::Search;
+					if (status_.name == "womanWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "womanWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+					} else if (status_.name == "manWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					} else if (status_.name == "manWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "halfWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					}
+					return;
+				}
+
+				// タイマー処理
+				if (actionCoolTimer_ < kActionCoolTime_) {
+					actionCoolTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
+				} else {
+					actionCoolTimer_ = 0.0f;
+					Action();
+				}
+
+				// ターゲットの座標
+				const Vector3 targetPos = target_->GetAnimModel()->transform.translate;
+				// 自身の座標
+				const Vector3 pos = OriginGameObject::GetAnimModel()->transform.translate;
+				// 方向ベクトルを求める
+				const Vector3 dir = targetPos - pos;
+				// 距離を計算
+				const float len = Vector3::Length(dir);
+
+				// 一定距離から離れたら接近フェーズに
+				if (len >= fightRange_) {
+					actionCoolTimer_ = 0.0f;
+					state_ = State::Approach;
+					if (status_.name == "womanWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "womanWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+					} else if (status_.name == "manWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					} else if (status_.name == "manWalk2.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+					} else if (status_.name == "halfWalk.gltf") {
+						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+					}
+					return;
+				}
+
+				float yaw = std::atan2(dir.x, dir.z);
+				OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
+			}
+			break;
 		}
-		break;
-		case State::Approach:
-		{
-			// 状態判定
-			if (!target_) {
-				state_ = State::Search;
-				if (status_.name == "womanWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "womanWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
-				} else if (status_.name == "manWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				} else if (status_.name == "manWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "halfWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				}
-				return;
-			}
-			// ターゲットした敵に近づいていく
 
-			// ターゲットの座標
-			const Vector3 targetPos = target_->GetAnimModel()->transform.translate;
-			// 自身の座標
-			const Vector3 pos = OriginGameObject::GetAnimModel()->transform.translate;
-			// 方向ベクトルを求める
-			const Vector3 dir = targetPos - pos;
-			// 距離を計算
-			const float len = Vector3::Length(dir);
+		// 移動
+		OriginGameObject::GetAnimModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
 
-			// 一定距離に入ったら戦闘開始
-			if (len < fightRange_) {
-				state_ = State::Fight;
-				if (status_.name == "womanWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.002");
-				} else if (status_.name == "womanWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-				} else if (status_.name == "manWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-				} else if (status_.name == "manWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.003");
-				} else if (status_.name == "halfWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.004_3");
-				}
-				return;
-			}
-
-			// 正規化
-			const Vector3 nDir = Vector3::Normalize(dir);
-			// 移動量計算
-			velocity = nDir * approachSpeed_;
-
-			// 回転
-			const float yaw = std::atan2(dir.x, dir.z);
-			OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
-		}
-		break;
-		case State::Fight:
-		{
-			// 状態判定
-			if (!target_) {
-				state_ = State::Search;
-				if (status_.name == "womanWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "womanWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
-				} else if (status_.name == "manWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				} else if (status_.name == "manWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "halfWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				}
-				return;
-			}
-
-			// タイマー処理
-			if (actionCoolTimer_ < kActionCoolTime_) {
-				actionCoolTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
-			} else {
-				actionCoolTimer_ = 0.0f;
-				Action();
-			}
-
-			// ターゲットの座標
-			const Vector3 targetPos = target_->GetAnimModel()->transform.translate;
-			// 自身の座標
-			const Vector3 pos = OriginGameObject::GetAnimModel()->transform.translate;
-			// 方向ベクトルを求める
-			const Vector3 dir = targetPos - pos;
-			// 距離を計算
-			const float len = Vector3::Length(dir);
-
-			// 一定距離から離れたら接近フェーズに
-			if (len >= fightRange_) {
-				actionCoolTimer_ = 0.0f;
-				state_ = State::Approach;
-				if (status_.name == "womanWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "womanWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
-				} else if (status_.name == "manWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				} else if (status_.name == "manWalk2.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-				} else if (status_.name == "halfWalk.gltf") {
-					OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-				}
-				return;
-			}
-
-			float yaw = std::atan2(dir.x, dir.z);
-			OriginGameObject::GetAnimModel()->transform.rotate.y = yaw;
-		}
-		break;
 	}
 
-	// 移動
-	OriginGameObject::GetAnimModel()->transform.translate += velocity * FPSKeeper::DeltaTime();
 	OriginGameObject::GetAnimModel()->AnimationUpdate();
 }
 
@@ -223,14 +231,17 @@ void BaseChara::Draw(Material* mate, bool is) {
 }
 
 void BaseChara::GetDamage(int32_t damage) {
+	AudioPlayer::GetInstance()->SoundPlayWave(*attack);
 	status_.hp -= damage;
 	if (status_.hp < 0) {
 		status_.hp = 0;
 		isAlive_ = false;
 	}
+
 }
 
 void BaseChara::GetHeal(int32_t heal) {
+	AudioPlayer::GetInstance()->SoundPlayWave(*recovery, 0.1f);
 	status_.hp += heal;
 	if (status_.hp > status_.maxHp) {
 		status_.hp = status_.maxHp;
@@ -275,12 +286,10 @@ void BaseChara::Action() {
 			if (target_) {
 				target_->GetDamage(status_.power);
 			}
-			AudioPlayer::GetInstance()->SoundPlayWave(*attack);
 			break;
 		case WOMAN:
 			if (target_) {
 				target_->GetHeal(status_.power);
-				AudioPlayer::GetInstance()->SoundPlayWave(*recovery, 0.1f);
 			}
 			break;
 	}

@@ -92,7 +92,7 @@ protected:
 
 	// ターゲットに近づくときのスピード
 	float approachSpeed_ = 0.02f;
-
+	float womanApproachSpeed_ = 0.01f;
 	// ステータス
 	CharaStatus status_;
 
@@ -113,4 +113,9 @@ protected:
 
 	EnemyManager* ene_;
 	FriendlyManager* fri_;
+
+	float winTimer_ = 0.0f;
+	float winTime_ = 2.0f;
+
+	bool isWinTime_ = false;
 };
