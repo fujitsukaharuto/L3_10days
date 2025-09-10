@@ -168,6 +168,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Light\LightManager.cpp" />
     <ClCompile Include="Engine\Light\SpotLight.cpp" />
     <ClCompile Include="Engine\Logger\Logger.cpp" />
+    <ClCompile Include="Engine\Math\Animation\Easing.cpp" />
     <ClCompile Include="Engine\Math\Matrix\MatrixCalculation.cpp" />
     <ClCompile Include="Engine\Math\Quaternion\Quaternion.cpp" />
     <ClCompile Include="Engine\Math\Random\Random.cpp" />
@@ -287,6 +288,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Light\SpotLight.h" />
     <ClInclude Include="Engine\Logger\Logger.h" />
     <ClInclude Include="Engine\Math\Animation\Animation.h" />
+    <ClInclude Include="Engine\Math\Animation\Easing.h" />
     <ClInclude Include="Engine\Math\Animation\Keyframe.h" />
     <ClInclude Include="Engine\Math\Animation\NodeAnimation.h" />
     <ClInclude Include="Engine\Math\Animation\Skelton.h" />

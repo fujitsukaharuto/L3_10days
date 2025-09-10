@@ -160,6 +160,7 @@ private:
 	float arrowMoveTime_;
 	float frameMoveTime_;
 	float titleToGameTime_ = 90.0f;
+	float menuMoveTime_ = 0.0f;
 	Vector2 selectorMaxSize_;
 	Vector2 selectorMinSize_;
 	Vector2 selectorDeleteSize_;
@@ -187,7 +188,8 @@ private:
 	std::unique_ptr<Sprite> selectorTex_;
 	std::unique_ptr<Sprite> nowSelectorTex_;
 
-	std::unique_ptr<Sprite> poseMenuTex_;
+	std::unique_ptr<Sprite> menuButtonTex_;
+	std::unique_ptr<Sprite> menuTex_;
 
 
 	float nextSpace_ = 10.0f;
@@ -198,12 +200,15 @@ private:
 	HumanMoldManager moldManager;
 
 	struct Arrangement {
+		static constexpr r32 GenderSpriteHeight = 60;
+		static constexpr r32 HumanRatioHeight = 60;
+
 		CharaStatus status;
 		r32 timer;
 		r32 AnimationTime;
 
 		std::unique_ptr<Sprite> genderRatioSprite;
-		std::unique_ptr<Sprite> bonusSprite;
+		std::unique_ptr<Sprite> humanRatioSprite;
 	} arrangement;
 
 	FriendlyManager* friendlyManager_ = nullptr;
