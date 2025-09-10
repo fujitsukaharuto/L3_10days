@@ -74,6 +74,9 @@ void GameRun::Initialize() {
 	textureManager_->Load("menu.png");
 	textureManager_->Load("human.png");
 	textureManager_->Load("manWoman.png");
+	textureManager_->Load("wave1.png");
+	textureManager_->Load("wave2.png");
+	textureManager_->Load("wave3.png");
 
 
 #pragma endregion

@@ -5,6 +5,7 @@
 
 #include "GameObj/Chara/Enemy/Enemy.h"
 #include "GameObj/Factory/Factory.h"
+#include "Engine/Model/Sprite.h"
 
 class FriendlyManager;
 
@@ -26,6 +27,7 @@ public:
 
 	void DeleteDeadObject();
 
+	void BackDraw();
 	void Draw();
 
 	void AddEnemy(const CharaStatus& status);
@@ -63,6 +65,10 @@ private:
 	bool isWin_ = false;
 
 	int32_t currentWave_ = 0;
+
+	std::unique_ptr<Sprite> wave1;
+	std::unique_ptr<Sprite> wave2;
+	std::unique_ptr<Sprite> wave3;
 
 	// 工場
 	std::unique_ptr<Factory> factory_;

@@ -7,6 +7,19 @@
 EnemyManager::EnemyManager() {
 	enemies_.clear();
 
+	wave1 = std::make_unique<Sprite>();
+	wave2 = std::make_unique<Sprite>();
+	wave3 = std::make_unique<Sprite>();
+
+	wave1->Load("wave1.png");
+	wave2->Load("wave2.png");
+	wave3->Load("wave3.png");
+
+	wave1->SetPos({ 970.0f,100.0f,0.0f });
+	wave2->SetPos({ 970.0f,100.0f,0.0f });
+	wave3->SetPos({ 970.0f,100.0f,0.0f });
+
+
 	factory_ = std::make_unique<Factory>(popPosition_, false);
 }
 
@@ -55,6 +68,16 @@ void EnemyManager::CheckIsTargetDead() {
 void EnemyManager::CSDispatch() {
 	for (auto& obj : enemies_) {
 		obj->CSDispatch();
+	}
+}
+
+void EnemyManager::BackDraw() {
+	if (currentWave_ == 0) {
+		wave1->Draw();
+	} else if (currentWave_ == 1) {
+		wave2->Draw();
+	} else if (currentWave_ == 2) {
+		wave3->Draw();
 	}
 }
 

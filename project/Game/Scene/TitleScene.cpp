@@ -176,6 +176,7 @@ void TitleScene::Draw() {
 	terrain_->Draw();
 	dxcommon_->ClearDepthBuffer();
 	map_->FactoryDraw();
+	enemyManager_->BackDraw();
 	dxcommon_->ClearDepthBuffer();
 
 	obj3dCommon->PreDraw();
