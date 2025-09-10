@@ -192,12 +192,15 @@ private:
 	HumanMoldManager moldManager;
 
 	struct Arrangement {
+		static constexpr r32 GenderSpriteHeight = 60;
+		static constexpr r32 HumanRatioHeight = 60;
+
 		CharaStatus status;
 		r32 timer;
 		r32 AnimationTime;
 
 		std::unique_ptr<Sprite> genderRatioSprite;
-		std::unique_ptr<Sprite> bonusSprite;
+		std::unique_ptr<Sprite> humanRatioSprite;
 	} arrangement;
 
 	FriendlyManager* friendlyManager_ = nullptr;
