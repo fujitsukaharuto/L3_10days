@@ -85,7 +85,7 @@ void MapField::Initialize() {
 	mapSizeTex_->SetSize({ 40.0f, 50.0f });
 	mapSizeTex_->SetPos({ 285.0f, 170.0f,0.0f });
 	mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
-	 
+
 	menuButtonTex_ = std::make_unique<Sprite>();
 	menuButtonTex_->Load("menuButton.png");
 	menuButtonTex_->SetSize({ 50.0f, 50.0f });
@@ -110,6 +110,7 @@ void MapField::Initialize() {
 	push = &AudioPlayer::GetInstance()->SoundLoadWave("push.wav");
 	grab = &AudioPlayer::GetInstance()->SoundLoadWave("grab.wav");
 	returnWav = &AudioPlayer::GetInstance()->SoundLoadWave("return.wav");
+	machine = &AudioPlayer::GetInstance()->SoundLoadWave("machine.wav");
 
 	arrangement.AnimationTime = 1.0f;
 	arrangement.timer = arrangement.AnimationTime;
@@ -272,6 +273,7 @@ void MapField::TitleUpdateSelectPanel() {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					AudioPlayer::GetInstance()->SoundPlayWave(*machine);
 					CharaStatus status;
 					status.gender = Gender::WOMAN;
 					status.name = "womanWalk.gltf";
@@ -424,9 +426,27 @@ void MapField::CellRequiredSpriteDraw() {
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
 		UpdateSelectPanelControlling();
-	} else {
+	}
+	else {
 		UpdateSelectPanelUncontrolling();
 	}
+
+	// 矢印関連
+	if (hideArrowAnimationTimer <= 2.0f) {
+		if ((!canChangeMoldType && hideArrowAnimationTimer < 1.0f) ||
+			(canChangeMoldType && hideArrowAnimationTimer >= 1.0f)) {
+			hideArrowAnimationTimer += FPSKeeper::DeltaTime();
+		}
+		r32 alpha = hideArrowAnimation.GetValue(hideArrowAnimationTimer);
+		arrowLTex_->SetColorAlpha(alpha);
+		arrowRTex_->SetColorAlpha(alpha);
+	}
+	else {
+		arrowLTex_->SetColorAlpha(1.0f);
+		arrowRTex_->SetColorAlpha(1.0f);
+	}
+
+	UpdateMold();
 
 	if (!isPoseMenu_) {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
@@ -441,6 +461,7 @@ void MapField::UpdateSelectPanel() {
 				if (!controlMino_) {
 					CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
 					ClickEmit_.pos_ = { 2.71f,9.09f,0.0f };
 					ClickEmit_.Emit();
 				} else {
@@ -448,7 +469,8 @@ void MapField::UpdateSelectPanel() {
 				}
 			}
 			completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
-		} else {
+		}
+		else {
 			completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
@@ -587,12 +609,16 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		float halfW = size.x * 0.5f;
 		float halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH && 
+			canChangeMoldType) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_ && /*minos_.size() == 0 && */mapSizeNum_ != 2) {
 					mapSizeNum_++;
+					--moldType;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
+					hideArrowAnimationTimer = 0.0f;
+					hideMoldAnimationTimer = 0.0f;
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ -290.0f, 400.0f,0.0f });
@@ -612,12 +638,16 @@ void MapField::UpdateSelectPanelUncontrolling() {
 		halfW = size.x * 0.5f;
 		halfH = size.y * 0.5f;
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
-			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
+			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH && 
+			canChangeMoldType) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 				if (!controlMino_ && /*minos_.size() == 0 && */ mapSizeNum_ != 0) {
 					mapSizeNum_--;
+					++moldType;
 					mapSizeTex_->SetRange({ mapSizeNum_ * 40.0f,0.0f }, { 40.0f,50.0f });
 
+					hideArrowAnimationTimer = 0.0f;
+					hideMoldAnimationTimer = 0.0f;
 					frameMoveTime_ = 30.0f;
 					frameTex_->SetPos({ 285.0f, 400.0f,0.0f });
 					subFrameTex_->SetPos({ 880.0f, 400.0f,0.0f });
@@ -801,8 +831,13 @@ void MapField::MoveControlMino() {
 
 void MapField::CellSet() {
 	if (CanArrangement()) {
+		hideMoldAnimationTimer = 0.0f;
 		controlMino_->Update();
 		RemoveControlMino();
+		if (canChangeMoldType) {
+			hideArrowAnimationTimer = 0.0f;
+		}
+		canChangeMoldType = false; // ミノを配置したら鋳型変更不可にする
 		AudioPlayer::GetInstance()->SoundPlayWave(*returnWav);
 		return;
 	}
@@ -961,7 +996,7 @@ void MapField::UpdateArrangementAnimation() {
 		r32 param = (arrangement.timer - 0.5f) / (arrangement.AnimationTime - 0.5f);
 		param = std::clamp(param, 0.0f, 1.0f);
 		// ブロックが消えた際に色々する
-		if (arrangement.timer - 0.5f < FPSKeeper::DeltaTimeFrame()) {
+		if (arrangement.timer - 0.5f < FPSKeeper::DeltaTimeFrame() && arrangement.timer >= 0.0f) {
 			RandomizeTable();
 			ResetMold();
 			ResetBlocks();
@@ -1036,8 +1071,55 @@ void MapField::RandomizeTable() {
 }
 
 void MapField::ResetMold() {
+	canChangeMoldType = true;
 	// セルの選択
-	auto& mold = moldManager.random_select(minoTables[tableIndex].friendlyType);
+	useMoldIndex = moldManager.random_select();
+
+	WriteMold();
+}
+
+void MapField::UpdateMold() {
+	if (hideMoldAnimationTimer >= 2.0f) {
+		return;
+	}
+
+	hideMoldAnimationTimer += FPSKeeper::DeltaTime();
+	hideMoldAnimationTimer = std::clamp(hideMoldAnimationTimer, 0.0f, 2.0f);
+
+	if (hideMoldAnimationTimer < 0.3f) {
+		r32 param = hideMoldAnimationTimer / 0.3f;
+		for (auto& row : cellsData_) {
+			for (auto& cell : row) {
+				if (cell->isRequired) {
+					cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f * (1.0f - param) });
+					cell->required->SetScale({ 1 - param, 1 - param });
+				}
+			}
+		}
+	}
+	else if (hideMoldAnimationTimer >= 1.7f) {
+		r32 param = (hideMoldAnimationTimer - 1.7f) / (2.0f - 1.7f);
+		param = std::clamp(param, 0.0f, 1.0f);
+		for (auto& row : cellsData_) {
+			for (auto& cell : row) {
+				if (cell->isRequired) {
+					cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f * param });
+					cell->required->SetScale({ param, param });
+				}
+			}
+		}
+	}
+	else if (hideMoldAnimationTimer - 0.3f < FPSKeeper::DeltaTime() && hideMoldAnimationTimer >= 0.0f) {
+		WriteMold();
+	}
+}
+
+void MapField::WriteMold() {
+	if (!canChangeMoldType) {
+		return;
+	}
+
+	const auto& mold = moldManager.get_mold(static_cast<MoldType>(moldType), useMoldIndex[moldType]);
 	// 書き込み&再度初期化
 	for (i32 rowI = 0; rowI < kMapHeight_; ++rowI) {
 		for (i32 colI = 0; colI < kMapWidth_; ++colI) {
@@ -1059,7 +1141,7 @@ void MapField::ResetMold() {
 }
 
 void MapField::PoseMenu() {
-	
+
 	if (menuMoveTime_ > 0.0f) {
 		menuMoveTime_ -= FPSKeeper::DeltaTime();
 
@@ -1067,7 +1149,8 @@ void MapField::PoseMenu() {
 		float posX = 0.0f;
 		if (isPoseMenu_) {
 			posX = std::lerp(-450.0f, 400.0f, t);
-		} else {
+		}
+		else {
 			posX = std::lerp(400.0f, -450.0f, t);
 		}
 		menuTex_->SetPos({ posX, 460.0f,0.0f });
@@ -1076,7 +1159,8 @@ void MapField::PoseMenu() {
 			menuMoveTime_ = 0.0f;
 			if (isPoseMenu_) {
 				menuTex_->SetPos({ 400.0f, 460.0f,0.0f });
-			} else {
+			}
+			else {
 				menuTex_->SetPos({ -450.0f, 460.0f,0.0f });
 			}
 		}
@@ -1107,7 +1191,8 @@ void MapField::PoseMenu() {
 				AudioPlayer::GetInstance()->SoundPlayWave(*push);
 			}
 			menuButtonTex_->SetColor({ 0.5f,0.5f,0.5f,1.0f });
-		} else {
+		}
+		else {
 			menuButtonTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
@@ -1212,7 +1297,6 @@ void MapField::LoadMinoTables() {
 		nlohmann::json json = JsonSerializer::DeserializeJsonData(file.path().string());
 
 		auto& table = minoTables.emplace_back();
-		table.friendlyType = json["Type"];
 		for (auto& minoJson : json["Minos"]) {
 			std::unique_ptr<Mino> newMino = std::make_unique<Mino>();
 

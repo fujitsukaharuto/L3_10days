@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <array>
 #include <filesystem>
+#include <vector>
 
 enum class MoldType {
 	Small,
@@ -19,7 +20,9 @@ public:
 public:
 	void load();
 
-	const Mold& random_select(MoldType type);
+	std::array<i32, 3> random_select();
+
+	const Mold& get_mold(MoldType type, i32 index);
 
 private:
 	MoldType load_mold(const std::filesystem::path& path, HumanMoldManager::Mold& result);

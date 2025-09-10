@@ -85,7 +85,7 @@ void GameOverScene::Initialize() {
 
 	man2 = std::make_unique<AnimationModel>();
 	man2->Create("manWalk2.gltf");
-	man2->LoadAnimationFile("manLose.gltf");
+	man2->LoadAnimationFile("manLose2.gltf");
 	man2->transform.translate = { -2.0f,1.0f,5.0f };
 	man2->transform.rotate.y = 3.14f;
 
@@ -116,7 +116,7 @@ void GameOverScene::Initialize() {
 
 	man2_1 = std::make_unique<AnimationModel>();
 	man2_1->Create("manWalk2.gltf");
-	man2_1->LoadAnimationFile("manLose.gltf");
+	man2_1->LoadAnimationFile("manLose2.gltf");
 	man2_1->transform.translate = { -9.2f,13.0f,16.2f };
 	man2_1->transform.rotate.z = 3.34f;
 	man2_1->transform.rotate.y = 3.14f;

@@ -166,8 +166,6 @@ void UsableMinoEditor::Serialize() const {
 			nlohmann::json& minoJson = minosJson.emplace_back();
 			const MinoEditor::Data& data = minos.GetData();
 			minoJson["Name"] = data.name;
-			minoJson["Color"] = { data.color.x,data.color.y,data.color.z };
-			minoJson["NumMaxUse"] = data.numMaxUse;
 			minoJson["Blocks"] = data.blocks;
 			minoJson["GenderType"] = data.gender;
 		}
@@ -195,13 +193,6 @@ void UsableMinoEditor::Deserialize() {
 				MinoEditor::Data minoData;
 				if (minoJson.contains("Name") && minoJson["Name"].is_string()) {
 					minoData.name = minoJson["Name"];
-				}
-				if (minoJson.contains("Color") && minoJson["Color"].is_array() && minoJson["Color"].size() == 3) {
-					auto& colorArray = minoJson["Color"];
-					minoData.color = { colorArray[0].get<float>(), colorArray[1].get<float>(), colorArray[2].get<float>() };
-				}
-				if (minoJson.contains("NumMaxUse") && minoJson["NumMaxUse"].is_number()) {
-					minoData.numMaxUse = minoJson["NumMaxUse"];
 				}
 				if (minoJson.contains("GenderType") && minoJson["GenderType"].is_number()) {
 					minoData.gender = minoJson["GenderType"];
