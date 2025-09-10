@@ -403,7 +403,7 @@ void MapField::UpdateSelectPanel() {
 		UpdateSelectPanelUncontrolling();
 	}
 
-	if (isPoseMenu_) {
+	if (!isPoseMenu_) {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		// 完了を押す
 		Vector3 pos = completeTex_->GetPos();
