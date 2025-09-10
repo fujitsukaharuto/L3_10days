@@ -14,36 +14,29 @@ WaveEditor::WaveEditor() {
 
 void WaveEditor::Draw() {
 #ifdef _DEBUG
-
 	ImGui::Begin("WaveEditor");
 
-	// 上部の操作ボタン群
-	if (ImGui::Button("Add Wave")) {
-		datas_.push_back(WaveData{});
-	}
+	// 上部ボタン
+	if (ImGui::Button("Add Wave")) { datas_.push_back(WaveData{}); }
 	ImGui::SameLine();
-	if (ImGui::Button("Reload")) {
-		LoadFile();
-	}
+	if (ImGui::Button("Reload")) { LoadFile(); }
 	ImGui::SameLine();
-	if (ImGui::Button("Save")) {
-		SaveFile();
-	}
+	if (ImGui::Button("Save")) { SaveFile(); }
 
 	ImGui::Separator();
 
-	// 各 Wave の編集 UI
 	for (int wi = 0; wi < static_cast<int>(datas_.size()); ++wi) {
 		auto& w = datas_[wi];
 		ImGui::PushID(wi);
 
-		if (ImGui::CollapsingHeader((std::string("Wave ") + std::to_string(wi)).c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
-			// CoolTime
+		bool skip_rest_of_wave = false; // ← 追加
+
+		if (ImGui::CollapsingHeader((std::string("Wave ") + std::to_string(wi)).c_str(),
+			ImGuiTreeNodeFlags_DefaultOpen)) {
+
 			ImGui::InputFloat("CoolTime", &w.enemyPopCoolTime_);
 
-			// PopCycle 編集
 			ImGui::Text("PopCycle");
-			// 1行ごと編集 + 追加/削除
 			for (int ci = 0; ci < static_cast<int>(w.enemyPopCycle_.size()); ++ci) {
 				ImGui::PushID(ci);
 				int v = w.enemyPopCycle_[ci];
@@ -52,34 +45,43 @@ void WaveEditor::Draw() {
 				}
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Delete")) {
+					// この要素を消す
 					w.enemyPopCycle_.erase(w.enemyPopCycle_.begin() + ci);
-					ImGui::PopID();
-					// erase 後は次の index が詰まるのでループ1回飛ばす
-					goto next_wave;
+					ImGui::PopID();           // ← 内側IDは必ず対応させる
+					skip_rest_of_wave = true; // ← このWaveの残りUIをスキップ
+					break;                    // ci ループを抜ける
 				}
 				ImGui::PopID();
 			}
-			if (ImGui::SmallButton("Add Cycle")) {
-				w.enemyPopCycle_.push_back(0);
-			}
 
-			// Wave 削除
-			ImGui::Separator();
-			if (ImGui::Button("Delete Wave")) {
-				datas_.erase(datas_.begin() + wi);
-				ImGui::PopID();
-				// erase 後は vector が詰まるので次の wave へ
-				break;
+			if (!skip_rest_of_wave) {
+				if (ImGui::SmallButton("Add Cycle")) {
+					w.enemyPopCycle_.push_back(0);
+				}
+
+				ImGui::Separator();
+				if (ImGui::Button("Delete Wave")) {
+					datas_.erase(datas_.begin() + wi);
+					ImGui::PopID(); // wi の PushID に対応
+					// eraseで詰まるので index を戻して次へ
+					wi--;
+					continue; // 次のWaveへ
+				}
 			}
 		}
 
-		ImGui::PopID();
-	next_wave:;
+		ImGui::PopID(); // ← wi の PushID に必ず対応
+
+		if (skip_rest_of_wave) {
+			// PopCycle削除後はこのWaveの残りを描かず次のWaveへ
+			continue;
+		}
 	}
 
 	ImGui::End();
-#endif // _DEBUG
+#endif
 }
+
 
 std::vector<WaveData> WaveEditor::GetData() {
 	return datas_;
