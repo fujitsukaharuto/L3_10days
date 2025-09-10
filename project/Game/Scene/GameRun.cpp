@@ -68,6 +68,10 @@ void GameRun::Initialize() {
 	textureManager_->Load("sceneMove.png");
 	textureManager_->Load("titleCompleted.png");
 	textureManager_->Load("half.png");
+	textureManager_->Load("woman1.png");
+	textureManager_->Load("woman2.png");
+	textureManager_->Load("menuButton.png");
+	textureManager_->Load("menu.png");
 
 
 #pragma endregion
