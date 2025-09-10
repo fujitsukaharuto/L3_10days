@@ -20,10 +20,6 @@ bool MinoEditor::DrawGUI() {
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Woman", data.gender == GenderType::Woman)) data.gender = GenderType::Woman;
 
-	ImGui::ColorEdit3("Color", &data.color.x, ImGuiColorEditFlags_Float | ImGuiColorEditFlags_InputRGB);
-
-	ImGui::InputInt("MaxUse", &data.numMaxUse, 1, 1);
-
 	ImGui::Separator();
 	ImGui::Text("Blocks");
 
