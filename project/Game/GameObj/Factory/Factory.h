@@ -21,15 +21,20 @@ public:
 
 	void Draw(Material* mate = nullptr, bool is = false)override;
 
+	void DebugUI();
+
 private:
+	bool isFriend_ = false;
 	bool isPop_ = false;
 	const float popTime_ = 0.5f;
 	float popTimer_ = 0.0f;
 
+	Vector3 pos_;
+
 	FactoryState state_;
 
 	SimpleAnimation<Vector3> animation;
-	Vector3 popMinScale_ = { 2.0f,1.0f,20.0f };
-	Vector3 popMaxScale_ = { 4.0f,0.5f,20.0f };
+	Vector3 popMinScale_ = { 2.0f,3.0f,20.0f };
+	Vector3 popMaxScale_ = { 4.0f,1.5f,20.0f };
 
 };

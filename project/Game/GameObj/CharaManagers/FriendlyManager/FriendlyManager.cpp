@@ -53,7 +53,7 @@ void FriendlyManager::AddFriendly(const CharaStatus& status) {
 	const float posZ = Random::GetFloat(minPopRangeZ_, maxPopRangeZ_);
 	popPosition_.z = posZ;
 	std::unique_ptr<Friendly> newObj = std::make_unique<Friendly>(status,
-		Vector3(popPosition_.x + 1.0f, popPosition_.y, popPosition_.z));
+		Vector3(popPosition_.x + 3.0f, popPosition_.y, popPosition_.z));
 
 	newObj->SetEne(ene_);
 	newObj->SetFri(this);

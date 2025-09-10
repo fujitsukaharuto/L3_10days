@@ -24,7 +24,7 @@ void GameScene::Initialize() {
 	MyWin::GetInstance()->SetDrawCursor(false);
 #endif // !_DEBUG
 
-	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.001f,0.0f,0.0f };
+	CameraManager::GetInstance()->GetCamera()->transform.rotate = { 0.0f,0.0f,0.0f };
 	CameraManager::GetInstance()->GetCamera()->transform.translate = { 20.5f, 25.0f, -300.0f };
 
 	CameraManager::GetInstance()->GetCamera()->SetIsHeiko(true);
