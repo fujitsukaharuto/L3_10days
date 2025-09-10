@@ -51,13 +51,7 @@ public:
 	const std::vector<std::unique_ptr<Block>>& GetBlocks() const {
 		return blocks_;
 	}
-	std::vector<std::unique_ptr<Block>>& GetBlock() {
-		return blocks_;
-	}
 	GenderType GetGender() { return gender_; }
-
-	Trans& GetTransform();
-	const Trans& GetTransform() const;
 
 	void SetupButtonPosition(const Vector3& pos);
 
