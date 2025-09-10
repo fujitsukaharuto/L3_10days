@@ -65,6 +65,7 @@ void GameRun::Initialize() {
 	textureManager_->Load("chain.png");
 	textureManager_->Load("manFrame.png");
 	textureManager_->Load("womanFrame.png");
+	textureManager_->Load("sceneMove.png");
 	textureManager_->Load("titleCompleted.png");
 	textureManager_->Load("half.png");
 

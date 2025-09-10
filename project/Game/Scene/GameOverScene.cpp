@@ -31,9 +31,9 @@ void GameOverScene::Initialize() {
 
 #pragma region シーン遷移用
 	black_ = std::make_unique<Sprite>();
-	black_->Load("white2x2.png");
-	black_->SetColor({ 0.0f,0.0f,0.0f,1.0f });
-	black_->SetSize({ 1280.0f,720.0f });
+	black_->Load("sceneMove.png");
+	black_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
+	black_->SetPos({ 0.0f,0.0f,0.0f });
 	black_->SetAnchor({ 0.0f,0.0f });
 #pragma endregion
 
@@ -393,7 +393,11 @@ void GameOverScene::BlackFade() {
 	if (isChangeFase) {
 		if (blackTime < blackLimmite) {
 			blackTime += FPSKeeper::DeltaTime();
+			float t = (blackTime / blackLimmite);
+			float x = std::lerp(-1610.0f, 0.0f, t);
+			black_->SetPos({ x,0.0f,0.0f });
 			if (blackTime >= blackLimmite) {
+				black_->SetPos({ 0.0f,0.0f,0.0f });
 				blackTime = blackLimmite;
 			}
 		} else {
@@ -408,12 +412,15 @@ void GameOverScene::BlackFade() {
 			if (FPSKeeper::DeltaTime() < 3.0f) {
 				blackTime -= FPSKeeper::DeltaTime();
 			}
+			float t = 1.0f - (blackTime / blackLimmite);
+			black_->SetPos({ 1290.0f * t,0.0f,0.0f });
 			if (blackTime <= 0.0f) {
+				black_->SetPos({ 1290.0f,0.0f,0.0f });
 				blackTime = 0.0f;
 			}
 		}
 	}
-	black_->SetColor({ 0.0f,0.0f,0.0f,Lerp(0.0f,1.0f,(1.0f / blackLimmite * blackTime)) });
+
 	if (isGoTitle_) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
