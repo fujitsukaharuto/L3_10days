@@ -458,7 +458,7 @@ void MapField::UpdateSelectPanel() {
 		if (mouse.x >= pos.x - halfW && mouse.x <= pos.x + halfW &&
 			mouse.y >= pos.y - halfH && mouse.y <= pos.y + halfH) {
 			if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
-				if (!controlMino_　|| canComplete) {
+				if (!controlMino_ || canComplete) {
 					CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
 					AudioPlayer::GetInstance()->SoundPlayWave(*machine, 0.15f);
