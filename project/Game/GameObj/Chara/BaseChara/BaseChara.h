@@ -4,6 +4,7 @@
 
 #include "Game/OriginGameObject.h"
 #include "Game/Collider/AABBCollider.h"
+#include "Engine/Audio/AudioPlayer.h"
 
 enum Gender {
 	MAN,
@@ -43,7 +44,7 @@ class FriendlyManager;
 class BaseChara: public OriginGameObject {
 public:
 	BaseChara(const CharaStatus& status, const Vector3& popPos);
-	virtual ~BaseChara()override = default;
+	virtual ~BaseChara()override;
 
 	void Update()override;
 
@@ -103,6 +104,10 @@ protected:
 	const float kActionCoolTime_ = 3.0f;
 	float actionCoolTimer_ = 0.0f;
 
+	// Sound
+	SoundData* attack;
+	SoundData* recovery;
+	SoundData* die;
 
 	EnemyManager* ene_;
 	FriendlyManager* fri_;

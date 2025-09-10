@@ -16,4 +16,5 @@ public:
 
 private:
 	float winXPos_ = 50.0f;
+
 };

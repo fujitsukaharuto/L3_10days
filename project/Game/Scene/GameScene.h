@@ -8,8 +8,9 @@
 #include "Game/GameObj/Map/MapField.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 #include "GameObj/CharaManagers/EnemyManager/EnemyManager.h"
+#include "GameObj/floor/floor.h"
 
-class GameScene :public BaseScene {
+class GameScene:public BaseScene {
 public:
 	GameScene();
 	~GameScene();
@@ -43,6 +44,8 @@ private:
 	std::unique_ptr<FriendlyManager> friendlyManager_ = nullptr;
 	std::unique_ptr<EnemyManager> enemyManager_ = nullptr;
 
+	std::unique_ptr<Floor> floor_ = nullptr;
+
 	Vector3 tPos;
 
 	std::unique_ptr<MapField> map_;
@@ -55,6 +58,6 @@ private:
 	float blackTime = 20.0f;
 	bool isChangeFase = false;
 
-	Vector3 titlePos_ = { 35.0f,29.0f,-62.0f };
+	Vector3 titlePos_ = { 35.0f,29.0f,-275.0f };
 
 };

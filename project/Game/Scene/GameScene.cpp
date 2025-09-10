@@ -13,8 +13,7 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {
-}
+GameScene::~GameScene() {}
 
 void GameScene::Initialize() {
 
@@ -111,6 +110,8 @@ void GameScene::Initialize() {
 	enemyManager_ = std::make_unique<EnemyManager>();
 
 	map_->SetFriendlyManager(friendlyManager_.get());
+
+	floor_ = std::make_unique<Floor>();
 }
 
 void GameScene::Update() {
@@ -174,7 +175,7 @@ void GameScene::Draw() {
 	factory_->Draw();
 	friendlyManager_->Draw();
 	enemyManager_->Draw();
-
+	floor_->Draw();
 	ParticleManager::GetInstance()->Draw();
 
 #ifdef _DEBUG
@@ -235,6 +236,8 @@ void GameScene::DebugGUI() {
 		factory_->transform.translate = titlePos_;
 	}
 	ImGui::End();
+
+	floor_->DebugDraw();
 #endif // _DEBUG
 }
 
@@ -307,5 +310,4 @@ void GameScene::LoadSceneLevelData(const std::string& name) {
 	}
 }
 
-void GameScene::ApplyGlobalVariables() {
-}
+void GameScene::ApplyGlobalVariables() {}
