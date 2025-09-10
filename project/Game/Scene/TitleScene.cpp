@@ -144,9 +144,11 @@ void TitleScene::Update() {
 		if (battleSystem_->CheckBattleOver()) {
 			isChangeFase = true;
 		}
+		if (battleSystem_->CheckGameOver()) {
+			isChangeFase = true;
+			isGameover_ = true;
+		}
 	}
-
-
 
 	//climber_->Up();
 
@@ -244,7 +246,11 @@ void TitleScene::BlackFade() {
 			}
 		} else {
 			if (!isParticleDebugScene_) {
-				ChangeScene("RESULT", 40.0f);
+				if (isGameover_) {
+					ChangeScene("GAMEOVER", 40.0f);
+				} else {
+					ChangeScene("RESULT", 40.0f);
+				}
 			} else {
 				ChangeScene("PARTICLEDEBUG", 40.0f);
 			}
@@ -263,12 +269,13 @@ void TitleScene::BlackFade() {
 		}
 	}
 
+
+#ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;
 		}
 	}
-#ifdef _DEBUG
 	if (Input::GetInstance()->PushKey(DIK_RETURN) && Input::GetInstance()->PushKey(DIK_P) && Input::GetInstance()->PushKey(DIK_D) && Input::GetInstance()->TriggerKey(DIK_S)) {
 		if (blackTime == 0.0f) {
 			isChangeFase = true;

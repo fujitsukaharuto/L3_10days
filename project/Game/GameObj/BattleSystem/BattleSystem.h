@@ -18,6 +18,7 @@ public:
 	void Draw();
 
 	// 戦闘終了判定を取る
+	bool CheckGameOver();
 	bool CheckBattleOver();
 
 private:
