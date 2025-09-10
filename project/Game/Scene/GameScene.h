@@ -6,7 +6,7 @@
 #include "Game/TestBaseObj.h"
 #include "Game/Collider/CollisionManager.h"
 #include "Game/GameObj/Map/MapField.h"
-
+#include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 
 class GameScene :public BaseScene {
 public:
@@ -38,6 +38,8 @@ private:
 	std::unique_ptr<AnimationModel> nn2_ = nullptr;
 	std::unique_ptr<AnimationModel> factory_ = nullptr;
 	//std::unique_ptr<Object3d> title = nullptr;
+
+	std::unique_ptr<FriendlyManager> friendlyManager_ = nullptr;
 
 	Vector3 tPos;
 

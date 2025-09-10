@@ -34,7 +34,7 @@ void MapField::Initialize() {
 	completeTex_ = std::make_unique<Sprite>();
 	completeTex_->Load("completed.png");
 	completeTex_->SetPos({ 285.0f, 660.0f,0.0f });
-	
+
 	selectorTex_ = std::make_unique<Sprite>();
 	selectorTex_->Load("SquareFrame.png");
 	selectorTex_->SetColor({ 1.0f,0.0f,0.0f,0.7f });
@@ -87,7 +87,7 @@ void MapField::Initialize() {
 	LoadMinoTables();
 
 	moldManager.load();
-	
+
 	InitCells();
 
 	// テーブルと鋳型をランダムに決定
@@ -102,8 +102,7 @@ void MapField::Initialize() {
 void MapField::Update() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	}
-	else {
+	} else {
 		haveControlMino_ = false;
 	}
 
@@ -184,15 +183,13 @@ void MapField::TitleInit() {
 			cell->genderType = (GenderType)map_[rowI][colI];
 			if (cell->genderType == GenderType::Man) {
 				cell->block->SetColor({ 0,0,1,0.6f });
-			}
-			else if (cell->genderType == GenderType::Woman) {
+			} else if (cell->genderType == GenderType::Woman) {
 				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 			cell->isRequired = mold[rowI][colI];
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			}
-			else {
+			} else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 			++colI;
@@ -210,8 +207,7 @@ void MapField::TitleInit() {
 void MapField::TitleUpdate() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	}
-	else {
+	} else {
 		haveControlMino_ = false;
 	}
 	TitleUpdateSelectPanel();
@@ -235,6 +231,10 @@ void MapField::TitleUpdateSelectPanel() {
 					isTitleToGame_ = true;
 					//CompleteArrangement();
 					AudioPlayer::GetInstance()->SoundPlayWave(*push);
+					CharaStatus status;
+					status.gender = Gender::WOMAN;
+					status.name = "womanWalk.gltf";
+					friendlyManager_->AddFriendly(status);
 				}
 			}
 			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
@@ -347,8 +347,7 @@ void MapField::CursorDraw() {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		grabCursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		grabCursorTex_->Draw();
-	}
-	else {
+	} else {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		cursorTex_->Draw();
@@ -376,8 +375,7 @@ void MapField::CellRequiredSpriteDraw() {
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
 		UpdateSelectPanelControlling();
-	}
-	else {
+	} else {
 		UpdateSelectPanelUncontrolling();
 	}
 
@@ -503,8 +501,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				manPanelTime_ += FPSKeeper::DeltaTime();
 				manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		}
-		else {
+		} else {
 			manPanelTime_ -= FPSKeeper::DeltaTime();
 			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -522,8 +519,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				womanPanelTime_ += FPSKeeper::DeltaTime();
 				womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		}
-		else {
+		} else {
 			womanPanelTime_ -= FPSKeeper::DeltaTime();
 			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -550,8 +546,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		}
-		else {
+		} else {
 			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
@@ -573,8 +568,7 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		}
-		else {
+		} else {
 			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
@@ -667,8 +661,7 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
-		}
-		else {
+		} else {
 			float mainPos = std::lerp(285.0f, -290.0f, t);
 			float subPos = std::lerp(880.0f, 285.0f, t);
 
@@ -788,8 +781,7 @@ void MapField::CompleteArrangement() {
 		if (friendlyManager_) {
 			friendlyManager_->AddFriendly(status);
 		}
-	}
-	else {
+	} else {
 		CharaStatus status;
 		status.hp = maxBlocks;
 		status.name = "womanWalk.gltf";
@@ -805,7 +797,7 @@ void MapField::CompleteArrangement() {
 	maxB_.push_back(maxBlocks);
 	manB_.push_back(manBlocks);
 	womanB_.push_back(womanBlocks);
-	
+
 	RandomizeTable();
 	ResetMold();
 }
@@ -831,8 +823,7 @@ void MapField::ResetMold() {
 
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			}
-			else {
+			} else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 		}
@@ -881,12 +872,10 @@ void MapField::CellSpriteSetColor() {
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
 			block->sprite->SetColor({ 1.0f,0.0f,0.0f,0.8f });
-		}
-		else {
+		} else {
 			if (controlMino_->GetGender() == GenderType::Man) {
 				block->sprite->SetColor({ 0,0,1,0.6f });
-			}
-			else if (controlMino_->GetGender() == GenderType::Woman) {
+			} else if (controlMino_->GetGender() == GenderType::Woman) {
 				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 		}
@@ -947,8 +936,7 @@ void MapField::LoadMinoTables() {
 
 			if (newMino->GetGender() == GenderType::Man) {
 				++table.numManMino;
-			}
-			else {
+			} else {
 				++table.numWomanMino;
 			}
 
@@ -962,7 +950,7 @@ void MapField::LoadMinoTables() {
 			}
 			// ブロック数が異なる場合、ブロック数の多い方を優先
 			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
-		});
+			});
 
 		// ボタン位置の設定
 		if (table.minos.size() == 6) {
