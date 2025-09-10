@@ -27,6 +27,8 @@ public:
 
 	void SetColor(const Vector4& color);
 
+	void SetColorAlpha(float alpha);
+
 	void SetPos(const Vector3& pos);
 
 	void SetScale(const Vector2& scale);
