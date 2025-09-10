@@ -277,7 +277,7 @@ void BaseChara::Action() {
 		case WOMAN:
 			if (target_) {
 				target_->GetHeal(status_.power);
-				AudioPlayer::GetInstance()->SoundPlayWave(*recovery);
+				AudioPlayer::GetInstance()->SoundPlayWave(*recovery, 0.1f);
 			}
 			break;
 	}
