@@ -56,19 +56,23 @@ MoldType HumanMoldManager::load_mold(const std::filesystem::path& path, HumanMol
 
 	MoldType type = static_cast<MoldType>(line[0] - '0');
 
+	i32 size = 0;
 	while (std::getline(file, line, '\n')) {
 		std::stringstream ss(line);
 		std::string value;
-		auto& row = result.emplace_back();
+		auto& row = result.body.emplace_back();
 		while (std::getline(ss, value, ',')) {
 			if (value == "1") {
 				row.emplace_back(true);
+				++size;
 			}
 			else if (value == "0") {
 				row.emplace_back(false);
 			}
 		}
 	}
+
+	result.size = size;
 
 	return type;
 }

@@ -102,7 +102,8 @@ void MapField::Initialize() {
 void MapField::Update() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
 
@@ -183,13 +184,15 @@ void MapField::TitleInit() {
 			cell->genderType = (GenderType)map_[rowI][colI];
 			if (cell->genderType == GenderType::Man) {
 				cell->block->SetColor({ 0,0,1,0.6f });
-			} else if (cell->genderType == GenderType::Woman) {
+			}
+			else if (cell->genderType == GenderType::Woman) {
 				cell->block->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 			cell->isRequired = mold[rowI][colI];
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			} else {
+			}
+			else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 			++colI;
@@ -207,7 +210,8 @@ void MapField::TitleInit() {
 void MapField::TitleUpdate() {
 	if (controlMino_) {
 		haveControlMino_ = true;
-	} else {
+	}
+	else {
 		haveControlMino_ = false;
 	}
 	TitleUpdateSelectPanel();
@@ -238,7 +242,8 @@ void MapField::TitleUpdateSelectPanel() {
 				}
 			}
 			titleCompleteTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
-		} else {
+		}
+		else {
 			titleCompleteTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 
@@ -326,7 +331,8 @@ void MapField::FactoryDraw() {
 	womanPanelTex_->Draw();
 	if (haveControlMino_) {
 		nowSelectorTex_->Draw();
-	} else {
+	}
+	else {
 		selectorTex_->Draw();
 	}
 	genderPanelTex_->Draw();
@@ -347,7 +353,8 @@ void MapField::CursorDraw() {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		grabCursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		grabCursorTex_->Draw();
-	} else {
+	}
+	else {
 		Vector2 mouse = Input::GetInstance()->GetMousePosition();
 		cursorTex_->SetPos({ mouse.x,mouse.y,0.0f });
 		cursorTex_->Draw();
@@ -375,7 +382,8 @@ void MapField::CellRequiredSpriteDraw() {
 void MapField::UpdateSelectPanel() {
 	if (controlMino_) {
 		UpdateSelectPanelControlling();
-	} else {
+	}
+	else {
 		UpdateSelectPanelUncontrolling();
 	}
 
@@ -394,7 +402,8 @@ void MapField::UpdateSelectPanel() {
 			}
 		}
 		completeTex_->SetColor({ 0.6f,0.6f,0.6f,1.0f });
-	} else {
+	}
+	else {
 		completeTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 	}
 
@@ -428,8 +437,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
-						// AddMino(selectTypes_[blockButtonNum_]);
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
@@ -447,8 +457,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
-						// AddMino(selectTypes_[blockButtonNum_]);
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
 					}
@@ -466,7 +477,9 @@ void MapField::UpdateSelectPanelUncontrolling() {
 			if (manPanelTime_ == defaultSelectPanelTime_ || womanPanelTime_ == defaultSelectPanelTime_) {
 				if (Input::GetInstance()->IsTriggerMouse(0) && !haveControlMino_) {
 					if (!controlMino_) {
-						controlMino_ = minoTables[0].minos[0].get();
+						int idx = minoButtonNum_;
+						if (gender_ == int(GenderType::Woman)) { idx += 3; }
+						controlMino_ = minoTables[tableIndex].minos[idx].get();
 						// AddMino(selectTypes_[blockButtonNum_]);
 						AudioPlayer::GetInstance()->SoundPlayWave(*grab);
 						return;
@@ -495,7 +508,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				manPanelTime_ += FPSKeeper::DeltaTime();
 				manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		} else {
+		}
+		else {
 			manPanelTime_ -= FPSKeeper::DeltaTime();
 			manPanelTime_ = std::clamp(manPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -513,7 +527,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				womanPanelTime_ += FPSKeeper::DeltaTime();
 				womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 			}
-		} else {
+		}
+		else {
 			womanPanelTime_ -= FPSKeeper::DeltaTime();
 			womanPanelTime_ = std::clamp(womanPanelTime_, 0.0f, defaultSelectPanelTime_);
 		}
@@ -540,7 +555,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowLTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowLTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 		pos = arrowRTex_->GetPos();
@@ -562,7 +578,8 @@ void MapField::UpdateSelectPanelUncontrolling() {
 				}
 			}
 			arrowRTex_->SetColor({ 0.5f,0.3f,0.3f,1.0f });
-		} else {
+		}
+		else {
 			arrowRTex_->SetColor({ 1.0f,1.0f,1.0f,1.0f });
 		}
 	}
@@ -579,11 +596,13 @@ void MapField::SelectMino() {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 100.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 105.0f,110.0f,0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 465.0f,115.0f, 0.0f }); nowSelectorTex_->SetPos({ 467.5f,110.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 102.0f,116.0f });
-		} else if (minoButtonNum_ == 1) {
+		}
+		else if (minoButtonNum_ == 1) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,85.0f, 0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,95.0f, 0.0f }); nowSelectorTex_->SetPos({ 375.0f,85.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 68.0f,64.0f });
-		} else if (minoButtonNum_ == 2) {
+		}
+		else if (minoButtonNum_ == 2) {
 			if (gender_ == int(GenderType::Man)) { selectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 195.0f,146.0f, 0.0f }); }
 			if (gender_ == int(GenderType::Woman)) { selectorTex_->SetPos({ 375.0f,146.0f, 0.0f }); nowSelectorTex_->SetPos({ 376.5f,146.0f,0.0f }); }
 			nowSelectorTex_->SetSize({ 67.0f,45.0f });
@@ -592,10 +611,12 @@ void MapField::SelectMino() {
 		if (minoButtonNum_ == 0) {
 			selectorMaxSize_ = { 95.0f + 30.0f,90.0f + 30.0f };
 			selectorMinSize_ = { 95.0f + 10.0f,90.0f + 10.0f };
-		} else if (minoButtonNum_ == 1) {
+		}
+		else if (minoButtonNum_ == 1) {
 			selectorMaxSize_ = { 63.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 63.0f + 10.0f,40.0f + 10.0f };
-		} else if (minoButtonNum_ == 2) {
+		}
+		else if (minoButtonNum_ == 2) {
 			selectorMaxSize_ = { 62.0f + 30.0f,40.0f + 30.0f };
 			selectorMinSize_ = { 62.0f + 10.0f,40.0f + 10.0f };
 		}
@@ -655,7 +676,8 @@ void MapField::FrameUpdate() {
 
 			frameTex_->SetPos({ mainPos,400.0f,0.0f });
 			subFrameTex_->SetPos({ subPos,400.0f,0.0f });
-		} else {
+		}
+		else {
 			float mainPos = std::lerp(285.0f, -290.0f, t);
 			float subPos = std::lerp(880.0f, 285.0f, t);
 
@@ -703,7 +725,15 @@ void MapField::MoveControlMino() {
 		auto [row, column] = CalcCellIndex(block->sprite->GetPos());
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
-			cell->required->SetColor({ 1.0f,0.0f,0.0f,0.6f });
+			block->sprite->SetColor({ 1.0f,0.0f,0.0f,1.0f });
+		}
+		else {
+			if (controlMino_->GetGender() == GenderType::Man) {
+				block->sprite->SetColor({ 0.0f,0.0f,1.0f,0.6f });
+			}
+			else {
+				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
+			}
 		}
 	}
 
@@ -808,15 +838,19 @@ void MapField::ResetMold() {
 		for (i32 colI = 0; colI < kMapWidth_; ++colI) {
 			auto& cell = cellsData_[rowI][colI];
 			cell->genderType = GenderType::None;
-			cell->isRequired = mold[rowI][colI];
+			cell->isRequired = mold.body[rowI][colI];
 
 			if (cell->isRequired) {
 				cell->required->SetColor({ 0.1f, 0.1f, 0.1f, 0.5f });
-			} else {
+			}
+			else {
 				cell->required->SetColor({ 0.0f,0.0f,0.0f,0.0f });
 			}
 		}
 	}
+
+	// 穴の大きさを取得
+	moldSize = mold.size;
 }
 
 std::pair<i32, i32> MapField::CalcCellIndex(const Vector3& position) const {
@@ -861,10 +895,12 @@ void MapField::CellSpriteSetColor() {
 		auto& cell = cellsData_[row][column];
 		if (cell->genderType != GenderType::None) {
 			block->sprite->SetColor({ 1.0f,0.0f,0.0f,0.8f });
-		} else {
+		}
+		else {
 			if (controlMino_->GetGender() == GenderType::Man) {
 				block->sprite->SetColor({ 0,0,1,0.6f });
-			} else if (controlMino_->GetGender() == GenderType::Woman) {
+			}
+			else if (controlMino_->GetGender() == GenderType::Woman) {
 				block->sprite->SetColor({ 1.0f,0.08f,0.58f,0.6f });
 			}
 		}
@@ -925,7 +961,8 @@ void MapField::LoadMinoTables() {
 
 			if (newMino->GetGender() == GenderType::Man) {
 				++table.numManMino;
-			} else {
+			}
+			else {
 				++table.numWomanMino;
 			}
 
@@ -939,7 +976,7 @@ void MapField::LoadMinoTables() {
 			}
 			// ブロック数が異なる場合、ブロック数の多い方を優先
 			return lhs->GetBlocks().size() >= rhs->GetBlocks().size();
-			});
+		});
 
 		// ボタン位置の設定
 		if (table.minos.size() == 6) {

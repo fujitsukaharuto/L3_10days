@@ -117,6 +117,8 @@ private:
 
 	std::vector<std::vector<std::unique_ptr<CellData>>> cellsData_;
 
+	i32 moldSize;
+
 	i32 tableIndex;
 	std::optional<i32> useMinoIndex;
 	std::vector<MinoTable> minoTables;
