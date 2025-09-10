@@ -10,6 +10,7 @@
 #include "Game/GameObj/Block/Mino.h"
 #include "GameObj/CharaManagers/FriendlyManager/FriendlyManager.h"
 #include "HumanMoldManager.h"
+#include "Engine/SimpleAnimation/SimpleAnimation.h"
 
 class CollisionManager;
 class Climber;
@@ -69,6 +70,9 @@ public:
 	void RandomizeTable();
 	void ResetMold();
 
+	void UpdateMold();
+	void WriteMold();
+
 	void PoseMenu();
 
 public:
@@ -108,8 +112,6 @@ private:
 	/// 1テーブルあたりのミノデータ
 	/// </summary>
 	struct MinoTable {
-		MoldType friendlyType;
-
 		i32 numManMino;
 		i32 numWomanMino;
 
@@ -128,7 +130,10 @@ private:
 
 	std::vector<std::vector<std::unique_ptr<CellData>>> cellsData_;
 
-	i32 moldSize;
+	std::array<i32, 3> useMoldIndex;
+
+	i32 moldSize{ 0 };
+	i32 moldType{ 0 };
 
 	i32 tableIndex;
 	std::optional<i32> useMinoIndex;
@@ -144,6 +149,13 @@ private:
 	std::vector<int> maxB_;
 	std::vector<int> manB_;
 	std::vector<int> womanB_;
+
+	bool canChangeMoldType;
+	r32 hideArrowAnimationTimer{ 0.0f };
+	SimpleAnimation<r32> hideArrowAnimation{ 1.0f, 0.0f, EasingType::Linear, true, LoopType::PingPong };
+
+	r32 hideMoldAnimationTimer{ 0.0f };
+	SimpleAnimation<r32> hideMoldAnimation{ 1.0f, 0.0f, EasingType::Linear, false, LoopType::PingPong };
 
 	int preGender_ = 0;
 	int gender_ = 0;
@@ -201,6 +213,7 @@ private:
 	HumanMoldManager moldManager;
 
 	struct Arrangement {
+		// 決定押した際に出るアニメーション関連
 		static constexpr r32 GenderSpriteHeight = 60;
 		static constexpr r32 HumanRatioHeight = 60;
 
