@@ -8,6 +8,7 @@
 #include "FPSKeeper.h"
 #include "Engine/ImGuiManager/ImGuiManager.h"
 #include "Engine/Editor/JsonSerializer.h"
+#include "Engine/Math/Random/Random.h"
 
 #include <fstream>
 #include <assimp/Importer.hpp>
@@ -548,6 +549,12 @@ void AnimationModel::ChangeAnimation(const std::string& newName) {
 	nowAnimationName_ = newName;
 	animationTime_ = 0.0f; // Bは頭から再生
 	blendTime_ = 0.0f;
+}
+
+void AnimationModel::RandomAddAnimationTime() {
+	if (auto* anim = GetCurrentAnimation()) {
+		animationTime_ = anim->duration * Random::GetFloat(0.0f, 1.0f);
+	}
 }
 
 void AnimationModel::LoadTransformFromJson(const std::string& filename) {
