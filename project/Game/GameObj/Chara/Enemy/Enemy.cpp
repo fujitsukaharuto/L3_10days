@@ -34,8 +34,10 @@ void Enemy::Update() {
 	if (isWinTime_) {
 		winTimer_ += FPSKeeper::GetInstance()->DeltaTimeFrame();
 		if (winTime_ >= winTime_) {
-			AudioPlayer::GetInstance()->SoundPlayWave(*break_);
-			ene_->Win();
+			if (!ene_->GetIsWin()) {
+				AudioPlayer::GetInstance()->SoundPlayWave(*break_);
+				ene_->Win();
+			}
 		}
 	}
 }
