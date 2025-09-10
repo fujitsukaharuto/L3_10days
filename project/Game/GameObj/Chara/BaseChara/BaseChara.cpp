@@ -187,21 +187,42 @@ void BaseChara::Update() {
 				const float len = Vector3::Length(dir);
 
 				// 一定距離から離れたら接近フェーズに
-				if (len >= fightRange_) {
-					actionCoolTimer_ = 0.0f;
-					state_ = State::Approach;
-					if (status_.name == "womanWalk.gltf") {
-						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-					} else if (status_.name == "womanWalk2.gltf") {
-						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
-					} else if (status_.name == "manWalk.gltf") {
-						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
-					} else if (status_.name == "manWalk2.gltf") {
-						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
-					} else if (status_.name == "halfWalk.gltf") {
-						OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+
+				if (status_.gender == Gender::MAN) {
+					if (len >= fightRange_) {
+						actionCoolTimer_ = 0.0f;
+						state_ = State::Approach;
+						if (status_.name == "womanWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+						} else if (status_.name == "womanWalk2.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+						} else if (status_.name == "manWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+						} else if (status_.name == "manWalk2.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+						} else if (status_.name == "halfWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+						}
+						return;
 					}
-					return;
+				} else {
+					if (len >= healRange_) {
+						actionCoolTimer_ = 0.0f;
+						state_ = State::Approach;
+						if (status_.name == "womanWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+						} else if (status_.name == "womanWalk2.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction");
+						} else if (status_.name == "manWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+						} else if (status_.name == "manWalk2.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.001");
+						} else if (status_.name == "halfWalk.gltf") {
+							OriginGameObject::GetAnimModel()->ChangeAnimation("amaAction.006");
+						}
+						return;
+					}
+
 				}
 
 				float yaw = std::atan2(dir.x, dir.z);
